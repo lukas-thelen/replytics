@@ -1,4 +1,4 @@
-var Twit = require('twit');
+//var Twit = require('twit');
 
 
 export var TwitterAPI = new Twit({
