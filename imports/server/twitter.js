@@ -3,15 +3,15 @@ import { Follower } from '../imports/api/follower.js';
 import { Mentions } from '../imports/api/mentions.js';
 var Twit = require('twit');
 
-Meteor.startup(() => {
-  var follower = []
 
 async function getFollowers(){
+	var follower = []
 	let result = await TwitterAPI.get('followers/ids', { screen_name:"@FlorianKindler"});
 	follower = result.data.ids.length;
 	Follower.insert({count: follower, date: new Date()});
 	console.log(Follower.find({}).fetch())
 }
+
 
 async function getMentions(){
 	let result = await TwitterAPI.get('statuses/mentions_timeline', { screen_name:"@FlorianKindler"});
@@ -27,8 +27,9 @@ async function getMentions(){
 	}
 	console.log(Mentions.find({}).fetch())
 }
-Follower.remove({});
-getFollowers();
-getMentions();
 
-});
+function initial (){
+	Follower.remove({});
+	getFollowers();
+	getMentions();
+}
