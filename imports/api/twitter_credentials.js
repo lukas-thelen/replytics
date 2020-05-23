@@ -1,3 +1,6 @@
+var Twit = require('twit');
+
+
 var TwitterAPI = new Twit({
 	consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
 	consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
