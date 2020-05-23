@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { TwitterApi } from '../api/twitter_credentials.js';
 import { Follower } from '../api/twitter_follower.js';
 import { Mentions } from '../api/twitter_mentions.js';
 var Twit = require('twit');
