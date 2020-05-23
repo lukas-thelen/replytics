@@ -31,6 +31,7 @@ async function getMentions(){
 
 export function initial(){
 	Follower.remove({});
+	Mentions.remove({});
 	getFollowers();
 	getMentions();
 }
