@@ -28,7 +28,7 @@ async function getMentions(){
 	console.log(Mentions.find({}).fetch())
 }
 
-function initial(){
+export function initial(){
 	Follower.remove({});
 	getFollowers();
 	getMentions();
