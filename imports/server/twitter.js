@@ -6,32 +6,7 @@ import { MentionCount } from '../api/twitter_mentionCount.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 
-//**allgemeine Funktionen**/
 
-//gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
-function checkDaily(collection){
-	var today = new Date();
-	var latestObject = collection.findOne({},{ sort:{ date:-1 } })
-	if(latestObject.date.getDay() === today.getDay() && latestObject.date.getMonth() === today.getMonth() && latestObject.date.getFullYear() === today.getFullYear()){
-		return true
-	}
-	return false
-	
-}
-
-//gibt true zurück wenn der letzte Eintrag einer Collection den übergebenen Wert bei dem übergebenen Attribut (name) hat
-function checkCount(name, number, collection){
-	var latestObject = collection.findOne({},{ sort:{ date:-1 } })
-	if(latestObject[name] === number){
-		return true
-	}
-	return false
-}
-
-//löscht den letzten Eintrag einer Collection
-function removeLast(collection){
-	collection.remove({date: collection.findOne({},{ sort:{ date:-1 } }).date})
-}
 
 //**Funktionen im Twitter Kontext**/
 
@@ -94,4 +69,32 @@ export function initial(){
 	Mentions.remove({});
 	getDailyFollowers();
 	getMentions();
+}
+
+
+//**allgemeine Funktionen**/
+
+//gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
+function checkDaily(collection){
+	var today = new Date();
+	var latestObject = collection.findOne({},{ sort:{ date:-1 } })
+	if(latestObject.date.getDay() === today.getDay() && latestObject.date.getMonth() === today.getMonth() && latestObject.date.getFullYear() === today.getFullYear()){
+		return true
+	}
+	return false
+	
+}
+
+//gibt true zurück wenn der letzte Eintrag einer Collection den übergebenen Wert bei dem übergebenen Attribut (name) hat
+function checkCount(name, number, collection){
+	var latestObject = collection.findOne({},{ sort:{ date:-1 } })
+	if(latestObject[name] === number){
+		return true
+	}
+	return false
+}
+
+//löscht den letzten Eintrag einer Collection
+function removeLast(collection){
+	collection.remove({date: collection.findOne({},{ sort:{ date:-1 } }).date})
 }
