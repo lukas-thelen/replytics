@@ -44,6 +44,8 @@ async function getDailyFollowers(){
 //Funktion für den Abruf und zur Berechnung der @-Erwähnungen durch andere Benutzer
 async function getMentions(){
 
+	Mentions.remove({});
+
 	//API Anfrage nach alles Mentions(@)	
 	let result = await TwitterAPI.get('statuses/mentions_timeline', { screen_name:"@FlorianKindler"});	
 	mentionArray = result.data;
@@ -94,9 +96,10 @@ async function getMentions(){
 
 
 export function initial(){
-	Mentions.remove({});
 	getDailyFollowers();
 	getMentions();
+	var myVar = setInterval(getDailyFollowers, 1200000);
+	var myVar02 = setInterval(getMentions, 1200000);
 }
 
 
