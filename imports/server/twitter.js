@@ -43,7 +43,7 @@ async function getDailyFollowers(){
 
 //Funktion für den Abruf und zur Berechnung der @-Erwähnungen durch andere Benutzer
 async function getMentions(){
-
+	
 	Mentions.remove({});
 
 	//API Anfrage nach alles Mentions(@)	
@@ -73,16 +73,16 @@ async function getMentions(){
 		})
 
 	}
-
 	//Eintrag in die Collection für die Anzahl der Mentions und Autoren
 	//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
 	if(MentionCount.find({}).count()>0){
 
+		console.log((!checkCount("mentions", mentions, MentionCount)));
 		//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
-		if (!checkDaily(MentionCount) || (!checkCount("mentions", mentions, MentionCount) && checkDaily(MentionCount))){
-
+		if (!checkDaily(MentionCount) || (checkDaily(MentionCount) && (!checkCount("mentions", mentions, MentionCount) || !checkCount("authors", authorCount, MentionCount)))){
+			
 			//letzten Eintrag löschen, wenn zweiter Fall zutrifft
-			if(!checkCount("mentions", mentions, MentionCount)){
+			if(checkDaily(MentionCount)){
 				removeLast(MentionCount)
 			}
 			MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount})
