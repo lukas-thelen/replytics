@@ -176,9 +176,10 @@ async function getMentions(){
 export function initial(){
 	getDailyFollowers();
 	getMentions();
+	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	var myVar02 = setInterval(getMentions, 1200000);
-	getPosts();
+	var myVar03 = setInterval(getPosts, 1200000);
 }
 
 //
