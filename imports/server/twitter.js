@@ -5,12 +5,62 @@ import { TwitterAPI } from '../api/twitter_credentials.js';
 import { FollowerCount } from '../api/twitter_followerCount.js';
 import { Mentions } from '../api/twitter_mentions.js';
 import { MentionCount } from '../api/twitter_mentionCount.js';
+import { Posts } from '../api/twitter_posts.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 
+Meteor.methods({
 
+	//Methode, um etwas auf Twitter zu posten
+	async postTweet(text, dimension){
+		let result = await TwitterAPI.post('statuses/update', { status: text});
+		var id = result.data.id_str;
+		var date = result.data.created_at;
+		//speichert Post inklusive Dimension in Datenbank
+		Posts.insert({id: id, date: date, text: text, dimension: dimension, retweet: false});
+	}
+});
 
+//
+//
+//
 //**Funktionen im Twitter Kontext**/
+//
+//
+//
+
+//Aktualisiert die Favorites und Retweets der eigenen Posts
+async function getPosts(){
+	let result = await TwitterAPI.get('statuses/user_timeline', { screen_name:"@FlorianKindler", count:50 });
+	var postArray = result.data;
+	
+	//Iteration durch alle Posts
+	for (i=0; i<postArray.length;i++){
+		//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
+		var idChecked = Posts.find({id: postArray[i].id_str}).fetch();
+		//True wenn Posts ein Retweet ist
+		var retweetChecked = postArray[i].retweeted;
+		if(idChecked[0]){
+			//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
+			Posts.update({id: postArray[i].id_str}, {$set:{fav: postArray[i].favorite_count, retweets: postArray[i].retweet_count}})
+		}else{
+			//erstellt Eintrag, wenn Post noch nicht existiert
+			Posts.insert({
+				id: postArray[i].id_str,
+				date: postArray[i].created_at,
+				text: postArray[i].text,
+				dimension: "not defined",
+				fav: postArray[i].favorite_count,
+				retweets: postArray[i].retweet_count,
+				retweet: retweetChecked
+			})
+		}
+		
+	}
+	console.log(Posts.find({retweet: false}).fetch());
+}
+
+
 
 //Ergänzt einen neuen Eintrag für die Followerzahlen, wenn heute noch kein Eintrag gemacht wurde oder der Wert von den bisherigen abweicht
 async function getDailyFollowers(){
@@ -41,7 +91,7 @@ async function getDailyFollowers(){
 
 
 
-//Funktion für den Abruf und zur Berechnung der @-Erwähnungen durch andere Benutzer
+//Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
 async function getMentions(){
 	
 	Mentions.remove({});
@@ -56,6 +106,27 @@ async function getMentions(){
 
 	//Iteration durch alle Mentions
 	for (i=0; i<mentionArray.length; i++){
+
+		//Abschnitt, um Antowrten zu Posts zuzuordnen
+		//true, wenn in der Posts Collection ein Eintrag besteht, zu dem die aktuelle Mention eine Antwort ist
+		var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
+		var replyList = [];
+		if (mentionInReply[0]){
+			//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
+			if(!Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies){
+				Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$push: {replies:[]}})
+			}else{
+				//ansonsten lokale Liste durch die in der Datenbank ersetzen
+				replyList = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies
+			}
+			//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
+			var replyExists = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies.includes(mentionArray[i].text);
+			if(!replyExists){
+				replyList.push(mentionArray[i].text)
+			}
+			//Die lokale Liste wieder in der Datenbank speichern
+			Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
+		}
 
 		//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
 		var author = Mentions.find({author: mentionArray[i].user.name}).fetch();
@@ -94,16 +165,29 @@ async function getMentions(){
 	console.log(MentionCount.find({}).fetch())
 }
 
+//
+//
+//
+//**Exportierte Funktionen**
+//
+//
+//
 
 export function initial(){
 	getDailyFollowers();
 	getMentions();
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	var myVar02 = setInterval(getMentions, 1200000);
+	getPosts();
 }
 
-
+//
+//
+//
 //**allgemeine Funktionen**
+//
+//
+//
 
 //gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
 function checkDaily(collection){
