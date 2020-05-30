@@ -57,7 +57,8 @@ async function getPosts(){
 		}
 		
 	}
-	console.log(Posts.find({retweet: false}).fetch());
+	//console.log(Posts.find({retweet: false}).fetch());
+	getMentions();
 }
 
 
@@ -163,6 +164,7 @@ async function getMentions(){
 	}
 	console.log(Mentions.find({}).fetch())
 	console.log(MentionCount.find({}).fetch())
+	console.log(Posts.find({retweet: false}).fetch());
 }
 
 //
@@ -174,11 +176,12 @@ async function getMentions(){
 //
 
 export function initial(){
+	Posts.remove({});
 	getDailyFollowers();
-	getMentions();
+	//getMentions();
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
-	var myVar02 = setInterval(getMentions, 1200000);
+	//var myVar02 = setInterval(getMentions, 1200000);
 	var myVar03 = setInterval(getPosts, 1200000);
 }
 
