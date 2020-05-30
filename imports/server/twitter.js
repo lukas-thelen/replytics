@@ -149,7 +149,6 @@ async function getMentions(){
 	//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
 	if(MentionCount.find({}).count()>0){
 
-		console.log((!checkCount("mentions", mentions, MentionCount)));
 		//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
 		if (!checkDaily(MentionCount) || (checkDaily(MentionCount) && (!checkCount("mentions", mentions, MentionCount) || !checkCount("authors", authorCount, MentionCount)))){
 			
