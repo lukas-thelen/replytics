@@ -175,7 +175,6 @@ async function getMentions(){
 //
 
 export function initial(){
-	Posts.remove({});
 	getDailyFollowers();
 	//getMentions();
 	getPosts();
