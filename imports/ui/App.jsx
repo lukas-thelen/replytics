@@ -6,7 +6,7 @@ import { FollowerCount } from '../api/twitter_followerCount.js';
 import { MentionCount } from '../api/twitter_mentionCount.js';
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
-import { FollowerVerlauf } from './FollowerVerlauf';
+import { FollowerChart } from './FollowerChart';
 
 
 
@@ -34,14 +34,18 @@ class App extends Tracker.Component {
        
         if (this.getMentions()[0] != undefined ){
            return(
-
              <div>
+              <div>
+                <FollowerChart/>
+               </div>
+
+                <div>
                 
                 <KeyFacts 
                   mentionCount={this.getMentions()[0].mentions}
                   mentionAuthors={this.getMentions()[0].authors}                  
                 />
-
+               </div>
               
                
                 
