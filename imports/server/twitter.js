@@ -13,13 +13,11 @@ Meteor.methods({
 
 	//Methode, um etwas auf Twitter zu posten
 	async postTweet(text, dimension){
-		/*let result = await TwitterAPI.post('statuses/update', { status: text});
+		let result = await TwitterAPI.post('statuses/update', { status: text});
 		var id = result.data.id_str;
 		var date = result.data.created_at;
 		//speichert Post inklusive Dimension in Datenbank
-		Posts.insert({id: id, date: date, text: text, dimension: dimension, retweet: false});*/
-		console.log(text);
-		console.log(dimension);
+		Posts.insert({id: id, date: date, text: text, dimension: dimension, retweet: false});
 	}
 });
 
