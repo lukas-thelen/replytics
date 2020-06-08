@@ -7,6 +7,7 @@ import { MentionCount } from '../api/twitter_mentionCount.js';
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
 import { FollowerVerlauf } from './FollowerVerlauf';
+import { Selbstposten } from './posten.jsx';
 
 
 
@@ -34,19 +35,28 @@ class App extends Tracker.Component {
        
         if (this.getMentions()[0] != undefined ){
            return(
-
-             <div>
-                
-                <KeyFacts 
-                  mentionCount={this.getMentions()[0].mentions}
-                  mentionAuthors={this.getMentions()[0].authors}                  
-                />
-
-              
+			
+		
+			
+             <div className="row">
+			 
+			 
+				<div className="col-md-5 ">
+				<Selbstposten/>
+				</div>
+		
+               <div className="col-md-7 row">
+			   Reputation Management Quotient</div>
+			   <br></br>
+			   <div className="col-md-5 row ">
+				
+				</div>
+				<div className="col-md-7 row "> 
+				<KeyFacts 
+				mentionCount={this.getMentions()[0].mentions}
+				mentionAuthors={this.getMentions()[0].authors}/></div>
                
-                
-                
-              </div>
+            </div>
            );
           } else  {
 
