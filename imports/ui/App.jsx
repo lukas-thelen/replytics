@@ -6,8 +6,10 @@ import { FollowerCount } from '../api/twitter_followerCount.js';
 
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
-import { FollowerVerlauf } from './FollowerVerlauf';
+
+import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
+
 
 
 
@@ -31,10 +33,7 @@ class App extends Tracker.Component {
        //if-Bedingung wichtig, um Fehlermeldungen zu vermeiden während die Daten laden
        
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
-           return(
-
-			
-		
+           return(	
 			
         <div className="row">
 			 
@@ -51,8 +50,9 @@ class App extends Tracker.Component {
 				</div>
 				<div className="col-md-7 row "> 
 				<KeyFacts/>
-               
+        <FollowerChart/>
         </div>
+
                
            );
           } else  {
