@@ -7,6 +7,7 @@ import { FollowerCount } from '../api/twitter_followerCount.js';
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
 import { FollowerVerlauf } from './FollowerVerlauf';
+import { Selbstposten } from './posten.jsx';
 
 
 
@@ -32,15 +33,27 @@ class App extends Tracker.Component {
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
 
-             <div>
-                
-                <KeyFacts/>
-
-              
+			
+		
+			
+        <div className="row">
+			 
+			 
+				<div className="col-md-5 ">
+				<Selbstposten/>
+				</div>
+		
+               <div className="col-md-7 row">
+			   Reputation Management Quotient</div>
+			   <br></br>
+			   <div className="col-md-5 row ">
+				
+				</div>
+				<div className="col-md-7 row "> 
+				<KeyFacts/>
                
-                
-                
-              </div>
+        </div>
+               
            );
           } else  {
 
