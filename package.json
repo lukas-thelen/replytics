@@ -10,10 +10,13 @@
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "chart.js": "^2.9.3",
+    "chartjs": "^0.3.24",
     "jquery": "^3.4.1",
     "meteor-node-stubs": "^1.0.0",
     "ml-sentiment": "^2.0.7",
     "react": "^16.13.1",
+    "react-chartjs": "^1.2.0",
+    "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.1",
     "react-meteor-data": "^0.2.11",
     "sentimental": "^0.1.2",
