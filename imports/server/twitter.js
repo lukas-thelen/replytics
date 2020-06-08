@@ -6,8 +6,14 @@ import { FollowerCount } from '../api/twitter_followerCount.js';
 import { Mentions } from '../api/twitter_mentions.js';
 import { MentionCount } from '../api/twitter_mentionCount.js';
 import { Posts } from '../api/twitter_posts.js';
+import { Sentiment } from '../api/twitter_sentiment.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
+var ml = require('ml-sentiment')({lang: 'de'});
+const sm = require('sentimental');
+const sw = require('stopword');
+var GermanStemmer = require('snowball-stemmer.jsx/dest/german-stemmer.common.js').GermanStemmer;
+const stem = new GermanStemmer();
 
 Meteor.methods({
 
@@ -17,7 +23,17 @@ Meteor.methods({
 		var id = result.data.id_str;
 		var date = result.data.created_at;
 		//speichert Post inklusive Dimension in Datenbank
-		Posts.insert({id: id, date: date, text: text, dimension: dimension, retweet: false});
+		Posts.insert({
+			id: id, 
+			date: date, 
+			text: text, 
+			dimension: dimension, 
+			retweet: false, 
+			replies: [],
+			s_neg: 0,
+			s_neu: 0,
+			s_pos: 0
+		});
 	}
 });
 
@@ -31,7 +47,7 @@ Meteor.methods({
 
 //Aktualisiert die Favorites und Retweets der eigenen Posts
 async function getPosts(){
-	let result = await TwitterAPI.get('statuses/user_timeline', { screen_name:"@FlorianKindler", count:50 });
+	let result = await TwitterAPI.get('statuses/user_timeline', { screen_name:"@FlorianKindler", count:500 });
 	var postArray = result.data;
 	
 	//Iteration durch alle Posts
@@ -52,7 +68,11 @@ async function getPosts(){
 				dimension: "not defined",
 				fav: postArray[i].favorite_count,
 				retweets: postArray[i].retweet_count,
-				retweet: retweetChecked
+				retweet: retweetChecked,
+				replies: [],
+				s_neg: 0,
+				s_neu: 0,
+				s_pos: 0
 			})
 		}
 		
@@ -89,13 +109,53 @@ async function getDailyFollowers(){
 	console.log(FollowerCount.find({}).fetch())
 }
 
+function postSentiment(){
+	Posts.update({},{$set: {s_neg: 0, s_neu: 0, s_pos:0}})
+	var postArray = Posts.find({retweet: false}).fetch();
+	for(var post=0; post<postArray.length; post++){
+		replyArray = postArray[post].replies;
+		for (var reply=0; reply<replyArray.length; reply++){
+			var sentiment = sm('DE', replyArray[reply]);
+			var sentiment02 = ml.classify(replyArray[reply]);
+			if (sentiment<0 || sentiment02<0){ Posts.update({id: postArray[post].id},{$inc: {s_neg: 1}}) }
+			if (sentiment===0 && sentiment02===0){ Posts.update({id: postArray[post].id},{$inc: {s_neu: 1}}) }
+			if (sentiment>0 || sentiment02>0){ Posts.update({id: postArray[post].id},{$inc: {s_pos: 1}}) }
+		}
+	}
+}
 
+function mentionSentiment(string){
+	/*var oldString = string.split(' ')
+	var newString = sw.removeStopwords(oldString, sw.de)
+	var text = ""
+	for(x=0; x<newString.length; x++){
+		//newString[x] = stem.stemWord(newString[x]);
+		text = text + " " + newString[x];
+	}*/
+	var text = string;
+	var sentiment = sm('DE', text);
+	var sentiment02 = ml.classify(text);
+	console.log(text);
+	console.log(sentiment);
+	console.log(sentiment02);
+	if (sentiment<0 || sentiment02<0){ Sentiment.update({},{$inc: {s_neg: 1}}) }
+	if (sentiment===0 && sentiment02===0){ Sentiment.update({},{$inc: {s_neu: 1}}) }
+	if (sentiment>0 || sentiment02>0){ Sentiment.update({},{$inc: {s_pos: 1}}) }
 
+}
+
+function initSentiment(){
+	if (!Sentiment.find({}).fetch()[0]){
+		Sentiment.insert({s_neg: 0, s_neu: 0, s_pos:0})
+	}
+	Sentiment.update({},{s_neg: 0, s_neu: 0, s_pos:0})
+}
 
 //Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
 async function getMentions(){
 	
 	Mentions.remove({});
+	initSentiment();
 
 	//API Anfrage nach alles Mentions(@)	
 	let result = await TwitterAPI.get('statuses/mentions_timeline', { screen_name:"@FlorianKindler"});	
@@ -114,12 +174,7 @@ async function getMentions(){
 		var replyList = [];
 		if (mentionInReply[0]){
 			//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
-			if(!Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies){
-				Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$push: {replies:[]}})
-			}else{
-				//ansonsten lokale Liste durch die in der Datenbank ersetzen
-				replyList = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies
-			}
+			replyList = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies
 			//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
 			var replyExists = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies.includes(mentionArray[i].text);
 			if(!replyExists){
@@ -144,7 +199,12 @@ async function getMentions(){
 			author: mentionArray[i].user.name
 		})
 
+	
+		mentionSentiment(mentionArray[i].text);
+
 	}
+
+	postSentiment();
 	//Eintrag in die Collection für die Anzahl der Mentions und Autoren
 	//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
 	if(MentionCount.find({}).count()>0){
@@ -164,6 +224,7 @@ async function getMentions(){
 	console.log(Mentions.find({}).fetch())
 	console.log(MentionCount.find({}).fetch())
 	console.log(Posts.find({retweet: false}).fetch());
+	console.log(Sentiment.find({}).fetch())
 }
 
 //
@@ -175,6 +236,7 @@ async function getMentions(){
 //
 
 export function initial(){
+	Posts.remove({});
 	getDailyFollowers();
 	//getMentions();
 	getPosts();
