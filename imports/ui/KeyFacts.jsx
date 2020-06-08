@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 
 import { FollowerCount } from '../api/twitter_followerCount';
-
+import { MentionCount } from '../api/twitter_mentionCount.js';
 
 
 export class KeyFacts extends Tracker.Component {
@@ -27,31 +27,70 @@ export class KeyFacts extends Tracker.Component {
     return today - old;
   }
 
+  getMentions() {
+    var mentions = MentionCount.find({}, {sort: {date: -1}}).fetch();
+    return mentions;
+  }
+
+  get7thMentionCount() {
+    if (this.getMentions()[6] != undefined) {
+      return this.getMentions()[6].mentions;
+    } else { 
+      var unsorted = MentionCount.find({}).fetch();
+      return unsorted[0].mentions;
+    }
+  }
+
+  getDifference7mention(){
+    var today = this.getMentions()[0].mentions;
+    var old = this.get7thMentionCount();
+    return today - old;
+  }
+
+  get7thMentionAuthors() {
+    if (this.getMentions()[6] != undefined) {
+      return this.getMentions()[6].authors;
+    } else { 
+      var unsorted = MentionCount.find({}).fetch();
+      return unsorted[0].authors;
+    }
+  }
+
+  getDifference7authors(){
+    var today = this.getMentions()[0].authors;
+    var old = this.get7thMentionAuthors();
+    return today - old;
+  }
+
   render() {
     
 
     
-    if (this.getFollower()[0] != undefined) {
+    if (this.getFollower()[0] != undefined && this.getMentions()[0] != undefined) {
      return (
      
     
       <div className="container">
         <section className="spalte card">
           <h5>Follower Anzahl</h5>
+
           <h3 style={{color:"#A4A4A4"}}>{this.getFollower()[0].count}</h3>
-          <h7>+ {this.getDifference7()} zur Vorwoche</h7>
+          <h7>Zuwachs in den letzten 7 Tagen: {this.getDifference7()}</h7>
+
         </section>
 
         <section className="spalte card">
           <h5>Erwähnungen</h5>
-          <h3 style={{color:"#A4A4A4"}}>{this.props.mentionCount}</h3>
-          <h7>Zuwachs in den letzten 7 Tagen: </h7>
+
+          <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].mentions}</h3>
+          <h7>Zuwachs in den letzten 7 Tagen: {this.getDifference7mention()} </h7>
         </section>
   
         <section className="spalte card">
           <h5>Anzahl Autoren</h5>
-          <h3 style={{color:"#A4A4A4"}}>{this.props.mentionAuthors}</h3>
-          <h7>Zuwachs in den letzten 7 Tagen: </h7>
+
+          <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].authors}</h3>
+          <h7>Zuwachs in den letzten 7 Tagen: {this.getDifference7authors()}</h7>
         </section>
   
         <section className="spalte card">
