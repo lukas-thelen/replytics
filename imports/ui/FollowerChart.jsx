@@ -79,6 +79,7 @@ export class FollowerChart extends Tracker.Component {
           <h3>Follower Anzahl</h3>
           <Line
             options = {{
+              bezierCurve: false,
               responsive: true
             }}
             data = {this.state.data}
