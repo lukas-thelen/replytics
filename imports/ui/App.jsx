@@ -3,10 +3,13 @@ import { withTracker } from 'meteor/react-meteor-data';
 import  Tracker  from 'tracker-component';
 //Datenbanken
 import { FollowerCount } from '../api/twitter_followerCount.js';
-import { MentionCount } from '../api/twitter_mentionCount.js';
+
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
+
 import { FollowerChart } from './FollowerChart';
+import { Selbstposten } from './posten.jsx';
+
 
 
 
@@ -18,10 +21,7 @@ class App extends Tracker.Component {
 
  
   
-  getMentions() {
-    var mentions = MentionCount.find({}, {sort: {date: -1}}).fetch();
-    return mentions;
-  }
+  
     
     
 
@@ -32,25 +32,28 @@ class App extends Tracker.Component {
        //Rendern muss verzögert werden oder Platzhalter durch automatische updates ausgetauscht werden
        //if-Bedingung wichtig, um Fehlermeldungen zu vermeiden während die Daten laden
        
-        if (this.getMentions()[0] != undefined ){
-           return(
-             <div>
-              <div>
-                <FollowerChart/>
-               </div>
+        if ( 1==1 ){ //Platzhalter für spätere Bedingungen
+           return(	
+			
+        <div className="row">
+			 
+			 
+				<div className="col-md-5 ">
+				<Selbstposten/>
+				</div>
+		
+               <div className="col-md-7 row">
+			   Reputation Management Quotient</div>
+			   <br></br>
+			   <div className="col-md-5 row ">
+				
+				</div>
+				<div className="col-md-7 row "> 
+				<KeyFacts/>
+        <FollowerChart/>
+        </div>
 
-                <div>
-                
-                <KeyFacts 
-                  mentionCount={this.getMentions()[0].mentions}
-                  mentionAuthors={this.getMentions()[0].authors}                  
-                />
-               </div>
-              
                
-                
-                
-              </div>
            );
           } else  {
 
