@@ -8,7 +8,6 @@ import { FollowerCount } from '/imports/api/twitter_followerCount';
 export class FollowerChart extends Tracker.Component {
   async getFollowerList(){
     let follower = await FollowerCount.find({}, {sort: {date: -1}}).fetch();
-    console.log(FollowerCount.find({}, {sort: {date: -1}}).fetch());
     var followerList = [];
     var followerDate = [];
     var datum = [];
@@ -21,9 +20,7 @@ export class FollowerChart extends Tracker.Component {
         followerList.push(0);
       }
     }
-    alert(l);
     for(var i=l;i>=0;i--){
-      alert("test");
       followerList.push(follower[i].count);
     }
 
