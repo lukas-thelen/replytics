@@ -75,7 +75,7 @@ export class KeyFacts extends Tracker.Component {
           <h5>Follower Anzahl</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getFollower()[0].count}</h3>
-          <h7>Zuwachs in den letzten 7 Tagen: {this.getDifference7()}</h7>
+          <h6>Zuwachs in den letzten 7 Tagen: {this.getDifference7()}</h6>
 
         </section>
 
@@ -83,20 +83,20 @@ export class KeyFacts extends Tracker.Component {
           <h5>Erwähnungen</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].mentions}</h3>
-          <h7>Zuwachs in den letzten 7 Tagen: {this.getDifference7mention()} </h7>
+          <h6>Zuwachs in den letzten 7 Tagen: {this.getDifference7mention()} </h6>
         </section>
   
         <section className="spalte card">
           <h5>Anzahl Autoren</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].authors}</h3>
-          <h7>Zuwachs in den letzten 7 Tagen: {this.getDifference7authors()}</h7>
+          <h6>Zuwachs in den letzten 7 Tagen: {this.getDifference7authors()}</h6>
         </section>
   
         <section className="spalte card">
           <h5>Retweets</h5>
 		  <h3  style={{color:"#A4A4A4"}}>Zahl</h3>
-          <h7>Zuwachs in den letzten 7 Tagen: </h7>
+          <h6>Zuwachs in den letzten 7 Tagen: </h6>
         </section>
       </div>
      );

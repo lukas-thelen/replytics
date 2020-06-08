@@ -6,30 +6,47 @@ import { FollowerCount } from '/imports/api/twitter_followerCount';
 
 
 export class FollowerChart extends Tracker.Component {
-  async getFollowerList(){
-    let follower = await FollowerCount.find({}, {sort: {date: -1}}).fetch();
-    console.log(FollowerCount.find({}, {sort: {date: -1}}).fetch());
+  getFollower(){
+    var follower = FollowerCount.find({}, {sort: {date: -1}}).fetch();
+    //console.log(follower);
+    return follower;
+  }
+
+  getFollowerList(){
     var followerList = [];
     var followerDate = [];
     var datum = [];
-    var datumStr = ["Sonntag","Monatg", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+    var datumStr = ["Sonntag","Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+   
+    if (this.getFollower()[0] != undefined) {
+      var follower = this.getFollower();
+      
     var l = follower.length-1;
+    
+    //alert(l);
+    for(var i=l;i>=0;i--){
+      //alert("test");
+      followerList.push(follower[i].count);
+    }
+
+    /*
     if (l>=6){
       l = 6
     }else{
-      for(var x=6; x>l;x--){
-        followerList.push(0);
+      for(var x=0; x<7;x++){
+        if(followerList[x] == undefined){
+          followerList.push(0);
+        }
       }
     }
-    alert(l);
-    for(var i=l;i>=0;i--){
-      alert("test");
-      followerList.push(follower[i].count);
-    }
+    */ 
 
     for(var j=l; j>=0; j--){
       followerDate.push(follower[j].date);
     }
+
+    
+
     for(var y=l; y>=0; y--){
       datum.push(followerDate[y].getDay());
     }
@@ -40,55 +57,48 @@ export class FollowerChart extends Tracker.Component {
         datum.push(k-1); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
       }
     }
+    
     datum.reverse();
-    for(var i=0;i<datum.length;i++)
+    for(var i=0;i<datum.length;i++){
       datum[i] = datumStr[datum[i]];
-    this.setState({data: {
+    }
+
+    return {
       labels: datum,
       datasets: [
         {
           label: "Follower Anzahl",
-          backgroundColor:["rgba(255, 99, 132, 0.2)"],
-          data: followerList
+          borderColor:["rgba(0, 132, 180, 0.8)"],
+          data: followerList,
+          lineTension: 0,
+          fill: false
         }
       ]
-    }})
+    }} 
   }
-
-  constructor(props) {
-    super(props);
-    this.getFollowerList();
-    this.state = {
-
-      data: {
-        labels: ["1","2","3","4","5","6","7"],
-        datasets: [
-          {
-            label: "Follower Anzahl",
-            backgroundColor: "rgba(255, 0, 0, 0.8)",
-            data: [0,0,0,0,0,0,0]
-          }
-        ]
-      }
-    }
-  }
-
-
 
   render() {
+    if(this.getFollower()[0] != undefined) {
       return (
         <div style ={{position: "relative", width: 600, height: 550}}>
           <h3>Follower Anzahl</h3>
           <Line
             options = {{
               bezierCurve: false,
+              linetension: 0,
+              scales: {yAxes: [{ticks: {suggestedMin: 0}}]},
               responsive: true
             }}
-            data = {this.state.data}
+            data = {this.getFollowerList()}
           />
         </div>
 
-
-    );
+          
+      );
+    } else {
+      return (
+        <p> Daten werden geladen...</p>
+      );
+    }
   }
 }
