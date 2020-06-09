@@ -71,6 +71,8 @@ export class Login extends Tracker.Component {
         }
       }
     );
+
+    event.target.reset();
 	}
 
 
