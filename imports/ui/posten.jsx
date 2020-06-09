@@ -11,7 +11,7 @@ export class Selbstposten extends Tracker.Component {
 		};
 	}
 	submitPost = (event) => {
-		Meteor.call('postTweet', this.state.content, this.state.dimension)
+		Meteor.call('postTweet', this.state.content, this.state.dimension, Meteor.user().username)
 	}
 	
 	changeContent = (event) => {

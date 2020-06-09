@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
+import { Accounts } from '../api/accounts.js'
+import { FollowerCount } from '../api/twitter_followerCount.js';
 
 var Codebird = require("codebird");
 var cb = new Codebird;
@@ -67,7 +69,21 @@ export class Login extends Tracker.Component {
         if (reply) {
           cb.setToken(reply.oauth_token, reply.oauth_token_secret);
 
-          console.log(reply);
+          var userExists = Accounts.find({username: Meteor.user().username}).fetch()
+          if(!userExists[0]){
+            Accounts.insert({
+              owner: Meteor.userId(),
+              username: Meteor.user().username,
+              token: reply.oauth_token,
+              secret: reply.oauth_token_secret,
+              id: reply.user_id,
+              screen_name: reply.screen_name
+            });
+          }else{
+            Meteor.call('updateTwitterAuth', reply)
+          }
+
+          console.log(Accounts.find({}).fetch());
         }
       }
     );
@@ -84,7 +100,6 @@ export class Login extends Tracker.Component {
     <form onSubmit={ this.authorizeatTwitter }>
       <input type="submit" value="Code generieren"></input>
     </form>
-    //Feld und Button für den Twitterpin
       <form id ="login" onSubmit={ this.verifyPin }>
         <label htmlFor="twitterpin">Twitter PIN bitte hier eingeben:</label><br/>
         <input
@@ -94,12 +109,6 @@ export class Login extends Tracker.Component {
           onChange={ this.changeToken }
         /><br/>
         <input type="submit" value="abschicken"></input>
-      </form>
-    //Feld und Button für die Tweets
-      <form id ="posttweet">
-        <label htmlFor="tweet">Tweet:</label><br/>
-        <input type="text" id="tweettext" name="tweet"></input><br/>
-        <input type="submit" value="post"></input>
       </form>
     </div>
     );

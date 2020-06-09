@@ -11,6 +11,8 @@ import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
 import { Login } from './Login.jsx'
 
+import AccountsUIWrapper from './AccountsUIWrapper.js';
+
 
 
 
@@ -36,28 +38,33 @@ class App extends Tracker.Component {
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
-            <Login/>
-            <div className="row">			      
+              <Login/>
+              <AccountsUIWrapper />
+              {Meteor.user() &&
+              <div className="row">			      
 
-			      	<div className="col-md-5 ">
-				        <Selbstposten/>
-				      </div>
+                
+                <div className="col-md-5 ">
+                  <Selbstposten/>
+                </div>
 
-              <div className="col-md-7 row">
-			          Reputation Management Quotient</div>
-			          <br></br>
-			        <div className="col-md-5 row ">
+                <div className="col-md-7 row">
+                  Reputation Management Quotient</div>
+                  <br></br>
+                <div className="col-md-5 row ">
 
-				      </div>
-				      <div className="col-md-2 row ">
-				        <KeyFacts/>
+                </div>
+                <div className="col-md-2 row ">
+                  <KeyFacts/>
 
+                </div>
+                <div className="col-md-5 row ">
+
+                  <FollowerChart/>
+                </div>
+                
               </div>
-              <div className="col-md-5 row ">
-
-                <FollowerChart/>
-              </div>
-            </div>
+        }
             </div>
 
            );
