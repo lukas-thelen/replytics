@@ -42,16 +42,20 @@ class App extends Tracker.Component {
 				        <Selbstposten/>
 				      </div>
 		
-                <div className="col-md-7 row">
-			            Reputation Management Quotient</div>
-			            <br></br>
-			          <div className="col-md-5 row ">
+              <div className="col-md-7 row">
+			          Reputation Management Quotient</div>
+			          <br></br>
+			        <div className="col-md-5 row ">
 				
-				        </div>
-				        <div className="col-md-7 row "> 
-				          <KeyFacts/>
-                  <FollowerChart/>
-                </div>
+				      </div>
+				      <div className="col-md-2 row "> 
+				        <KeyFacts/>
+                
+              </div>
+              <div className="col-md-5 row "> 
+				        
+                <FollowerChart/>
+              </div>
             </div>
 
                
