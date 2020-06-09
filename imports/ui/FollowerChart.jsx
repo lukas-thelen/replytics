@@ -39,7 +39,7 @@ export class FollowerChart extends Tracker.Component {
           followerList.push(0);
         }
       }
-    }
+    }*/
 
     for(var j=l; j>=0; j--){
       followerDate.push(follower[j].date);
