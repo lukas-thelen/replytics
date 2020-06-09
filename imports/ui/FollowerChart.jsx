@@ -6,6 +6,7 @@ import { FollowerCount } from '/imports/api/twitter_followerCount';
 
 
 export class FollowerChart extends Tracker.Component {
+
   getFollower(){
     var follower = FollowerCount.find({}, {sort: {date: -1}}).fetch();
     //console.log(follower);
@@ -39,7 +40,6 @@ export class FollowerChart extends Tracker.Component {
         }
       }
     }
-    */ 
 
     for(var j=l; j>=0; j--){
       followerDate.push(follower[j].date);
