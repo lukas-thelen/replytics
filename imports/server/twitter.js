@@ -81,11 +81,10 @@ async function getDailyFollowers(){
 		follower = result.data.ids.length;
 		
 		//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
-		if (FollowerCount.find({screen_name: name}).count()>0){
+		if (FollowerCount.find({username: name}).count()>0){
 			
 			//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
 			if (!checkDaily(FollowerCount, name) || (!checkCount("count", follower, FollowerCount, name) && checkDaily(FollowerCount, name))){
-				
 				//letzten Eintrag löschen, wenn zweiter Fall zutrifft
 				if(!checkCount("count", follower, FollowerCount, name) && checkDaily(FollowerCount, name)){
 					removeLast(FollowerCount, name)
@@ -290,9 +289,10 @@ export function initial(){
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	//var myVar02 = setInterval(getMentions, 1200000);
 	var myVar03 = setInterval(getPosts, 1200000);*/
-	MentionCount.remove({});
-	FollowerCount.remove({});
-	Posts.remove({});
+	//MentionCount.remove({});
+	//FollowerCount.remove({});
+	//Posts.remove({});
+
 	getDailyFollowers();
 	getPosts();
 }
