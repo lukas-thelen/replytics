@@ -8,7 +8,7 @@ import { FollowerCount } from '/imports/api/twitter_followerCount';
 export class FollowerChart extends Tracker.Component {
 
   getFollower(){
-    var follower = FollowerCount.find({}, {sort: {date: -1}}).fetch();
+    var follower = FollowerCount.find({username: Meteor.user().username }, {sort: {date: -1}}).fetch();
     //console.log(follower);
     return follower;
   }

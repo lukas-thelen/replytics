@@ -8,7 +8,7 @@ import { MentionCount } from '../api/twitter_mentionCount.js';
 export class KeyFacts extends Tracker.Component {
 
   getFollower(){
-    var follower = FollowerCount.find({}, {sort: {date: -1}}).fetch();
+    var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     return follower;
   }
 
@@ -16,7 +16,7 @@ export class KeyFacts extends Tracker.Component {
     if (this.getFollower()[6] != undefined) {
       return this.getFollower()[6].count;
     } else { 
-      var followerUnsorted = FollowerCount.find({}).fetch();
+      var followerUnsorted = FollowerCount.find({username: Meteor.user().username}).fetch();
       return followerUnsorted[0].count;
     }
   }
@@ -28,7 +28,7 @@ export class KeyFacts extends Tracker.Component {
   }
 
   getMentions() {
-    var mentions = MentionCount.find({}, {sort: {date: -1}}).fetch();
+    var mentions = MentionCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     return mentions;
   }
 
@@ -36,7 +36,7 @@ export class KeyFacts extends Tracker.Component {
     if (this.getMentions()[6] != undefined) {
       return this.getMentions()[6].mentions;
     } else { 
-      var unsorted = MentionCount.find({}).fetch();
+      var unsorted = MentionCount.find({username: Meteor.user().username}).fetch();
       return unsorted[0].mentions;
     }
   }
@@ -51,7 +51,7 @@ export class KeyFacts extends Tracker.Component {
     if (this.getMentions()[6] != undefined) {
       return this.getMentions()[6].authors;
     } else { 
-      var unsorted = MentionCount.find({}).fetch();
+      var unsorted = MentionCount.find({username: Meteor.user().username}).fetch();
       return unsorted[0].authors;
     }
   }

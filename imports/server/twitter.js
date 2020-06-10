@@ -7,6 +7,7 @@ import { Mentions } from '../api/twitter_mentions.js';
 import { MentionCount } from '../api/twitter_mentionCount.js';
 import { Posts } from '../api/twitter_posts.js';
 import { Sentiment } from '../api/twitter_sentiment.js';
+import { Accounts } from '../api/accounts.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -15,11 +16,25 @@ const sw = require('stopword');
 var GermanStemmer = require('snowball-stemmer.jsx/dest/german-stemmer.common.js').GermanStemmer;
 const stem = new GermanStemmer();
 
+
+/*var TwitterAPI = new Twit({
+	consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
+	consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+	access_token: Accounts.find({username: Meteor.user().username}).fetch()[0].token,
+	access_token_secret: Accounts.find({username: Meteor.user().username}).fetch()[0].secret});*/
+	
+
 Meteor.methods({
 
 	//Methode, um etwas auf Twitter zu posten
-	async postTweet(text, dimension){
-		let result = await TwitterAPI.post('statuses/update', { status: text});
+	async postTweet(text, dimension, user){
+		var UserAPI = new Twit({
+			consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
+			consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+			access_token: Accounts.find({username: user}).fetch()[0].token,
+			access_token_secret: Accounts.find({username: user}).fetch()[0].secret});
+			
+		let result = await UserAPI.post('statuses/update', { status: text});
 		var id = result.data.id_str;
 		var date = result.data.created_at;
 		//speichert Post inklusive Dimension in Datenbank
@@ -34,6 +49,14 @@ Meteor.methods({
 			s_neu: 0,
 			s_pos: 0
 		});
+	},
+	updateTwitterAuth(reply){
+		Accounts.update({username: Meteor.user().username},{$set:{
+			token: reply.oauth_token,
+			secret: reply.oauth_token_secret,
+			id: reply.user_id,
+			screen_name: reply.screen_name
+		  }});
 	}
 });
 
@@ -45,69 +68,80 @@ Meteor.methods({
 //
 //
 
+//Ergänzt einen neuen Eintrag für die Followerzahlen, wenn heute noch kein Eintrag gemacht wurde oder der Wert von den bisherigen abweicht
+async function getDailyFollowers(){
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		var follower = []
+		var name = accounts[i].username;
+		var screen_name = accounts[i].screen_name;
+		//API Anfrage nach Liste der Follower
+		let result = await TwitterAPI.get('followers/ids', { screen_name: screen_name});
+		follower = result.data.ids.length;
+		
+		//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
+		if (FollowerCount.find({username: name}).count()>0){
+			
+			//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+			if (!checkDaily(FollowerCount, name) || (!checkCount("count", follower, FollowerCount, name) && checkDaily(FollowerCount, name))){
+				//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+				if(!checkCount("count", follower, FollowerCount, name) && checkDaily(FollowerCount, name)){
+					removeLast(FollowerCount, name)
+				}
+				FollowerCount.insert({count: follower, date: new Date(), username: name});
+			}
+		}else{
+			FollowerCount.insert({count: follower, date: new Date(), username: name});
+		}
+	}
+	console.log(FollowerCount.find({}).fetch())
+}
+
+
 //Aktualisiert die Favorites und Retweets der eigenen Posts
 async function getPosts(){
-	let result = await TwitterAPI.get('statuses/user_timeline', { screen_name:"@FlorianKindler", count:500 });
-	var postArray = result.data;
-	
-	//Iteration durch alle Posts
-	for (i=0; i<postArray.length;i++){
-		//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
-		var idChecked = Posts.find({id: postArray[i].id_str}).fetch();
-		//True wenn Posts ein Retweet ist
-		var retweetChecked = postArray[i].retweeted;
-		if(idChecked[0]){
-			//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
-			Posts.update({id: postArray[i].id_str}, {$set:{fav: postArray[i].favorite_count, retweets: postArray[i].retweet_count}})
-		}else{
-			//erstellt Eintrag, wenn Post noch nicht existiert
-			Posts.insert({
-				id: postArray[i].id_str,
-				date: postArray[i].created_at,
-				text: postArray[i].text,
-				dimension: "not defined",
-				fav: postArray[i].favorite_count,
-				retweets: postArray[i].retweet_count,
-				retweet: retweetChecked,
-				replies: [],
-				s_neg: 0,
-				s_neu: 0,
-				s_pos: 0
-			})
-		}
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var a=0;a<len;a++){
+		var name = accounts[a].username;
+		var screen_name = accounts[a].screen_name;
+		let result = await TwitterAPI.get('statuses/user_timeline', { screen_name: screen_name, count:500 });
+		var postArray = result.data;
 		
+		//Iteration durch alle Posts
+		for (i=0; i<postArray.length;i++){
+			//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
+			var idChecked = Posts.find({id: postArray[i].id_str}).fetch();
+			//True wenn Posts ein Retweet ist
+			var retweetChecked = postArray[i].retweeted;
+			if(idChecked[0]){
+				//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
+				Posts.update({id: postArray[i].id_str}, {$set:{fav: postArray[i].favorite_count, retweets: postArray[i].retweet_count}})
+			}else{
+				//erstellt Eintrag, wenn Post noch nicht existiert
+				Posts.insert({
+					id: postArray[i].id_str,
+					date: postArray[i].created_at,
+					text: postArray[i].text,
+					dimension: "not defined",
+					fav: postArray[i].favorite_count,
+					retweets: postArray[i].retweet_count,
+					retweet: retweetChecked,
+					replies: [],
+					s_neg: 0,
+					s_neu: 0,
+					s_pos: 0,
+					username: name
+				})
+			}
+			
+		}
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
 }
 
-
-
-//Ergänzt einen neuen Eintrag für die Followerzahlen, wenn heute noch kein Eintrag gemacht wurde oder der Wert von den bisherigen abweicht
-async function getDailyFollowers(){
-	var follower = []
-
-	//API Anfrage nach Liste der Follower
-	let result = await TwitterAPI.get('followers/ids', { screen_name:"@FlorianKindler"});
-	follower = result.data.ids.length;
-	
-	//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
-	if (FollowerCount.find({}).count()>0){
-		
-		//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
-		if (!checkDaily(FollowerCount) || (!checkCount("count", follower, FollowerCount) && checkDaily(FollowerCount))){
-			
-			//letzten Eintrag löschen, wenn zweiter Fall zutrifft
-			if(!checkCount("count", follower, FollowerCount) && checkDaily(FollowerCount)){
-				removeLast(FollowerCount)
-			}
-			FollowerCount.insert({count: follower, date: new Date()});
-		}
-	}else{
-		FollowerCount.insert({count: follower, date: new Date()});
-	}
-	console.log(FollowerCount.find({}).fetch())
-}
 
 function postSentiment(){
 	Posts.update({},{$set: {s_neg: 0, s_neu: 0, s_pos:0}})
@@ -156,75 +190,87 @@ async function getMentions(){
 	
 	Mentions.remove({});
 	initSentiment();
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var a=0;a<len;a++){
 
-	//API Anfrage nach alles Mentions(@)	
-	let result = await TwitterAPI.get('statuses/mentions_timeline', { screen_name:"@FlorianKindler"});	
-	mentionArray = result.data;
-	var mentions = mentionArray.length;
+		var name = accounts[a].username;
+		var screen_name = accounts[a].screen_name;
+		var UserAPI = new Twit({
+			consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
+			consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+			access_token: Accounts.find({username: name}).fetch()[0].token,
+			access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
+		//API Anfrage nach alles Mentions(@)	
+		let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});	
+		var mentionArray = result.data;
+		var mentions = mentionArray.length;
 
-	//Anzahl der Autoren initialisieren
-	var authorCount = 0
+		//Anzahl der Autoren initialisieren
+		var authorCount = 0
 
-	//Iteration durch alle Mentions
-	for (i=0; i<mentionArray.length; i++){
+		//Iteration durch alle Mentions
+		for (i=0; i<mentionArray.length; i++){
 
-		//Abschnitt, um Antowrten zu Posts zuzuordnen
-		//true, wenn in der Posts Collection ein Eintrag besteht, zu dem die aktuelle Mention eine Antwort ist
-		var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
-		var replyList = [];
-		if (mentionInReply[0]){
-			//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
-			replyList = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies
-			//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
-			var replyExists = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies.includes(mentionArray[i].text);
-			if(!replyExists){
-				replyList.push(mentionArray[i].text)
+			//Abschnitt, um Antowrten zu Posts zuzuordnen
+			//true, wenn in der Posts Collection ein Eintrag besteht, zu dem die aktuelle Mention eine Antwort ist
+			var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
+			var replyList = [];
+			if (mentionInReply[0]){
+				//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
+				replyList = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies
+				//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
+				var replyExists = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies.includes(mentionArray[i].text);
+				if(!replyExists){
+					replyList.push(mentionArray[i].text)
+				}
+				//Die lokale Liste wieder in der Datenbank speichern
+				Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
 			}
-			//Die lokale Liste wieder in der Datenbank speichern
-			Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
-		}
 
-		//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
-		var author = Mentions.find({author: mentionArray[i].user.name}).fetch();
-		if(!author[0]){
-			authorCount ++
-		}
-
-		//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
-		Mentions.insert({
-			date: mentionArray[i].created_at,
-			id01: mentionArray[i].id,
-			id02: mentionArray[i].id_str,
-			content: mentionArray[i].text,
-			author: mentionArray[i].user.name
-		})
-
-	
-		mentionSentiment(mentionArray[i].text);
-
-	}
-
-	postSentiment();
-	//Eintrag in die Collection für die Anzahl der Mentions und Autoren
-	//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
-	if(MentionCount.find({}).count()>0){
-
-		//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
-		if (!checkDaily(MentionCount) || (checkDaily(MentionCount) && (!checkCount("mentions", mentions, MentionCount) || !checkCount("authors", authorCount, MentionCount)))){
-			
-			//letzten Eintrag löschen, wenn zweiter Fall zutrifft
-			if(checkDaily(MentionCount)){
-				removeLast(MentionCount)
+			//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
+			var author = Mentions.find({author: mentionArray[i].user.name, username: name}).fetch();
+			if(!author[0]){
+				authorCount ++
 			}
-			MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount})
+
+			//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
+			Mentions.insert({
+				date: mentionArray[i].created_at,
+				id01: mentionArray[i].id,
+				id02: mentionArray[i].id_str,
+				content: mentionArray[i].text,
+				author: mentionArray[i].user.name,
+				username: name
+			})
+
+		
+			//mentionSentiment(mentionArray[i].text);
+
 		}
-	}else{
-		MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount})
+
+		//postSentiment();
+		//Eintrag in die Collection für die Anzahl der Mentions und Autoren
+		//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
+		if(MentionCount.find({username: name}).count()>0){
+
+			//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+			if (!checkDaily(MentionCount, name) || (checkDaily(MentionCount, name) && (!checkCount("mentions", mentions, MentionCount, name) || !checkCount("authors", authorCount, MentionCount, name)))){
+				
+				//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+				if(checkDaily(MentionCount, name)){
+					removeLast(MentionCount, name)
+				}
+				MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount, username: name})
+			}
+		}else{
+			MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount, username: name})
+		}
 	}
-	console.log(Mentions.find({}).fetch())
+	//console.log(Mentions.find({}).fetch())
 	console.log(MentionCount.find({}).fetch())
-	console.log(Posts.find({retweet: false}).fetch());
-	console.log(Sentiment.find({}).fetch())
+	//console.log(Posts.find({retweet: false}).fetch());
+	//console.log(Sentiment.find({}).fetch())
 }
 
 //
@@ -236,13 +282,19 @@ async function getMentions(){
 //
 
 export function initial(){
-	Posts.remove({});
+	/*Posts.remove({});
 	getDailyFollowers();
 	//getMentions();
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	//var myVar02 = setInterval(getMentions, 1200000);
-	var myVar03 = setInterval(getPosts, 1200000);
+	var myVar03 = setInterval(getPosts, 1200000);*/
+	//MentionCount.remove({});
+	//FollowerCount.remove({});
+	//Posts.remove({});
+
+	getDailyFollowers();
+	getPosts();
 }
 
 //
@@ -254,9 +306,9 @@ export function initial(){
 //
 
 //gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
-function checkDaily(collection){
+function checkDaily(collection, name){
 	var today = new Date();
-	var latestObject = collection.findOne({},{ sort:{ date:-1 } })
+	var latestObject = collection.findOne({username: name},{ sort:{ date:-1 } })
 	if(checkDate(today, latestObject.date)){
 		return true
 	}
@@ -272,8 +324,8 @@ function checkDate(date1, date2){
 }
 
 //gibt true zurück wenn der letzte Eintrag einer Collection den übergebenen Wert bei dem übergebenen Attribut (name) hat
-function checkCount(name, number, collection){
-	var latestObject = collection.findOne({},{ sort:{ date:-1 } })
+function checkCount(name, number, collection, user){
+	var latestObject = collection.findOne({username: user},{ sort:{ date:-1 } })
 	if(latestObject[name] === number){
 		return true
 	}
@@ -281,6 +333,6 @@ function checkCount(name, number, collection){
 }
 
 //löscht den letzten Eintrag einer Collection
-function removeLast(collection){
-	collection.remove({date: collection.findOne({},{ sort:{ date:-1 } }).date})
+function removeLast(collection, name){
+	collection.remove({date: collection.findOne({username: name},{ sort:{ date:-1 } }).date})
 }
