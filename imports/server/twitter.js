@@ -38,6 +38,7 @@ Meteor.methods({
 		var id = result.data.id_str;
 		var date = result.data.created_at;
 		//speichert Post inklusive Dimension in Datenbank
+		console.log(dimension)
 		Posts.insert({
 			id: id, 
 			date: date, 
@@ -47,7 +48,8 @@ Meteor.methods({
 			replies: [],
 			s_neg: 0,
 			s_neu: 0,
-			s_pos: 0
+			s_pos: 0,
+			username: user
 		});
 	},
 	updateTwitterAuth(reply){
@@ -57,6 +59,10 @@ Meteor.methods({
 			id: reply.user_id,
 			screen_name: reply.screen_name
 		  }});
+	},
+	updateServer(){
+		getDailyFollowers();
+		getPosts();
 	}
 });
 
@@ -267,9 +273,9 @@ async function getMentions(){
 			MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount, username: name})
 		}
 	}
-	//console.log(Mentions.find({}).fetch())
+	console.log(Mentions.find({}).fetch())
 	console.log(MentionCount.find({}).fetch())
-	//console.log(Posts.find({retweet: false}).fetch());
+	console.log(Posts.find({retweet: false}).fetch());
 	//console.log(Sentiment.find({}).fetch())
 }
 
@@ -284,10 +290,8 @@ async function getMentions(){
 export function initial(){
 	/*Posts.remove({});
 	getDailyFollowers();
-	//getMentions();
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
-	//var myVar02 = setInterval(getMentions, 1200000);
 	var myVar03 = setInterval(getPosts, 1200000);*/
 	//MentionCount.remove({});
 	//FollowerCount.remove({});
@@ -295,6 +299,7 @@ export function initial(){
 
 	getDailyFollowers();
 	getPosts();
+	console.log(Accounts.find({}).fetch());
 }
 
 //

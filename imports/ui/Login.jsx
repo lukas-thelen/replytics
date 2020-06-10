@@ -82,7 +82,7 @@ export class Login extends Tracker.Component {
           }else{
             Meteor.call('updateTwitterAuth', reply)
           }
-
+          Meteor.call('updateServer')
           console.log(Accounts.find({}).fetch());
         }
       }
