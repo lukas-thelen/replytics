@@ -9,7 +9,8 @@ import { KeyFacts } from './KeyFacts.jsx';
 
 import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
-import { Login } from './Login.jsx'
+import { Login } from './Login.jsx';
+import { TopPosts} from './topposts.jsx'
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 
@@ -47,9 +48,14 @@ class App extends Tracker.Component {
                 <div className="col-md-5 ">
                   <Selbstposten/>
                 </div>
-
+				
+				<div className="col-md-5 "
+				<TopPosts/>
+				Top pOSTS
+				</div>
+				
                 <div className="col-md-7 row">
-                  Reputation Management Quotient</div>
+                  Repu</div>
                   <br></br>
                 <div className="col-md-5 row ">
 
