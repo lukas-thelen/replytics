@@ -10,14 +10,10 @@ import { KeyFacts } from './KeyFacts.jsx';
 
 import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
-<<<<<<< Updated upstream
 import { Login } from './Login.jsx'
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
-=======
-import { Login } from './Login.jsx';
 import { Navbar } from './navbar.jsx';
->>>>>>> Stashed changes
 
 
 
@@ -60,23 +56,6 @@ class App extends Tracker.Component {
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
-<<<<<<< Updated upstream
-              <Login/>
-              <AccountsUIWrapper />
-              {Meteor.user() &&
-              <div className="row">			      
-
-                
-                <div className="col-md-5 ">
-                  <Selbstposten/>
-                </div>
-
-                <div className="col-md-7 row">
-                  Reputation Management Quotient</div>
-                  <br></br>
-                <div className="col-md-5 row ">
-
-=======
               <Navbar twitter_authorization = {this.twitter_authorization}/>
               {this.state.authorize_screen && Meteor.user() && <Login twitter_authorization = {this.twitter_authorization} />}
               {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() &&
@@ -101,7 +80,6 @@ class App extends Tracker.Component {
                     <FollowerChart/>
                   </div>
                   
->>>>>>> Stashed changes
                 </div>
               }
             </div>
