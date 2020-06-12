@@ -42,17 +42,11 @@ class App extends Tracker.Component {
               <Login/>
               <AccountsUIWrapper />
               {Meteor.user() &&
-              <div className="row">			      
-
+              <div className="row">
                 
                 <div className="col-md-5 ">
                   <Selbstposten/>
                 </div>
-				
-				<div className="col-md-5 "
-				<TopPosts/>
-				Top pOSTS
-				</div>
 				
                 <div className="col-md-7 row">
                   Repu</div>
