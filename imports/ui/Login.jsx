@@ -19,7 +19,6 @@ export class Login extends Tracker.Component {
     };
   }
 
-
   authorizeatTwitter = async (event) => {
     event.preventDefault();
     cb.__call("oauth_requestToken", { oauth_callback: "oob" }, function(
@@ -74,6 +73,7 @@ export class Login extends Tracker.Component {
             Accounts.insert({
               owner: Meteor.userId(),
               username: Meteor.user().username,
+              twitter_auth: true,
               token: reply.oauth_token,
               secret: reply.oauth_token_secret,
               id: reply.user_id,
@@ -85,7 +85,8 @@ export class Login extends Tracker.Component {
           Meteor.call('updateServer')
           console.log(Accounts.find({}).fetch());
         }
-      }
+        this.props.twitter_authorization();
+      } 
     );
 
     event.target.reset();
@@ -97,19 +98,25 @@ export class Login extends Tracker.Component {
     return (
         //alles, was zurück geschickt werden soll
     <div>
-    <form onSubmit={ this.authorizeatTwitter }>
-      <input type="submit" value="Code generieren"></input>
+    <div className="col col-md-2 offset-md-5 text-center">
+    <form className="mt-5 " onSubmit={ this.authorizeatTwitter }>
+      <input className="btn btn-secondary mb-2" type="submit" value="Code generieren"></input><br/>
+      <label className="text-left font-weight-light">* Genriere einen Code, um replytics Zugriff auf dein Twitter Konto zu gewähren.</label><br/>
     </form>
+    <hr className="mt-4 mb-4 " />
       <form id ="login" onSubmit={ this.verifyPin }>
-        <label htmlFor="twitterpin">Twitter PIN bitte hier eingeben:</label><br/>
+        <label className="text-left" htmlFor="twitterpin">Twitter Code bitte hier eingeben:</label><br/>
         <input
           type="number"
           id="twitterpin"
           name="twitterpin"
           onChange={ this.changeToken }
+          className="form-control"
         /><br/>
-        <input type="submit" value="abschicken"></input>
+        <input className="btn btn-secondary mr-1" type="submit" value="autorisieren"></input>
+        <input className="btn btn-light ml-1" type="button" value="abbrechen" onClick={this.props.twitter_authorization}></input>
       </form>
+    </div>
     </div>
     );
   }

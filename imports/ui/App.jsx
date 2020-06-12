@@ -3,15 +3,21 @@ import { withTracker } from 'meteor/react-meteor-data';
 import  Tracker  from 'tracker-component';
 //Datenbanken
 import { FollowerCount } from '../api/twitter_followerCount.js';
+import { Accounts } from '../api/accounts.js';
 
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
 
 import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
+<<<<<<< Updated upstream
 import { Login } from './Login.jsx'
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
+=======
+import { Login } from './Login.jsx';
+import { Navbar } from './navbar.jsx';
+>>>>>>> Stashed changes
 
 
 
@@ -19,16 +25,32 @@ import AccountsUIWrapper from './AccountsUIWrapper.js';
 // App component - represents the whole app -> alle anderen Components hier ausgeben
 //wird dann gesammelt an main.js geschickt
 class App extends Tracker.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      authorize_screen: false
+    }
+    this.twitter_authorization = this.twitter_authorization.bind(this)
+  }
 
+  twitter_authorization(){
+    this.setState({authorize_screen: !this.state.authorize_screen})
+  }
 
-
-
-
-
-
-
-
-
+  isAuthorized(){
+    if(Meteor.user()){
+        var nutzer = Meteor.user().username;
+        var nutzerdata = Accounts.find({username: nutzer}).fetch()
+        if(nutzerdata[0]){
+            var token = nutzerdata[0].token;
+            if (token){
+                return true
+            }
+            return false
+        }
+        return false
+    }
+}
      render() {
 
        //Zugriff auf Datenbank ist langsamer als Aufruf der ganzen Funktionen
@@ -38,6 +60,7 @@ class App extends Tracker.Component {
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
+<<<<<<< Updated upstream
               <Login/>
               <AccountsUIWrapper />
               {Meteor.user() &&
@@ -53,18 +76,34 @@ class App extends Tracker.Component {
                   <br></br>
                 <div className="col-md-5 row ">
 
-                </div>
-                <div className="col-md-2 row ">
-                  <KeyFacts/>
+=======
+              <Navbar twitter_authorization = {this.twitter_authorization}/>
+              {this.state.authorize_screen && Meteor.user() && <Login twitter_authorization = {this.twitter_authorization} />}
+              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() &&
+                <div className="row">
+                  
+                  <div className="col-md-5 ">
+                    <Selbstposten/>
+                  </div>
+          
+                  <div className="col-md-7 row">
+                    Repu</div>
+                    <br></br>
+                  <div className="col-md-5 row ">
 
-                </div>
-                <div className="col-md-5 row ">
+                  </div>
+                  <div className="col-md-2 row ">
+                    <KeyFacts/>
 
-                  <FollowerChart/>
+                  </div>
+                  <div className="col-md-5 row ">
+
+                    <FollowerChart/>
+                  </div>
+                  
+>>>>>>> Stashed changes
                 </div>
-                
-              </div>
-        }
+              }
             </div>
 
            );
