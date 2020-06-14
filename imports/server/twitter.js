@@ -8,6 +8,7 @@ import { MentionCount } from '../api/twitter_mentionCount.js';
 import { Posts } from '../api/twitter_posts.js';
 import { Sentiment } from '../api/twitter_sentiment.js';
 import { Accounts } from '../api/accounts.js';
+import { RetweetCount } from '../api/twitter_retweetCount.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -124,6 +125,10 @@ async function getPosts(){
 				var idChecked = Posts.find({id: postArray[i].id_str}).fetch();
 				//True wenn Posts ein Retweet ist
 				var retweetChecked = postArray[i].retweeted;
+				var rt = postArray[i].text.slice(0,2);
+				if(rt == "RT"){
+					retweetChecked = true
+				}
 				if(idChecked[0]){
 					//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
 					Posts.update({id: postArray[i].id_str}, {$set:{fav: postArray[i].favorite_count, retweets: postArray[i].retweet_count}})
@@ -150,6 +155,7 @@ async function getPosts(){
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
+	getRetweets();
 }
 
 
@@ -193,6 +199,39 @@ function initSentiment(){
 		Sentiment.insert({s_neg: 0, s_neu: 0, s_pos:0})
 	}
 	Sentiment.update({},{s_neg: 0, s_neu: 0, s_pos:0})
+}
+
+function getRetweets(){
+	var accounts = Accounts.find({}).fetch();
+	var l = accounts.length;
+	for(var k=0;k<l;k++){
+		if(accounts[k].twitter_auth){
+			
+			var name = accounts[k].username;
+			var screen_name = accounts[k].screen_name;
+			var posts = Posts.find({retweet: false, username: name}).fetch();
+			var len = posts.length;
+			var retweets = 0;
+			for(i=0; i<len; i++){
+				retweets += posts[i].retweets;
+			}
+			//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
+			if (RetweetCount.find({username: name}).count()>0){
+						
+				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+				if (!checkDaily(RetweetCount, name) || (!checkCount("retweets", retweets, RetweetCount, name) && checkDaily(RetweetCount, name))){
+					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+					if(!checkCount("retweets", retweets, RetweetCount, name) && checkDaily(RetweetCount, name)){
+						removeLast(RetweetCount, name)
+					}
+					RetweetCount.insert({retweets: retweets, date: new Date(), username: name});
+				}
+			}else{
+				RetweetCount.insert({retweets: retweets, date: new Date(), username: name});
+			}
+		}
+	}
+	//console.log(RetweetCount.find({}).fetch())
 }
 
 //Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
@@ -278,9 +317,9 @@ async function getMentions(){
 			}
 		}
 	}
-	console.log(Mentions.find({}).fetch())
-	console.log(MentionCount.find({}).fetch())
-	console.log(Posts.find({retweet: false}).fetch());
+	//console.log(Mentions.find({}).fetch())
+	//console.log(MentionCount.find({}).fetch())
+	//console.log(Posts.find({retweet: false}).fetch());
 	//console.log(Sentiment.find({}).fetch())
 }
 
