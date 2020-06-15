@@ -75,7 +75,6 @@ return {
     }
   ]};
 }
-  displayName: 'Reputation Management Quotient';
 
   render() {
     return (
