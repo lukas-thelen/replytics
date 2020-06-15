@@ -12,6 +12,8 @@ export class Dimensionen extends Tracker.Component {
     return follower;
   }
   getDimension(){
+    var nutzer = Meteor.user().username;
+    var gesamtPosts = Posts.find({username: nutzer}).fetch().length;
     var dimensionen= ["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"]
     var daten = [];
     var count = [];
@@ -22,7 +24,7 @@ export class Dimensionen extends Tracker.Component {
     followerSum = this.getFollower()[0].count;
 
     for (var i=0; i< 6; i++){
-      var postInDimension = Posts.find({dimension: dimensionen[i]}).fetch();
+      var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
       favorites = 0;
 
         if (!postInDimension[0]){
@@ -37,7 +39,7 @@ export class Dimensionen extends Tracker.Component {
 }
 
 for (var i=0; i< 6; i++){
-  var postInDimension = Posts.find({dimension: dimensionen[i]}).fetch();
+  var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
   postCount = 0;
 
     if (!postInDimension[0]){
@@ -46,7 +48,7 @@ for (var i=0; i< 6; i++){
       for (var k=0; k< postInDimension.length; k++){
       postCount += 1;
     }
-  count.push(postCount);
+  count.push(postCount/gesamtPosts);
   }
 }
 
@@ -75,7 +77,6 @@ return {
     }
   ]};
 }
-  displayName: 'Reputation Management Quotient';
 
   render() {
     return (

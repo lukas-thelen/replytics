@@ -9,6 +9,7 @@ import { Posts } from '../api/twitter_posts.js';
 import { Sentiment } from '../api/twitter_sentiment.js';
 import { Accounts } from '../api/accounts.js';
 import { RetweetCount } from '../api/twitter_retweetCount.js';
+import { Settings_DB } from '../api/settings.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -64,6 +65,16 @@ Meteor.methods({
 	updateServer(){
 		getDailyFollowers();
 		getPosts();
+	},
+	updateSettings(name,q,w,e,r,t,z){
+		Settings_DB.update({username: name},{$set:{
+			p_d: q,
+			e: w,
+			a: e,
+			f: r,
+			v_f: t,
+			g_v: z
+		}})
 	}
 });
 
@@ -156,6 +167,70 @@ async function getPosts(){
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
 	getRetweets();
+	getEngagement();
+}
+
+function getEngagement(){
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		if(accounts[i].twitter_auth){
+			var follower = FollowerCount.find({username: name}, { $sort:{ date: -1 }}).fetch()[0].count;
+			if (follower<1){
+				follower = 1
+			}
+			var name = accounts[i].username;
+			var screen_name = accounts[i].screen_name;
+			var act_replies = getReplies(name);
+			var act_favorites = getFavorites(name);
+			var act_retweets = RetweetCount.find({username: name}, { $sort:{ date: -1 }}).fetch()[0].retweets;
+			if (act_retweets<1){
+				act_retweets = 1
+			}
+			var act_gesamt = act_favorites + act_replies + act_retweets;
+			var rel_replies = act_gesamt/act_replies;
+			var rel_favorites = act_gesamt/act_favorites;
+			var rel_retweets = act_gesamt/act_retweets;
+			var rel_gesamt = rel_favorites + rel_replies + rel_retweets;
+			rel_favorites = rel_favorites/rel_gesamt;
+			rel_replies = rel_replies/rel_gesamt;
+			rel_retweets = rel_retweets/rel_gesamt;
+			var posts = Posts.find({username:name, retweet: false}).fetch();
+			for(var j=0;j<posts.length;j++){
+				var favorites = posts[j].fav;
+				var replies = posts[j].replies.length;
+				var retweets = posts[j].retweets;
+				var engagement = (favorites*rel_favorites) + (replies*rel_replies) + (retweets*rel_retweets) / follower
+				Posts.update({_id: posts[j]._id}, { $set:{ engagement : engagement } });
+
+			}
+		}
+	}
+	console.log(Posts.find({retweet:false}).fetch());
+}
+
+function getReplies(nutzer){
+	var posts = Posts.find({username: nutzer, retweet: false}).fetch();
+	var replies = 0
+	for(var j=0;j<posts.length;j++){
+		replies += posts[j].replies.length;
+	} 
+	if (replies<1){
+		return 1
+	}
+	return replies
+}
+
+function getFavorites(nutzer){
+	var posts = Posts.find({username: nutzer}).fetch();
+	var favs = 0
+	for(var j=0;j<posts.length;j++){
+		favs += posts[j].fav;
+	} 
+	if (favs<1){
+		return 1
+	}
+	return favs
 }
 
 
@@ -340,8 +415,17 @@ export function initial(){
 	//getDailyFollowers();
 	//getPosts();
 	
-	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Finanzleistung"}})
-	console.log(Posts.find({username:"testaccount02"}).fetch())
+	//Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
+	//console.log(Posts.find({username:"testaccount02"}).fetch())
+	/*Settings_DB.update({username:"dominik"},{$set:{
+		p_d: "1",
+		e: "1",
+		a: "1",
+		f: "1",
+		v_f: "1",
+		g_v: "1"
+	}})*/
+	console.log(Settings_DB.find({}).fetch())
 }
 
 //

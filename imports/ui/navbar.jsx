@@ -69,6 +69,7 @@ export class Navbar extends Tracker.Component {
                             </button>
                             <div className="dropdown-menu" aria-labelledby="dropdownSettingsButton">
                                 {this.isAuthorized() && <a className="dropdown-item" href="#" onClick={this.props.twitter_authorization}>Twitter autorisieren</a>}
+                                <a className="dropdown-item" href="#" onClick={this.props.goToSettings}>Einstellungen</a>
                                 <a className="dropdown-item" href="#">ausloggen</a>
                             </div>
                         </div>

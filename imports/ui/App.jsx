@@ -13,6 +13,7 @@ import { Selbstposten } from './posten.jsx';
 import { Login } from './Login.jsx';
 import { TopPosts} from './TopPosts.jsx';
 import { Dimensionen } from './Dimensionen.jsx';
+import { Settings } from './Settings.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
@@ -26,13 +27,21 @@ class App extends Tracker.Component {
   constructor(props){
     super(props);
     this.state = {
-      authorize_screen: false
+      authorize_screen: false,
+      settings_screen: false
     }
-    this.twitter_authorization = this.twitter_authorization.bind(this)
+    this.twitter_authorization = this.twitter_authorization.bind(this);
+    this.goToSettings = this.goToSettings.bind(this)
   }
 
   twitter_authorization(){
     this.setState({authorize_screen: !this.state.authorize_screen})
+    this.setState({settings_screen: false})
+  }
+
+  goToSettings(){
+    this.setState({settings_screen: !this.state.settings_screen})
+    this.setState({authorize_screen: false})
   }
 
   isAuthorized(){
@@ -58,9 +67,14 @@ class App extends Tracker.Component {
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
-              <Navbar twitter_authorization = {this.twitter_authorization}/>
-              {this.state.authorize_screen && Meteor.user() && <Login twitter_authorization = {this.twitter_authorization} />}
-              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() &&
+              <Navbar twitter_authorization={this.twitter_authorization} goToSettings={this.goToSettings}/>
+              {this.state.authorize_screen && Meteor.user() &&
+                <Login twitter_authorization = {this.twitter_authorization} />
+              }
+              {this.state.settings_screen && 
+                <Settings goToSettings={this.goToSettings} />
+              }
+              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen &&
                 <div className="row">
                   
                   <div className="col-md-5 ">
@@ -72,7 +86,7 @@ class App extends Tracker.Component {
                   <div className="col-md-7">
                     <Dimensionen/>
                     <br/>
-                    <div className="col-md-2 row">
+                    <div className="col-md-2 row ">
                       <KeyFacts/>
 
                     </div>

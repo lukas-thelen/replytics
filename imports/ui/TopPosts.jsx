@@ -12,15 +12,13 @@ export class TopPosts extends Tracker.Component {
 	}
 
 getText() {
-	var text = Posts.find({username: Meteor.user().username},{sort:{fav:-1}}).fetch();
+	var text = Posts.find({username: Meteor.user().username},{sort:{engagement:-1}}).fetch();
 	return text;
 
 }
 getEngagement (i) {
-	var follower = FollowerCount.find({username: Meteor.user().username},{sort:{date:-1}}).fetch()[0].count;
-	var likes = this.getText()[i].fav
-    var replies = this.getText()[i].replies.length
-	var engagement = parseInt((likes+replies)/follower*100)
+	var engagement = this.getText()[i].engagement;
+    engagement = parseInt(engagement * 100)
 	return engagement;
 }
 
@@ -49,6 +47,7 @@ getDate (i) {
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(0)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[0].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[0].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[0].dimension}</p>
 	</div>
     
 	<div style={{paddingBottom:6}}className="border-bottom col-md-10"> 
@@ -60,7 +59,7 @@ getDate (i) {
 	<p className="btn btn-outline-success" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement:{this.getEngagement(1)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[1].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[1].replies.length}</p>
-
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[1].dimension}</p>
 	</div>
 	
 
@@ -73,6 +72,7 @@ getDate (i) {
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(2)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[2].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[2].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[2].dimension}</p>
 	</div>
 	
 </div>
