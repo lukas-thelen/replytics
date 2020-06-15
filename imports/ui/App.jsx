@@ -11,7 +11,8 @@ import { KeyFacts } from './KeyFacts.jsx';
 import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
 import { Login } from './Login.jsx';
-import { TopPosts} from './topposts.jsx'
+import { TopPosts} from './TopPosts.jsx';
+import { Dimensionen } from './Dimensionen.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
@@ -64,23 +65,24 @@ class App extends Tracker.Component {
                   
                   <div className="col-md-5 ">
                     <Selbstposten/>
+                    <br/>
+                    <TopPosts/>
                   </div>
           
-                  <div className="col-md-7 row">
-                    Repu</div>
-                    <br></br>
-                  <div className="col-md-5 row ">
+                  <div className="col-md-7">
+                    <Dimensionen/>
+                    <br/>
+                    <div className="col-md-2">
+                      <KeyFacts/>
 
-                  </div>
-                  <div className="col-md-2 row ">
-                    <KeyFacts/>
+                    </div>
+                    <div className="col-md-5">
 
-                  </div>
-                  <div className="col-md-5 row ">
-
-                    <FollowerChart/>
-                  </div>
+                      <FollowerChart/>
+                    </div>
                   
+                  </div>
+
                 </div>
               }
             </div>
