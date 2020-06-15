@@ -51,7 +51,7 @@ for (var i=0; i< 6; i++){
 }
 
 return {
-  labels: ["Emotional Appeal", "Products/ Services", "Vision/Leadership", "Workplace Environment", "Social/Environmental Responsibility", "Financial Performance"],
+  labels: ["Emotional Appeal", "Products/ Services", "Workplace Environment", "Financial Performance", "Vision/Leadership", "Social/Environmental Responsibility"],
   datasets: [
     {
       label: 'Engagement',

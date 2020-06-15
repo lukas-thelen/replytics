@@ -337,8 +337,11 @@ export function initial(){
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	var myVar03 = setInterval(getPosts, 1200000);*/
-	getDailyFollowers();
-	getPosts();
+	//getDailyFollowers();
+	//getPosts();
+	
+	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Finanzleistung"}})
+	console.log(Posts.find({username:"testaccount02"}).fetch())
 }
 
 //

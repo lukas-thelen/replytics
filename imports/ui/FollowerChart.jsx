@@ -18,13 +18,14 @@ export class FollowerChart extends Tracker.Component {
     var followerDate = [];
     var datum = [];
     var datumStr = ["Sonntag","Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
-   
+
     if (this.getFollower()[0] != undefined) {
       var follower = this.getFollower();
-      
+
     var l = follower.length-1;
-    
+
     //alert(l);
+    //alert(follower);
     for(var i=l;i>=0;i--){
       //alert("test");
       followerList.push(follower[i].count);
@@ -45,20 +46,21 @@ export class FollowerChart extends Tracker.Component {
       followerDate.push(follower[j].date);
     }
 
-    
 
-    for(var y=l; y>=0; y--){
+
+    for(var y=0; y<=l; y++){ //war vorher y=l; y>=0; y--
       datum.push(followerDate[y].getDay());
     }
     if (l>=6){
       l = 6
     }else{
-      for(var k=6; k>l;k--){
+      for(var k=l; k<6;k++){
         datum.push(k-1); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
       }
     }
-    
-    datum.reverse();
+    //alert(datum);
+    //datum.reverse();
+
     for(var i=0;i<datum.length;i++){
       datum[i] = datumStr[datum[i]];
     }
@@ -74,7 +76,7 @@ export class FollowerChart extends Tracker.Component {
           fill: false
         }
       ]
-    }} 
+    }}
   }
 
   render() {
@@ -93,7 +95,7 @@ export class FollowerChart extends Tracker.Component {
           />
         </div>
 
-          
+
       );
     } else {
       return (

@@ -72,11 +72,11 @@ class App extends Tracker.Component {
                   <div className="col-md-7">
                     <Dimensionen/>
                     <br/>
-                    <div className="col-md-2">
+                    <div className="col-md-2 row">
                       <KeyFacts/>
 
                     </div>
-                    <div className="col-md-5">
+                    <div className="col-md-5 row">
 
                       <FollowerChart/>
                     </div>
