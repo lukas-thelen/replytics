@@ -3,6 +3,7 @@ import Tracker from 'tracker-component';
 
 import { FollowerCount } from '../api/twitter_followerCount';
 import { MentionCount } from '../api/twitter_mentionCount.js';
+import { RetweetCount } from '../api/twitter_retweetCount.js';
 
 
 export class KeyFacts extends Tracker.Component {
@@ -24,6 +25,26 @@ export class KeyFacts extends Tracker.Component {
   getDifference7(){
     var today = this.getFollower()[0].count;
     var old = this.get7th();
+    return today - old;
+  }
+
+  getRetweets(){
+    var retweets = RetweetCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    return retweets
+  }
+
+  get7thRetweetCount(){
+    if (this.getRetweets()[6] != undefined) {
+      return this.getRetweets()[6].retweets;
+    } else { 
+      var unsorted = RetweetCount.find({username: Meteor.user().username}).fetch();
+      return unsorted[0].retweets;
+    }
+  }
+
+  getDifference7Retweets(){
+    var today = this.getRetweets()[0].retweets;
+    var old = this.get7thRetweetCount();
     return today - old;
   }
 
@@ -95,8 +116,8 @@ export class KeyFacts extends Tracker.Component {
   
         <section className="spalte card">
           <h5>Retweets</h5>
-		  <h3  style={{color:"#A4A4A4"}}>Zahl</h3>
-          <h6>+ _ zu letzter Woche</h6>
+          <h3  style={{color:"#A4A4A4"}}>{this.getRetweets()[0].retweets}</h3>
+          <h6>+ {this.getDifference7Retweets()} zu letzter Woche</h6>
         </section>
       </div>
      );
