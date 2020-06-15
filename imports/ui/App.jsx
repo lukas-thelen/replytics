@@ -10,7 +10,8 @@ import { KeyFacts } from './KeyFacts.jsx';
 
 import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
-import { Login } from './Login.jsx'
+import { Login } from './Login.jsx';
+import { TopPosts} from './topposts.jsx'
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
