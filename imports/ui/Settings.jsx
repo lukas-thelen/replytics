@@ -22,21 +22,41 @@ componentDidMount = () => {
 
 getDefault = ()=>{
     var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
-    var array = ["p_d", "e", "a", "f", "v_f", "g_v"]
-    for (var p = 0; p<array.length; p++){
-        var value = array[p]
-        var id = String(value+settings[0][value]);
-        console.log(id);
-        this[id].defaultChecked = true
+    if(!settings[0]){
+        Settings_DB.insert({ 
+            p_d: "1",
+            e: "1",
+            a: "1",
+            f: "1",
+            v_f: "1",
+            g_v: "1",
+            username: Meteor.user().username
+        })
+        settings = [{ 
+            p_d: "1",
+            e: "1",
+            a: "1",
+            f: "1",
+            v_f: "1",
+            g_v: "1",
+            username: Meteor.user().username
+        }]
     }
-    this.setState({
-        p_d: settings[0].p_d,
-        e: settings[0].e,
-        a: settings[0].a,
-        f: settings[0].f,
-        v_f: settings[0].v_f,
-        g_v: settings[0].g_v
-    })
+        var array = ["p_d", "e", "a", "f", "v_f", "g_v"]
+        for (var p = 0; p<array.length; p++){
+            var value = array[p]
+            var id = String(value+settings[0][value]);
+            console.log(id);
+            this[id].defaultChecked = true
+        }
+        this.setState({
+            p_d: settings[0].p_d,
+            e: settings[0].e,
+            a: settings[0].a,
+            f: settings[0].f,
+            v_f: settings[0].v_f,
+            g_v: settings[0].g_v
+        })
 }
 
 

@@ -10,6 +10,7 @@ import { Sentiment } from '../api/twitter_sentiment.js';
 import { Accounts } from '../api/accounts.js';
 import { RetweetCount } from '../api/twitter_retweetCount.js';
 import { Settings_DB } from '../api/settings.js';
+import { Settings } from '../ui/Settings.jsx';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
