@@ -10,6 +10,9 @@ export class KeyFacts extends Tracker.Component {
 
   getFollower(){
     var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    if (!follower[0]){
+      return [{count:0}]
+    }
     return follower;
   }
 
@@ -30,6 +33,9 @@ export class KeyFacts extends Tracker.Component {
 
   getRetweets(){
     var retweets = RetweetCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    if (!retweets[0]){
+      return [{retweets:0}]
+    }
     return retweets
   }
 
@@ -50,6 +56,9 @@ export class KeyFacts extends Tracker.Component {
 
   getMentions() {
     var mentions = MentionCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    if (!mentions[0]){
+      return [{mentions:0, authors:0}]
+    }
     return mentions;
   }
 
