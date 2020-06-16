@@ -339,9 +339,6 @@ export function initial(){
 	var myVar03 = setInterval(getPosts, 1200000);*/
 	//getDailyFollowers();
 	//getPosts();
-	
-	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Finanzleistung"}})
-	console.log(Posts.find({username:"testaccount02"}).fetch())
 }
 
 //
