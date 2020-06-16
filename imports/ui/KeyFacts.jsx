@@ -21,6 +21,9 @@ export class KeyFacts extends Tracker.Component {
       return this.getFollower()[6].count;
     } else { 
       var followerUnsorted = FollowerCount.find({username: Meteor.user().username}).fetch();
+      if (!followerUnsorted[0]){
+        return 0
+      }
       return followerUnsorted[0].count;
     }
   }
@@ -44,6 +47,9 @@ export class KeyFacts extends Tracker.Component {
       return this.getRetweets()[6].retweets;
     } else { 
       var unsorted = RetweetCount.find({username: Meteor.user().username}).fetch();
+      if (!unsorted[0]){
+        return 0
+      }
       return unsorted[0].retweets;
     }
   }
@@ -67,6 +73,9 @@ export class KeyFacts extends Tracker.Component {
       return this.getMentions()[6].mentions;
     } else { 
       var unsorted = MentionCount.find({username: Meteor.user().username}).fetch();
+      if (!unsorted[0]){
+        return 0
+      }
       return unsorted[0].mentions;
     }
   }
