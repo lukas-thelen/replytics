@@ -92,7 +92,6 @@ getDefault = ()=>{
 
  absenden = () => {
 
-    console.log(this.state)
     Meteor.call('updateSettings',
         Meteor.user().username,
         this.state.p_d,
@@ -102,15 +101,21 @@ getDefault = ()=>{
         this.state.v_f,
         this.state.g_v
     )
-    console.log("checked")
+    this.props.goToSettings();
+ }
+
+ abbrechen = () =>{
+    this.props.goToSettings();
  }
 
   render() {
       //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
-		<div> Settings 
+		<div className="col col-lg-7 offset-lg-3 text-left"> 
+            <h2>Einstellungen</h2> 
+            <hr className="mt-4 mb-4 " />
             <form onChange = {this.changeProdukt_und_Dienstleistung} className="row">
-                <span className="col-2">Produkt und Dienstleistung  </span>
+                <h6 className="col-xs-12 col-sm-5">Produkt und Dienstleistung  </h6>
                 <div className="form-check form-check-inline Produkt_und_Dienstleistung">
                     <input className="form-check-input" name="Produkt_und_Dienstleistung" type="radio" ref={(input)=>{this.p_d0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -126,7 +131,7 @@ getDefault = ()=>{
             </form>
             <form onChange = {this.changeEmotionen}  className="row">
                 <br/>
-                <span className="col-2">Emotionen  </span>
+                <h6 className="col-xs-12 col-sm-5">Emotionen  </h6>
                 <div className="form-check form-check-inline Emotionen">
                     <input className="form-check-input" name="Emotionen" type="radio" ref={(input)=>{this.e0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -142,7 +147,7 @@ getDefault = ()=>{
             </form>
             <form onChange = {this.changeArbeitsplatz}  className="row">
                 <br/>
-                <span className="col-2">Arbeitsplatzumgebung  </span>
+                <h6 className="col-xs-12 col-sm-5">Arbeitsplatzumgebung  </h6>
                 <div className="form-check form-check-inline Arbeitsplatzumgebung">
                     <input className="form-check-input" name="Arbeitsplatzumgebung" type="radio" ref={(input)=>{this.a0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -158,7 +163,7 @@ getDefault = ()=>{
             </form>
             <form onChange = {this.changeFinanzen} className="row">
                 <br/>
-                <span className="col-2">Finanzleistung  </span>
+                <h6 className="col-xs-12 col-sm-5">Finanzleistung  </h6>
                 <div className="form-check form-check-inline Finanzleistung">
                     <input className="form-check-input" name="Finanzleistung" type="radio" ref={(input)=>{this.f0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -174,7 +179,7 @@ getDefault = ()=>{
             </form>
             <form onChange = {this.changeVision_und_Führung} className="row">
                 <br/>
-                <span className="col-2">Vision und Führung  </span>
+                <h6 className="col-xs-12 col-sm-5">Vision und Führung  </h6>
                 <div className="form-check form-check-inline Vision_und_Führung">
                     <input className="form-check-input" name="Vision_und_Führung" type="radio" ref={(input)=>{this.v_f0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -190,7 +195,7 @@ getDefault = ()=>{
             </form>
             <form onChange = {this.changeGs_Verantwortung} className="row">
                 <br/>
-                <span className="col-2">Gesellschaftliche Verantwortung  </span>
+                <h6 className="col-xs-12 col-sm-5">Gesellschaftliche Verantwortung  </h6>
                 <div className="form-check form-check-inline Gesellschaftliche_Verantwortung">
                     <input className="form-check-input" name="Gesellschaftliche_Verantwortung" type="radio" ref={(input)=>{this.g_v0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -204,8 +209,11 @@ getDefault = ()=>{
                 <label className="form-check-label" htmlFor="inlineRadio3">sehr wichtig</label>
                 </div>
             </form>
+            <br/>
             <form>
-                <input className="btn btn-secondary mr-1" type="button" onClick={this.absenden} value="Speichern"></input>
+                <input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="Speichern"></input>
+
+                <input className="btn btn-light" type="button" onClick={this.abbrechen} value="Abbrechen"></input>
             </form>
         </div>
     );

@@ -24,15 +24,17 @@ getEngagement (i) {
 
 getDate (i) {
 	var createdAt = Posts.find({username: Meteor.user().username},{sort:{fav:-1}}).fetch()[i].date;
-    var date = createdAt.substring(4,10);
-    var time = createdAt.substring(11,19);
-    var dateOutput = date + " - " + time;
+    var day = createdAt.substring(7,9);
+	var month = createdAt.substring(4,7);
+	var year = createdAt.substring(0,4);
+	var time = createdAt.substring(9,14);
+    var dateOutput = day + ". " + month + " " + year + " " + time;
 	return dateOutput;
 }
  //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
   render() { 
 	  
-    console.log(this.getText());  //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+    //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
 
 
@@ -40,7 +42,7 @@ getDate (i) {
 	<h5 style={{paddingBottom:6}} className="border-bottom">Top Posts</h5>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-10"> 
 	<div>
-	<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText() [0].username}:</small>
+	<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText()[0].username}:</small>
 	<p style={{margin:2}}>{this.getText()[0].text}</p>
 	<p style={{fontSize:10, margin: 2}}>am {this.getDate(0)}</p>
 	</div>
