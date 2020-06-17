@@ -9,6 +9,10 @@ import { Posts } from '../api/twitter_posts.js';
 import { Sentiment } from '../api/twitter_sentiment.js';
 import { Accounts } from '../api/accounts.js';
 import { RetweetCount } from '../api/twitter_retweetCount.js';
+import { Dimensionen } from '../api/twitter_dimensionen.js';
+import { Settings_DB } from '../api/settings.js';
+import { Settings } from '../ui/Settings.jsx';
+import { data } from 'jquery';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -42,7 +46,7 @@ Meteor.methods({
 		console.log(dimension)
 		Posts.insert({
 			id: id, 
-			date: date, 
+			date: changeDateFormat(date), 
 			text: text, 
 			dimension: dimension, 
 			retweet: false, 
@@ -64,6 +68,16 @@ Meteor.methods({
 	updateServer(){
 		getDailyFollowers();
 		getPosts();
+	},
+	updateSettings(name,q,w,e,r,t,z){
+		Settings_DB.update({username: name},{$set:{
+			p_d: q,
+			e: w,
+			a: e,
+			f: r,
+			v_f: t,
+			g_v: z
+		}})
 	}
 });
 
@@ -136,7 +150,7 @@ async function getPosts(){
 					//erstellt Eintrag, wenn Post noch nicht existiert
 					Posts.insert({
 						id: postArray[i].id_str,
-						date: postArray[i].created_at,
+						date: changeDateFormat(postArray[i].created_at),
 						text: postArray[i].text,
 						dimension: "not defined",
 						fav: postArray[i].favorite_count,
@@ -156,6 +170,141 @@ async function getPosts(){
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
 	getRetweets();
+	getEngagement();
+	getDimensions();
+}
+
+function getDimensions(){
+	var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
+	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
+	var accounts = Accounts.find({}).fetch();
+	var l = accounts.length;
+	for(var q=0;q<l;q++){
+		if(accounts[q].twitter_auth){
+			var name = accounts[q].username;
+			var noValue = {
+				favorites: 0,
+				engagement: 0,
+				replies: 0,
+				retweets: 0,
+				bestEngagement: "none"
+			}
+			var dimensionen = Dimensionen.find({username:name}).fetch();
+			if(!dimensionen[0]){
+				Dimensionen.insert({
+					Emotionen: noValue,
+					Produkt_und_Dienstleistung: noValue,
+					Arbeitsplatzumgebung: noValue,
+					Finanzleistung: noValue,
+					Vision_und_Führung: noValue,
+					Gesellschaftliche_Verantwortung: noValue,
+					username:name
+				})
+			}
+			
+			for (var i=0; i< 6; i++){
+				var postInDimension = Posts.find({username: name, dimension: dimensionsArray[i]}).fetch();
+				var favorites = 0;
+				var engagement = 0;
+				var replies = 0;
+				var retweets = 0;
+				var bestEngagement = "none";
+				var bestEngagementScore = 0;
+		
+				if (postInDimension[0]){
+					for (var k=0; k< postInDimension.length; k++){
+						favorites += postInDimension[k].fav;
+						engagement += postInDimension[k].engagement;
+						replies += postInDimension[k].replies.length;
+						retweets += postInDimension[k].retweets;
+						if (postInDimension[k].engagement>bestEngagementScore){
+							bestEngagementScore = postInDimension[k].engagement;
+							bestEngagement = postInDimension[k].id;
+						}
+					}
+					len = postInDimension.length;
+					favorites = favorites/len;
+					engagement = engagement/len;
+					replies = replies/len;
+					retweets = retweets/len;
+					var value = {
+						favorites: favorites,
+						engagement: engagement,
+						replies: replies,
+						retweets: retweets,
+						bestEngagement: bestEngagement
+					}
+					Dimensionen.update({username: name},{$set:{
+						[dimensionsArray02[i]]: value
+					}})
+				}
+
+			}
+		}
+	}
+}
+
+function getEngagement(){
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		if(accounts[i].twitter_auth){
+			var follower = FollowerCount.find({username: name}, { $sort:{ date: -1 }}).fetch()[0].count;
+			if (follower<1){
+				follower = 1
+			}
+			var name = accounts[i].username;
+			var screen_name = accounts[i].screen_name;
+			var act_replies = getReplies(name);
+			var act_favorites = getFavorites(name);
+			var act_retweets = RetweetCount.find({username: name}, { $sort:{ date: -1 }}).fetch()[0].retweets;
+			if (act_retweets<1){
+				act_retweets = 1
+			}
+			var act_gesamt = act_favorites + act_replies + act_retweets;
+			var rel_replies = act_gesamt/act_replies;
+			var rel_favorites = act_gesamt/act_favorites;
+			var rel_retweets = act_gesamt/act_retweets;
+			var rel_gesamt = rel_favorites + rel_replies + rel_retweets;
+			rel_favorites = rel_favorites/rel_gesamt;
+			rel_replies = rel_replies/rel_gesamt;
+			rel_retweets = rel_retweets/rel_gesamt;
+			var posts = Posts.find({username:name, retweet: false}).fetch();
+			for(var j=0;j<posts.length;j++){
+				var favorites = posts[j].fav;
+				var replies = posts[j].replies.length;
+				var retweets = posts[j].retweets;
+				var engagement = (favorites*rel_favorites) + (replies*rel_replies) + (retweets*rel_retweets) / follower
+				Posts.update({_id: posts[j]._id}, { $set:{ engagement : engagement } });
+
+			}
+		}
+	}
+	console.log(Posts.find({retweet:false}).fetch());
+}
+
+function getReplies(nutzer){
+	var posts = Posts.find({username: nutzer, retweet: false}).fetch();
+	var replies = 0
+	for(var j=0;j<posts.length;j++){
+		replies += posts[j].replies.length;
+	} 
+	if (replies<1){
+		return 1
+	}
+	return replies
+}
+
+function getFavorites(nutzer){
+	var posts = Posts.find({username: nutzer}).fetch();
+	var favs = 0
+	for(var j=0;j<posts.length;j++){
+		favs += posts[j].fav;
+	} 
+	if (favs<1){
+		return 1
+	}
+	return favs
 }
 
 
@@ -240,8 +389,8 @@ async function getMentions(){
 	Mentions.remove({});
 	initSentiment();
 	var accounts = Accounts.find({}).fetch();
-	var len = accounts.length;
-	for(var a=0;a<len;a++){
+	var l = accounts.length;
+	for(var a=0;a<l;a++){
 		if(accounts[a].twitter_auth){
 			var name = accounts[a].username;
 			var screen_name = accounts[a].screen_name;
@@ -285,7 +434,7 @@ async function getMentions(){
 
 				//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
 				Mentions.insert({
-					date: mentionArray[i].created_at,
+					date: changeDateFormat(mentionArray[i].created_at),
 					id01: mentionArray[i].id,
 					id02: mentionArray[i].id_str,
 					content: mentionArray[i].text,
@@ -339,6 +488,11 @@ export function initial(){
 	var myVar03 = setInterval(getPosts, 1200000);*/
 	//getDailyFollowers();
 	//getPosts();
+	
+	//Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Produkt und Dienstleistung"}})
+
+	//getDimensions();
+
 }
 
 //
@@ -379,4 +533,12 @@ function checkCount(name, number, collection, user){
 //löscht den letzten Eintrag einer Collection
 function removeLast(collection, name){
 	collection.remove({date: collection.findOne({username: name},{ sort:{ date:-1 } }).date})
+}
+
+function changeDateFormat(string){
+	var year = string.substring(26,30);
+	var month = string.substring(4,7);
+	var day = string.substring(8,10);
+	var time = string.substring(11,19);
+	return year+month+day+time 
 }

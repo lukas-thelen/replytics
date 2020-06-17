@@ -12,29 +12,29 @@ export class TopPosts extends Tracker.Component {
 	}
 
 getText() {
-	var text = Posts.find({username: Meteor.user().username},{sort:{fav:-1}}).fetch();
+	var text = Posts.find({username: Meteor.user().username},{sort:{engagement:-1}}).fetch();
 	return text;
 
 }
 getEngagement (i) {
-	var follower = FollowerCount.find({username: Meteor.user().username},{sort:{date:-1}}).fetch()[0].count;
-	var likes = this.getText()[i].fav
-    var replies = this.getText()[i].replies.length
-	var engagement = parseInt((likes+replies)/follower*100)
+	var engagement = this.getText()[i].engagement;
+    engagement = parseInt(engagement * 100)
 	return engagement;
 }
 
 getDate (i) {
 	var createdAt = Posts.find({username: Meteor.user().username},{sort:{fav:-1}}).fetch()[i].date;
-    var date = createdAt.substring(4,10);
-    var time = createdAt.substring(11,19);
-    var dateOutput = date + " - " + time;
+    var day = createdAt.substring(7,9);
+	var month = createdAt.substring(4,7);
+	var year = createdAt.substring(0,4);
+	var time = createdAt.substring(9,14);
+    var dateOutput = day + ". " + month + " " + year + " " + time;
 	return dateOutput;
 }
  //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
   render() { 
 	  
-    console.log(this.getText());  //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+    //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
 
 
@@ -42,13 +42,14 @@ getDate (i) {
 	<h5 style={{paddingBottom:6}} className="border-bottom">Top Posts</h5>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-10"> 
 	<div>
-	<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText() [0].username}:</small>
+	<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText()[0].username}:</small>
 	<p style={{margin:2}}>{this.getText()[0].text}</p>
 	<p style={{fontSize:10, margin: 2}}>am {this.getDate(0)}</p>
 	</div>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(0)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[0].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[0].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[0].dimension}</p>
 	</div>
     
 	<div style={{paddingBottom:6}}className="border-bottom col-md-10"> 
@@ -60,7 +61,7 @@ getDate (i) {
 	<p className="btn btn-outline-success" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement:{this.getEngagement(1)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[1].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[1].replies.length}</p>
-
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[1].dimension}</p>
 	</div>
 	
 
@@ -73,6 +74,7 @@ getDate (i) {
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(2)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[2].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[2].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[2].dimension}</p>
 	</div>
 	
 </div>
