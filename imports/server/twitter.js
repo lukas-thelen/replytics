@@ -490,7 +490,9 @@ export function initial(){
 	//getPosts();
 	
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Produkt und Dienstleistung"}})
-	//console.log(Posts.find({username:"testaccount02"}).fetch())
+	console.log(Posts.find({username:"testaccount02", retweet:false}).fetch())
+	console.log(Settings_DB.find({username:"testaccount02"}).fetch())
+	console.log(Dimensionen.find({username:"testaccount02"}).fetch())
 	//getDimensions();
 }
 

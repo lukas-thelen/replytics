@@ -10,11 +10,12 @@ export class Benachrichtigungen extends Tracker.Component {
         this.state={
             handlungsempfehlungen:["Test"]
         }
-        this.checkImportant();
-        this.checkVeryImportant();
-
     }
 
+    componentWillMount = () =>{
+        this.checkImportant();
+        this.checkVeryImportant();
+    }
 
     checkVeryImportant = () => {
         var posts = Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
