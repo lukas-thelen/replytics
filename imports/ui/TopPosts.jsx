@@ -24,11 +24,12 @@ getEngagement (i) {
 
 getDate (i) {
 	var createdAt = Posts.find({username: Meteor.user().username},{sort:{fav:-1}}).fetch()[i].date;
-    var day = createdAt.substring(7,9);
-	var month = createdAt.substring(4,7);
-	var year = createdAt.substring(0,4);
-	var time = createdAt.substring(9,14);
-    var dateOutput = day + ". " + month + " " + year + " " + time;
+    var day = createdAt.getDate();
+	var month = createdAt.getMonth()+1;
+	var year = createdAt.getFullYear();
+	var hour = createdAt.getHours();
+	var minute = createdAt.getMinutes();
+    var dateOutput = day + "." + month + "." + year + " " + hour + ":" + minute;
 	return dateOutput;
 }
  //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 

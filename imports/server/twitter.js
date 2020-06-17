@@ -46,7 +46,7 @@ Meteor.methods({
 		console.log(dimension)
 		Posts.insert({
 			id: id, 
-			date: changeDateFormat(date), 
+			date: new Date(date), 
 			text: text, 
 			dimension: dimension, 
 			retweet: false, 
@@ -150,7 +150,7 @@ async function getPosts(){
 					//erstellt Eintrag, wenn Post noch nicht existiert
 					Posts.insert({
 						id: postArray[i].id_str,
-						date: changeDateFormat(postArray[i].created_at),
+						date: new Date(postArray[i].created_at),
 						text: postArray[i].text,
 						dimension: "not defined",
 						fav: postArray[i].favorite_count,
@@ -434,7 +434,7 @@ async function getMentions(){
 
 				//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
 				Mentions.insert({
-					date: changeDateFormat(mentionArray[i].created_at),
+					date: new Date(mentionArray[i].created_at),
 					id01: mentionArray[i].id,
 					id02: mentionArray[i].id_str,
 					content: mentionArray[i].text,
@@ -486,8 +486,10 @@ export function initial(){
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	var myVar03 = setInterval(getPosts, 1200000);*/
-	//getDailyFollowers();
-	//getPosts();
+	Posts.remove({});
+	Mentions.remove({});
+	getDailyFollowers();
+	getPosts();
 	
 	//Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 
@@ -535,10 +537,3 @@ function removeLast(collection, name){
 	collection.remove({date: collection.findOne({username: name},{ sort:{ date:-1 } }).date})
 }
 
-function changeDateFormat(string){
-	var year = string.substring(26,30);
-	var month = string.substring(4,7);
-	var day = string.substring(8,10);
-	var time = string.substring(11,19);
-	return year+month+day+time 
-}
