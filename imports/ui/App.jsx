@@ -17,7 +17,7 @@ import { Settings } from './Settings.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
-
+import { Benachrichtigungen } from './Benachrichtigungen.jsx';
 
 
 
@@ -81,6 +81,7 @@ class App extends Tracker.Component {
                   <div className="col-md-5 ">
                     <Selbstposten/>
                     <br/>
+                    <Benachrichtigungen/>
                     <TopPosts/>
                   </div>
           
