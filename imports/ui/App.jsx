@@ -12,7 +12,7 @@ import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
 import { Login } from './Login.jsx';
 import { TopPosts} from './TopPosts.jsx';
-import { Dimensionen } from './Dimensionen.jsx';
+import { DimensionenRadar } from './Dimensionen.jsx';
 import { Settings } from './Settings.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
@@ -86,7 +86,7 @@ class App extends Tracker.Component {
                   </div>
           
                   <div className="col-md-7">
-                    <Dimensionen/>
+                    <DimensionenRadar/>
                     <br/>
                     <div className="col-md-2 row ">
                       <KeyFacts/>

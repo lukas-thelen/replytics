@@ -4,9 +4,10 @@ import Chart from 'chart.js';
 import { Radar } from 'react-chartjs-2';
 import { FollowerCount } from '../api/twitter_followerCount.js';
 import { Posts } from '../api/twitter_posts.js';
+import { Dimensionen } from '../api/twitter_dimensionen.js';
 
 
-export class Dimensionen extends Tracker.Component {
+export class DimensionenRadar extends Tracker.Component {
   getFollower(){
     var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     return follower;
@@ -15,6 +16,7 @@ export class Dimensionen extends Tracker.Component {
     var nutzer = Meteor.user().username;
     var gesamtPosts = Posts.find({username: nutzer}).fetch().length;
     var dimensionen= ["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"]
+    var dimensionen02= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
     var daten = [];
     var count = [];
     var postCount = 0;
@@ -23,34 +25,38 @@ export class Dimensionen extends Tracker.Component {
     var followerSum = [];
     followerSum = this.getFollower()[0].count;
 
-    for (var i=0; i< 6; i++){
+    /*for (var i=0; i< 6; i++){
       var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
-      favorites = 0;
+      engagement = 0;
 
-        if (!postInDimension[0]){
-          daten.push(0);
-        }else{
-          for (var k=0; k< postInDimension.length; k++){
-          favorites += postInDimension[k].fav;
-        }
-  engagement = favorites/ (postInDimension.length)/ followerSum;
-  daten.push(engagement);
+      if (!postInDimension[0]){
+        daten.push(0);
+      }else{
+        for (var k=0; k< postInDimension.length; k++){
+        engagement += postInDimension[k].engagement;
+      }
+      engagement = engagement/ (postInDimension.length);
+      daten.push(engagement);
+    }
   }
-}
 
-for (var i=0; i< 6; i++){
-  var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
-  postCount = 0;
+  for (var i=0; i< 6; i++){
+    var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
+    postCount = 0;
 
     if (!postInDimension[0]){
       count.push(0);
     }else{
       for (var k=0; k< postInDimension.length; k++){
       postCount += 1;
+      }
+    count.push(postCount/gesamtPosts);
     }
-  count.push(postCount/gesamtPosts);
+  }*/
+  for (var i=0; i< 6; i++){
+    daten.push(Dimensionen.find({username:nutzer}).fetch()[0][dimensionen02[i]].engagement)
+    count.push(((Dimensionen.find({username:nutzer}).fetch()[0][dimensionen02[i]].count)/gesamtPosts))
   }
-}
 
 return {
   labels: ["Emotional Appeal", "Products/ Services", "Workplace Environment", "Financial Performance", "Vision/Leadership", "Social/Environmental Responsibility"],

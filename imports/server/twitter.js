@@ -510,12 +510,20 @@ export function initial(){
 	//getDailyFollowers();
 	//getPosts();
 	
-	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
+	Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
-	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})*/
+	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})
+	Posts.update({text:"asdf"}, {$set:{dimension:"Finanzleistung"}})
+	Posts.update({text:"sehr umweltbewusst"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})
+	Posts.update({text:"qwertz"}, {$set:{dimension:"Vision und Führung"}})
+	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
+	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
+	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})
+	getDailyFollowers();
+	getPosts();
+	console.log(Posts.find({username:"testaccount02", dimension:"not defined", retweet:false}).fetch())
 	//getDimensions();
-
 }
 
 //
