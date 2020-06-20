@@ -3,12 +3,16 @@ import Tracker from 'tracker-component';
 
 import { FollowerCount } from '../api/twitter_followerCount';
 import { MentionCount } from '../api/twitter_mentionCount.js';
+import { RetweetCount } from '../api/twitter_retweetCount.js';
 
 
 export class KeyFacts extends Tracker.Component {
 
   getFollower(){
     var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    if (!follower[0]){
+      return [{count:0}]
+    }
     return follower;
   }
 
@@ -17,6 +21,9 @@ export class KeyFacts extends Tracker.Component {
       return this.getFollower()[6].count;
     } else { 
       var followerUnsorted = FollowerCount.find({username: Meteor.user().username}).fetch();
+      if (!followerUnsorted[0]){
+        return 0
+      }
       return followerUnsorted[0].count;
     }
   }
@@ -27,8 +34,37 @@ export class KeyFacts extends Tracker.Component {
     return today - old;
   }
 
+  getRetweets(){
+    var retweets = RetweetCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    if (!retweets[0]){
+      return [{retweets:0}]
+    }
+    return retweets
+  }
+
+  get7thRetweetCount(){
+    if (this.getRetweets()[6] != undefined) {
+      return this.getRetweets()[6].retweets;
+    } else { 
+      var unsorted = RetweetCount.find({username: Meteor.user().username}).fetch();
+      if (!unsorted[0]){
+        return 0
+      }
+      return unsorted[0].retweets;
+    }
+  }
+
+  getDifference7Retweets(){
+    var today = this.getRetweets()[0].retweets;
+    var old = this.get7thRetweetCount();
+    return today - old;
+  }
+
   getMentions() {
     var mentions = MentionCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
+    if (!mentions[0]){
+      return [{mentions:0, authors:0}]
+    }
     return mentions;
   }
 
@@ -37,6 +73,9 @@ export class KeyFacts extends Tracker.Component {
       return this.getMentions()[6].mentions;
     } else { 
       var unsorted = MentionCount.find({username: Meteor.user().username}).fetch();
+      if (!unsorted[0]){
+        return 0
+      }
       return unsorted[0].mentions;
     }
   }
@@ -95,8 +134,8 @@ export class KeyFacts extends Tracker.Component {
   
         <section className="spalte card">
           <h5>Retweets</h5>
-		  <h3  style={{color:"#A4A4A4"}}>Zahl</h3>
-          <h6>+ _ zu letzter Woche</h6>
+          <h3  style={{color:"#A4A4A4"}}>{this.getRetweets()[0].retweets}</h3>
+          <h6>+ {this.getDifference7Retweets()} zu letzter Woche</h6>
         </section>
       </div>
      );
