@@ -1,0 +1,10 @@
+innerhalb des replytics Ordner: meteor npm install --save python-shell
+
+python -m pip install pymongo
+
+pip install -U textblob-de
+python -m textblob.download_corpora
+python -m pip install regex
+
+WICHTIG!
+Python-shell benötigt in der twitter.js Datei immer den absoluten Pfad! Bitte individuell anpassen!
