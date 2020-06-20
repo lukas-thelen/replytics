@@ -514,8 +514,6 @@ export function initial(){
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})*/
-	getDimensions();
-	console.log(Dimensionen.find({}).fetch())
 	//getDimensions();
 
 }
