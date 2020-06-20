@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { TwitterAPI } from '../api/twitter_credentials.js';
+let {PythonShell} = require('python-shell')
 
 //Datenbanken
 import { FollowerCount } from '../api/twitter_followerCount.js';
@@ -15,6 +16,7 @@ const sm = require('sentimental');
 const sw = require('stopword');
 var GermanStemmer = require('snowball-stemmer.jsx/dest/german-stemmer.common.js').GermanStemmer;
 const stem = new GermanStemmer();
+
 
 
 /*var TwitterAPI = new Twit({
@@ -146,6 +148,7 @@ async function getPosts(){
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
+	python();
 }
 
 
@@ -292,7 +295,11 @@ export function initial(){
 	getDailyFollowers();
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
-	var myVar03 = setInterval(getPosts, 1200000);*/
+	var myVar03 = setInterval(getPosts, 1200000);
+	var myVar04 = setInterval(python, 1200000);*/
+
+
+
 	//MentionCount.remove({});
 	//FollowerCount.remove({});
 	//Posts.remove({});
@@ -310,6 +317,14 @@ export function initial(){
 //
 //
 
+//Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
+function python(){
+    PythonShell.run('/home/flockenkiller/Studium/10_Sommersemester20/Praxisprojekt/replytics-master/imports/server/sentiment.py', null, function (err) {
+    if (err) throw err;
+    console.log('Sentiment berechnet');
+    });
+}
+
 //gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
 function checkDaily(collection, name){
 	var today = new Date();
@@ -318,7 +333,6 @@ function checkDaily(collection, name){
 		return true
 	}
 	return false
-	
 }
 
 function checkDate(date1, date2){

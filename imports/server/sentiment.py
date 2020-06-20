@@ -5,8 +5,9 @@ from textblob_de import TextBlobDE as TextBlob       # https://textblob-de.readt
 client = MongoClient('localhost', 3001)
 db = client.meteor
 mentionscollection = db.mentions
-sentimentcollection = db.sentiments
+sentimentcollection = db.sentiment
 s = sentimentcollection.find()
+
 sentiment = s[0]
 sentimentnegativ = sentiment["s_neg"]
 sentimentneutral = sentiment["s_neu"]
