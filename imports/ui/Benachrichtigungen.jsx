@@ -100,7 +100,7 @@ export class Benachrichtigungen extends Tracker.Component {
         }
         for(var i=0;i<2;i++){
             for(var j=0; j<2;j++){
-                if(sortedEngagement[i]===sortedCount[j]){
+                if(sortedEngagement[i]===sortedCount[j] && sortedEngagement[i]!= undefined){
                     var he = this.state.handlungsempfehlungen
                     he.push("Ungenutztes Potenzial bei " + this.übersetzung03[sortedEngagement[i]])
                     this.setState({handlungsempfehlungen: he})
@@ -267,12 +267,15 @@ export class Benachrichtigungen extends Tracker.Component {
         );
         return (
         //alles, was zurück geschickt werden soll
-        <div> {/*this.showState().handlungsempfehlungen*/} <ul className="list-group list-group-flush">
+        <div> {/* this.showState().handlungsempfehlungen */} <ul className="list-group list-group-flush">
+            {this.state.handlungsempfehlungen.length===0 && <span>keine Handlungsempfehlungen verfügbar</span>}
             {this.state.showMore && Element}{!this.state.showMore && ElementSmall}</ul>
         <form>
                 <input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="test"></input>
+                {this.state.handlungsempfehlungen.length>3 && <span>
                 {!this.state.showMore && <input className="btn btn-link" type="button" onClick={this.showMore} value="Mehr anzeigen"></input>}
                 {this.state.showMore && <input className="btn btn-link" type="button" onClick={this.showMore} value="Weniger anzeigen"></input>}
+                </span>}
             </form>
         </div>
         );
