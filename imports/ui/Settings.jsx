@@ -46,7 +46,6 @@ getDefault = ()=>{
         for (var p = 0; p<array.length; p++){
             var value = array[p]
             var id = String(value+settings[0][value]);
-            console.log(id);
             this[id].defaultChecked = true
         }
         this.setState({
@@ -62,37 +61,32 @@ getDefault = ()=>{
 
  changeProdukt_und_Dienstleistung = (event) => {
     this.setState({p_d: event.target.value})
-    console.log(this.state)
  }
 
  changeEmotionen = (event) =>{
     this.setState({e: event.target.value})
-    console.log(this.state)
  }
 
  changeArbeitsplatz = (event) =>{
     this.setState({a: event.target.value})
-    console.log(this.state)
  }
 
  changeFinanzen = (event) =>{
     this.setState({f: event.target.value})
-    console.log(this.state)
  }
 
  changeVision_und_Führung = (event) =>{
     this.setState({v_f: event.target.value})
-    console.log(this.state)
  }
 
  changeGs_Verantwortung = (event) =>{
     this.setState({g_v: event.target.value})
-    console.log(this.state)
  }
-
- absenden = () => {
-
-    Meteor.call('updateSettings',
+ sleep = (ms) =>{
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+ absenden = async() => {
+    let test = await Meteor.callPromise('updateSettings',
         Meteor.user().username,
         this.state.p_d,
         this.state.e,
@@ -102,6 +96,11 @@ getDefault = ()=>{
         this.state.g_v
     )
     this.props.goToSettings();
+ }
+
+ test = () =>{
+    console.log("sdfghsdfhgsdf")
+    this.props.goToSettings()
  }
 
  abbrechen = () =>{

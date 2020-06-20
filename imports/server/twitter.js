@@ -78,6 +78,7 @@ Meteor.methods({
 			v_f: t,
 			g_v: z
 		}})
+		return false
 	}
 });
 
@@ -187,6 +188,7 @@ function getDimensions(){
 				engagement: 0,
 				replies: 0,
 				retweets: 0,
+				count: 0,
 				bestEngagement: "none"
 			}
 			var dimensionen = Dimensionen.find({username:name}).fetch();
@@ -208,6 +210,7 @@ function getDimensions(){
 				var engagement = 0;
 				var replies = 0;
 				var retweets = 0;
+				var count = 0;
 				var bestEngagement = "none";
 				var bestEngagementScore = 0;
 		
@@ -217,6 +220,7 @@ function getDimensions(){
 						engagement += postInDimension[k].engagement;
 						replies += postInDimension[k].replies.length;
 						retweets += postInDimension[k].retweets;
+						count += 1;
 						if (postInDimension[k].engagement>bestEngagementScore){
 							bestEngagementScore = postInDimension[k].engagement;
 							bestEngagement = postInDimension[k].id;
@@ -232,10 +236,15 @@ function getDimensions(){
 						engagement: engagement,
 						replies: replies,
 						retweets: retweets,
+						count: count,
 						bestEngagement: bestEngagement
 					}
 					Dimensionen.update({username: name},{$set:{
 						[dimensionsArray02[i]]: value
+					}})
+				}else{
+					Dimensionen.update({username: name},{$set:{
+						[dimensionsArray02[i]]: noValue
 					}})
 				}
 
@@ -486,13 +495,13 @@ export function initial(){
 	getPosts();
 	var myVar = setInterval(getDailyFollowers, 1200000);
 	var myVar03 = setInterval(getPosts, 1200000);*/
-	Posts.remove({});
-	Mentions.remove({});
-	getDailyFollowers();
-	getPosts();
+	//getDailyFollowers();
+	//getPosts();
 	
-	//Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Produkt und Dienstleistung"}})
-
+	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
+	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
+	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
+	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})*/
 	//getDimensions();
 
 }

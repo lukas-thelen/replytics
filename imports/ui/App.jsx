@@ -81,7 +81,7 @@ class App extends Tracker.Component {
                   <div className="col-md-5 ">
                     <Selbstposten/>
                     <br/>
-                    
+                    <Benachrichtigungen/>
                     <TopPosts/>
                   </div>
           

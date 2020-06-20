@@ -40,10 +40,11 @@ getDate (i) {
 
 
 <div>
+	{this.getText().length>0 && <div>
 	<h5 style={{paddingBottom:6}} className="border-bottom">Top Posts</h5>
-	<div style={{paddingBottom:6}} className="border-bottom col-md-10"> 
+	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
 	<div>
-	<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText()[0].username}:</small>
+	{/*<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText()[0].username}:</small>*/}
 	<p style={{margin:2}}>{this.getText()[0].text}</p>
 	<p style={{fontSize:10, margin: 2}}>am {this.getDate(0)}</p>
 	</div>
@@ -52,23 +53,26 @@ getDate (i) {
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[0].replies.length}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[0].dimension}</p>
 	</div>
+	</div>}
     
-	<div style={{paddingBottom:6}}className="border-bottom col-md-10"> 
+	{this.getText().length>1 && <div>
+	<div style={{paddingBottom:6}}className="border-bottom col-md-12"> 
 	<div>
-	<p style={{margin:2, fontSize:11,paddingTop:4}}>{this.getText() [0].username}:</p>
+	{/*<p style={{margin:2, fontSize:11,paddingTop:4}}>{this.getText() [0].username}:</p>*/}
 	<p style={{margin:2}}>{this.getText()[1].text}</p>
 	<p style={{fontSize:10, margin: 2}}>am {this.getDate(1)}</p>
 	</div>
 	<p className="btn btn-outline-success" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement:{this.getEngagement(1)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[1].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[1].replies.length}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[1].dimension}</p>
+	<p style={{ fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[1].dimension}</p>
 	</div>
-	
+	</div>}
 
-	<div style={{paddingBottom:6}} className="border-bottom col-md-10"> 
+	{this.getText().length>1 && <div>
+	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
 	<div>
-	<p style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText() [0].username}:</p>
+	{/*<p style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText() [0].username}:</p>*/}
 	<p style={{margin:2}}>{this.getText()[2].text}</p>
 	<p style={{fontSize:10, margin: 2}}>am {this.getDate(2)}</p>
 	</div>
@@ -77,7 +81,8 @@ getDate (i) {
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[2].replies.length}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[2].dimension}</p>
 	</div>
-	
+	</div>}
+
 </div>
   )
   }
