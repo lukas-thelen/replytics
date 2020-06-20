@@ -16,6 +16,7 @@
     "jquery": "^3.4.1",
     "meteor-node-stubs": "^1.0.0",
     "ml-sentiment": "^2.0.7",
+    "python-shell": "^2.0.1",
     "react": "^16.13.1",
     "react-chartjs": "^1.2.0",
     "react-chartjs-2": "^2.9.0",

@@ -45,7 +45,6 @@ Meteor.methods({
 		var id = result.data.id_str;
 		var date = result.data.created_at;
 		//speichert Post inklusive Dimension in Datenbank
-		console.log(dimension)
 		Posts.insert({
 			id: id, 
 			date: new Date(date), 
@@ -121,7 +120,6 @@ async function getDailyFollowers(){
 			}
 		}
 	}
-	console.log(FollowerCount.find({}).fetch())
 }
 
 
@@ -172,16 +170,15 @@ async function getPosts(){
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
-	python();
-	getRetweets();
-	getEngagement();
-	getDimensions();
+	
+	
+	//console.log(Posts.find({retweet: false}).fetch());
 }
 
-function getDimensions(){
+async function getDimensions(){
 	var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
 	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
-	var accounts = Accounts.find({}).fetch();
+	var accounts = await Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var q=0;q<l;q++){
 		if(accounts[q].twitter_auth){
@@ -192,9 +189,12 @@ function getDimensions(){
 				replies: 0,
 				retweets: 0,
 				count: 0,
+				s_neg: 0,
+				s_neu: 0,
+				s_pos:0,
 				bestEngagement: "none"
 			}
-			var dimensionen = Dimensionen.find({username:name}).fetch();
+			var dimensionen = await Dimensionen.find({username:name}).fetch();
 			if(!dimensionen[0]){
 				Dimensionen.insert({
 					Emotionen: noValue,
@@ -208,12 +208,15 @@ function getDimensions(){
 			}
 			
 			for (var i=0; i< 6; i++){
-				var postInDimension = Posts.find({username: name, dimension: dimensionsArray[i]}).fetch();
+				var postInDimension = await Posts.find({username: name, dimension: dimensionsArray[i]}).fetch();
 				var favorites = 0;
 				var engagement = 0;
 				var replies = 0;
 				var retweets = 0;
 				var count = 0;
+				var s_neg= 0;
+				var s_neu= 0;
+				var s_pos= 0;
 				var bestEngagement = "none";
 				var bestEngagementScore = 0;
 		
@@ -224,6 +227,9 @@ function getDimensions(){
 						replies += postInDimension[k].replies.length;
 						retweets += postInDimension[k].retweets;
 						count += 1;
+						s_neg += postInDimension[k].s_neg;
+						s_neu += postInDimension[k].s_neu;
+						s_pos += postInDimension[k].s_pos;
 						if (postInDimension[k].engagement>bestEngagementScore){
 							bestEngagementScore = postInDimension[k].engagement;
 							bestEngagement = postInDimension[k].id;
@@ -234,13 +240,20 @@ function getDimensions(){
 					engagement = engagement/len;
 					replies = replies/len;
 					retweets = retweets/len;
+					s_gesamt = s_neg + s_neu + s_pos;
+					s_neg = s_neg/s_gesamt;
+					s_neu = s_neu/s_gesamt;
+					s_pos = s_pos/s_gesamt;
 					var value = {
 						favorites: favorites,
 						engagement: engagement,
 						replies: replies,
 						retweets: retweets,
 						count: count,
-						bestEngagement: bestEngagement
+						bestEngagement: bestEngagement,
+						s_neg: s_neg,
+						s_pos: s_pos,
+						s_neu: s_neu
 					}
 					Dimensionen.update({username: name},{$set:{
 						[dimensionsArray02[i]]: value
@@ -256,7 +269,7 @@ function getDimensions(){
 	}
 }
 
-function getEngagement(){
+async function getEngagement(){
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
@@ -267,9 +280,9 @@ function getEngagement(){
 			}
 			var name = accounts[i].username;
 			var screen_name = accounts[i].screen_name;
-			var act_replies = getReplies(name);
-			var act_favorites = getFavorites(name);
-			var act_retweets = RetweetCount.find({username: name}, { $sort:{ date: -1 }}).fetch()[0].retweets;
+			var act_replies = await getReplies(name);
+			var act_favorites = await getFavorites(name);
+			var act_retweets = await RetweetCount.find({username: name}, { $sort:{ date: -1 }}).fetch()[0].retweets;
 			if (act_retweets<1){
 				act_retweets = 1
 			}
@@ -292,10 +305,9 @@ function getEngagement(){
 			}
 		}
 	}
-	console.log(Posts.find({retweet:false}).fetch());
 }
 
-function getReplies(nutzer){
+async function getReplies(nutzer){
 	var posts = Posts.find({username: nutzer, retweet: false}).fetch();
 	var replies = 0
 	for(var j=0;j<posts.length;j++){
@@ -307,7 +319,7 @@ function getReplies(nutzer){
 	return replies
 }
 
-function getFavorites(nutzer){
+async function getFavorites(nutzer){
 	var posts = Posts.find({username: nutzer}).fetch();
 	var favs = 0
 	for(var j=0;j<posts.length;j++){
@@ -320,50 +332,54 @@ function getFavorites(nutzer){
 
 }
 
-
-function postSentiment(){
-	Posts.update({},{$set: {s_neg: 0, s_neu: 0, s_pos:0}})
-	var postArray = Posts.find({retweet: false}).fetch();
-	for(var post=0; post<postArray.length; post++){
-		replyArray = postArray[post].replies;
-		for (var reply=0; reply<replyArray.length; reply++){
-			var sentiment = sm('DE', replyArray[reply]);
-			var sentiment02 = ml.classify(replyArray[reply]);
-			if (sentiment<0 || sentiment02<0){ Posts.update({id: postArray[post].id},{$inc: {s_neg: 1}}) }
-			if (sentiment===0 && sentiment02===0){ Posts.update({id: postArray[post].id},{$inc: {s_neu: 1}}) }
-			if (sentiment>0 || sentiment02>0){ Posts.update({id: postArray[post].id},{$inc: {s_pos: 1}}) }
+async function postSentiment(){
+	var accounts = Accounts.find({}).fetch();
+	var l = accounts.length;
+	for(var a=0;a<l;a++){
+		if(accounts[a].twitter_auth){
+			var name = accounts[a].username;
+			var screen_name = accounts[a].screen_name;
+			var UserAPI = new Twit({
+				consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
+				consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+				access_token: Accounts.find({username: name}).fetch()[0].token,
+				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
+			//API Anfrage nach alles Mentions(@)	
+			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});	
+			var mentionArray = result.data;
+			for (i=0; i<mentionArray.length-1; i++){
+				var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
+				var replyList = [];
+				if (mentionInReply[0]){
+					//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
+					replyList = mentionInReply[0].replies
+					//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
+					var replyExists = replyList.includes(mentionArray[i].text);
+					if(!replyExists){
+						replyList.push(mentionArray[i].text)
+					}
+					//Die lokale Liste wieder in der Datenbank speichern
+					Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
+					var mention = Mentions.find({id01: mentionArray[i].id}).fetch()
+					if(mention[0]){
+						if (!replyExists && mention[0].sentiment>0){
+							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_pos: 1}})
+						}
+						if (!replyExists && mention[0].sentiment===0){
+							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_neu: 1}})
+						}
+						if (!replyExists && mention[0].sentiment<0){
+							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_neg: 1}})
+						}
+					}
+				}
+				
+			}
 		}
 	}
 }
 
-function mentionSentiment(string){
-	/*var oldString = string.split(' ')
-	var newString = sw.removeStopwords(oldString, sw.de)
-	var text = ""
-	for(x=0; x<newString.length; x++){
-		//newString[x] = stem.stemWord(newString[x]);
-		text = text + " " + newString[x];
-	}*/
-	var text = string;
-	var sentiment = sm('DE', text);
-	var sentiment02 = ml.classify(text);
-	console.log(text);
-	console.log(sentiment);
-	console.log(sentiment02);
-	if (sentiment<0 || sentiment02<0){ Sentiment.update({},{$inc: {s_neg: 1}}) }
-	if (sentiment===0 && sentiment02===0){ Sentiment.update({},{$inc: {s_neu: 1}}) }
-	if (sentiment>0 || sentiment02>0){ Sentiment.update({},{$inc: {s_pos: 1}}) }
-
-}
-
-function initSentiment(){
-	if (!Sentiment.find({}).fetch()[0]){
-		Sentiment.insert({s_neg: 0, s_neu: 0, s_pos:0})
-	}
-	Sentiment.update({},{s_neg: 0, s_neu: 0, s_pos:0})
-}
-
-function getRetweets(){
+async function getRetweets(){
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var k=0;k<l;k++){
@@ -400,7 +416,6 @@ function getRetweets(){
 async function getMentions(){
 	
 	Mentions.remove({});
-	initSentiment();
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
@@ -421,30 +436,13 @@ async function getMentions(){
 			var authorCount = 0
 
 			//Iteration durch alle Mentions
-			for (i=0; i<mentionArray.length; i++){
-
-				//Abschnitt, um Antowrten zu Posts zuzuordnen
-				//true, wenn in der Posts Collection ein Eintrag besteht, zu dem die aktuelle Mention eine Antwort ist
-				var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
-				var replyList = [];
-				if (mentionInReply[0]){
-					//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
-					replyList = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies
-					//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
-					var replyExists = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch()[0].replies.includes(mentionArray[i].text);
-					if(!replyExists){
-						replyList.push(mentionArray[i].text)
-					}
-					//Die lokale Liste wieder in der Datenbank speichern
-					Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
-				}
+			for (i=0; i<mentionArray.length-1; i++){
 
 				//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
 				var author = Mentions.find({author: mentionArray[i].user.name, username: name}).fetch();
 				if(!author[0]){
 					authorCount ++
 				}
-
 				//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
 				Mentions.insert({
 					date: new Date(mentionArray[i].created_at),
@@ -479,6 +477,10 @@ async function getMentions(){
 			}
 		}
 	}
+	python()
+	getRetweets();
+	getEngagement();
+	getDimensions();
 	//console.log(Mentions.find({}).fetch())
 	//console.log(MentionCount.find({}).fetch())
 	//console.log(Posts.find({retweet: false}).fetch());
@@ -512,6 +514,8 @@ export function initial(){
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})*/
+	getDimensions();
+	console.log(Dimensionen.find({}).fetch())
 	//getDimensions();
 
 }
@@ -525,11 +529,11 @@ export function initial(){
 //
 
 //Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
-function python(){
-    PythonShell.run('**absoluter Dateipfad zu sentiment.py**', null, function (err) {
+async function python(){
+    PythonShell.run('C:/Users/lukas/Documents/GitHub/replytics/imports/server/sentiment.py', null, function (err) {
     if (err) throw err;
-    console.log('Sentiment berechnet');
-    });
+	postSentiment();
+	});
 }
 
 //gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
