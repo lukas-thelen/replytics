@@ -21,6 +21,7 @@ const sm = require('sentimental');
 const sw = require('stopword');
 var GermanStemmer = require('snowball-stemmer.jsx/dest/german-stemmer.common.js').GermanStemmer;
 const stem = new GermanStemmer();
+const path = require('path');
 
 
 
@@ -305,6 +306,7 @@ async function getEngagement(){
 			}
 		}
 	}
+	getDimensions();
 }
 
 async function getReplies(nutzer){
@@ -377,6 +379,7 @@ async function postSentiment(){
 			}
 		}
 	}
+	getEngagement();
 }
 
 async function getRetweets(){
@@ -439,12 +442,12 @@ async function getMentions(){
 			for (i=0; i<mentionArray.length-1; i++){
 
 				//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
-				var author = Mentions.find({author: mentionArray[i].user.name, username: name}).fetch();
+				var author = await Mentions.find({author: mentionArray[i].user.name, username: name}).fetch();
 				if(!author[0]){
 					authorCount ++
 				}
 				//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
-				Mentions.insert({
+				await Mentions.insert({
 					date: new Date(mentionArray[i].created_at),
 					id01: mentionArray[i].id,
 					id02: mentionArray[i].id_str,
@@ -479,8 +482,6 @@ async function getMentions(){
 	}
 	python()
 	getRetweets();
-	getEngagement();
-	getDimensions();
 	//console.log(Mentions.find({}).fetch())
 	//console.log(MentionCount.find({}).fetch())
 	//console.log(Posts.find({retweet: false}).fetch());
@@ -507,9 +508,6 @@ export function initial(){
 	//Posts.remove({});
 
 	//var myVar03 = setInterval(getPosts, 1200000);*/
-	//getDailyFollowers();
-	//getPosts();
-	
 	Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
@@ -522,8 +520,6 @@ export function initial(){
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})
 	getDailyFollowers();
 	getPosts();
-	console.log(Posts.find({username:"testaccount02", dimension:"not defined", retweet:false}).fetch())
-	//getDimensions();
 }
 
 //
@@ -536,7 +532,7 @@ export function initial(){
 
 //Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
 async function python(){
-    PythonShell.run('C:/Users/lukas/Documents/GitHub/replytics/imports/server/sentiment.py', null, function (err) {
+    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function (err) {
     if (err) throw err;
 	postSentiment();
 	});

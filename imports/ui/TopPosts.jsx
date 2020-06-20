@@ -18,7 +18,7 @@ getText() {
 }
 getEngagement (i) {
 	var engagement = this.getText()[i].engagement;
-    //engagement = parseInt(engagement * 100)
+    engagement = parseInt(engagement * 100)
 	return engagement;
 }
 
