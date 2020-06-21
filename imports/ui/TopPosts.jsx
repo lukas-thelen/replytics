@@ -29,6 +29,9 @@ getDate (i) {
 	var year = createdAt.getFullYear();
 	var hour = createdAt.getHours();
 	var minute = createdAt.getMinutes();
+	if(minute<10){
+		minute="0"+minute
+	}
     var dateOutput = day + "." + month + "." + year + " " + hour + ":" + minute;
 	return dateOutput;
 }
@@ -43,10 +46,9 @@ getDate (i) {
 	{this.getText().length>0 && <div>
 	<h5 style={{paddingBottom:6}} className="border-bottom">Top Posts</h5>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
-	<div>
-	{/*<small style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText()[0].username}:</small>*/}
-	<p style={{margin:2}}>{this.getText()[0].text}</p>
-	<p style={{fontSize:10, margin: 2}}>am {this.getDate(0)}</p>
+	<div className="d-flex w-100 justify-content-between">
+	<span style={{margin:2}}>{this.getText()[0].text}</span>
+	<span style={{fontSize:10, margin: 2}}>{this.getDate(0)}</span>
 	</div>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(0)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[0].fav}</p>
@@ -57,10 +59,9 @@ getDate (i) {
     
 	{this.getText().length>1 && <div>
 	<div style={{paddingBottom:6}}className="border-bottom col-md-12"> 
-	<div>
-	{/*<p style={{margin:2, fontSize:11,paddingTop:4}}>{this.getText() [0].username}:</p>*/}
-	<p style={{margin:2}}>{this.getText()[1].text}</p>
-	<p style={{fontSize:10, margin: 2}}>am {this.getDate(1)}</p>
+	<div className="d-flex w-100 justify-content-between">
+	<span style={{margin:2}}>{this.getText()[1].text}</span>
+	<span style={{fontSize:10, margin: 2}}>{this.getDate(1)}</span>
 	</div>
 	<p className="btn btn-outline-success" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement:{this.getEngagement(1)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[1].fav}</p>
@@ -71,10 +72,9 @@ getDate (i) {
 
 	{this.getText().length>1 && <div>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
-	<div>
-	{/*<p style={{margin:2, fontSize:11, paddingTop:4}}>{this.getText() [0].username}:</p>*/}
-	<p style={{margin:2}}>{this.getText()[2].text}</p>
-	<p style={{fontSize:10, margin: 2}}>am {this.getDate(2)}</p>
+	<div className="d-flex w-100 justify-content-between">
+	<span style={{margin:2}}>{this.getText()[2].text}</span>
+	<span style={{fontSize:10, margin: 2}}>{this.getDate(2)}</span>
 	</div>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(2)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[2].fav}</p>
