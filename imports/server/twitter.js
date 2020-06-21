@@ -242,9 +242,11 @@ async function getDimensions(){
 					replies = replies/len;
 					retweets = retweets/len;
 					s_gesamt = s_neg + s_neu + s_pos;
-					s_neg = s_neg/s_gesamt;
-					s_neu = s_neu/s_gesamt;
-					s_pos = s_pos/s_gesamt;
+					if(s_gesamt>0){
+						s_neg = s_neg/s_gesamt;
+						s_neu = s_neu/s_gesamt;
+						s_pos = s_pos/s_gesamt;
+					}
 					var value = {
 						favorites: favorites,
 						engagement: engagement,
