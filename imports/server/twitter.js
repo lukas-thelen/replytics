@@ -522,6 +522,8 @@ export function initial(){
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})
 	getDailyFollowers();
 	getPosts();*/
+	python();
+	console.log(Sentiment.find({}).fetch())
 }
 
 //

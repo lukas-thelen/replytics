@@ -6,48 +6,56 @@ client = MongoClient('localhost', 3001)
 db = client.meteor
 mentionscollection = db.mentions
 sentimentcollection = db.sentiment
+accountscollection = db.accounts
 s = sentimentcollection.find()
+sentimentcollection.remove({})
 
-sentiment = s[0]
-sentimentnegativ = sentiment["s_neg"]
-sentimentneutral = sentiment["s_neu"]
-sentimentpositiv = sentiment["s_pos"]
+for account in accountscollection.find():
+    try:
+        if account["twitter_auth"]:
+            name = account["username"]
+            sentimentnegativ = 0
+            sentimentneutral = 0
+            sentimentpositiv = 0
 
+            sentimentcollection.insert({"username": name, "s_neg":0, "s_pos":0, "s_neu":0})
 
-totalsentiment = 0
-counter = 0
+            totalsentiment = 0
+            counter = 0
 
-for entry in mentionscollection.find():
-    counter += 1
-    content = entry["content"]
-    blob = TextBlob(content)
-    textsentiment = blob.sentiment
-    mentionscollection.update_one({"_id": entry["_id"]}, {"$set": {"sentiment": textsentiment[0]}})
+            for entry in mentionscollection.find({"username":name}):
+                counter += 1
+                content = entry["content"]
+                blob = TextBlob(content)
+                textsentiment = blob.sentiment
+                mentionscollection.update_one({"_id": entry["_id"]}, {"$set": {"sentiment": textsentiment[0]}})
 
-    if textsentiment[0] < 0:
-        sentimentnegativ += 1
-        sentimentcollection.update_one({},{"$set": {"s_neg": sentimentnegativ}})
-    elif textsentiment[0] == 0:
-        sentimentneutral += 1
-        sentimentcollection.update_one({},{"$set": {"s_neu": sentimentneutral}})
-    elif textsentiment[0] > 0:
-        sentimentpositiv += 1
-        sentimentcollection.update_one({},{"$set": {"s_pos": sentimentpositiv}})
+                if textsentiment[0] < 0:
+                    sentimentnegativ += 1
+                    sentimentcollection.update_one({"username":name},{"$set": {"s_neg": sentimentnegativ}})
+                elif textsentiment[0] == 0:
+                    sentimentneutral += 1
+                    sentimentcollection.update_one({"username":name},{"$set": {"s_neu": sentimentneutral}})
+                elif textsentiment[0] > 0:
+                    sentimentpositiv += 1
+                    sentimentcollection.update_one({"username":name},{"$set": {"s_pos": sentimentpositiv}})
 
-    totalsentiment += textsentiment[0]
+                totalsentiment += textsentiment[0]
 
-#Ausgabe der Sentiments in Prozent
-onepercent = float(1 / counter)
-sentimentnegativpercent = float(sentimentnegativ) * onepercent
-sentimentcollection.update_one({},{"$set": {"s_neg%": sentimentnegativpercent}})
-sentimentneutralpercent = float(sentimentneutral) * onepercent
-sentimentcollection.update_one({},{"$set": {"s_neu%": sentimentneutralpercent}})
-sentimentpositivpercent = float(sentimentpositiv) * onepercent
-sentimentcollection.update_one({},{"$set": {"s_pos%": sentimentpositivpercent}})
+            #Ausgabe der Sentiments in Prozent
+            onepercent = float(1 / counter)
+            sentimentnegativpercent = float(sentimentnegativ) * onepercent
+            sentimentcollection.update_one({"username":name},{"$set": {"s_neg%": sentimentnegativpercent}})
+            sentimentneutralpercent = float(sentimentneutral) * onepercent
+            sentimentcollection.update_one({"username":name},{"$set": {"s_neu%": sentimentneutralpercent}})
+            sentimentpositivpercent = float(sentimentpositiv) * onepercent
+            sentimentcollection.update_one({"username":name},{"$set": {"s_pos%": sentimentpositivpercent}})
 
-#Durchschnitt des Sentiments
-averagesentiment = totalsentiment / counter # Durchschnitt
-sentimentcollection.update_one({},{"$set": {"s_average": averagesentiment}})
+            #Durchschnitt des Sentiments
+            averagesentiment = totalsentiment / counter # Durchschnitt
+            sentimentcollection.update_one({"username":name},{"$set": {"s_average": averagesentiment}})
+    except:
+        pass
 
 
 #    wordlist = blob.tokens
