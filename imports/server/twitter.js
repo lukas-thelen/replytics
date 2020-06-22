@@ -519,11 +519,9 @@ export function initial(){
 	Posts.update({text:"qwertz"}, {$set:{dimension:"Vision und Führung"}})
 	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
-	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})
+	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
 	getDailyFollowers();
-	getPosts();*/
-	python();
-	console.log(Sentiment.find({}).fetch())
+	getPosts();
 }
 
 //

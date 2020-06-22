@@ -3,6 +3,7 @@ import Tracker from 'tracker-component';
 import { Settings_DB } from '../api/settings.js';
 import { Posts } from '../api/twitter_posts.js';
 import { Dimensionen } from '../api/twitter_dimensionen.js';
+import { Settings } from './Settings.jsx';
  
 
 export class Benachrichtigungen extends Tracker.Component {
@@ -331,7 +332,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     getVeryImportantDimensions = () => {
-        var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
+        var settings = checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var important = []
         for(var i=0;i<dimensionen.length;i++){
@@ -343,7 +344,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     getImportantDimensions = () => {
-        var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
+        var settings = checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var important = []
         for(var i=0;i<dimensionen.length;i++){
@@ -355,7 +356,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     getUnImportantDimensions = () => {
-        var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
+        var settings = checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var important = []
         for(var i=0;i<dimensionen.length;i++){
@@ -364,6 +365,22 @@ export class Benachrichtigungen extends Tracker.Component {
             }
         }
         return important
+    }
+
+    checkSettings = () =>{
+        var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
+        if(!settings[0]){
+            Settings.insert({
+                username: Meteor.user().username, 
+                p_d: 1,
+                e: 1,
+                a: 1,
+                f: 1,
+                v_f: 1,
+                g_v: 1})
+            return [{username: Meteor.user().username, p_d: 1, e: 1, a: 1, f: 1, v_f: 1, g_v: 1}]
+        }
+        return settings
     }
 
     showState = () => {
