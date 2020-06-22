@@ -332,7 +332,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     getVeryImportantDimensions = () => {
-        var settings = checkSettings();
+        var settings = this.checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var important = []
         for(var i=0;i<dimensionen.length;i++){
@@ -344,7 +344,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     getImportantDimensions = () => {
-        var settings = checkSettings();
+        var settings = this.checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var important = []
         for(var i=0;i<dimensionen.length;i++){
@@ -356,7 +356,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     getUnImportantDimensions = () => {
-        var settings = checkSettings();
+        var settings = this.checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var important = []
         for(var i=0;i<dimensionen.length;i++){
@@ -370,7 +370,7 @@ export class Benachrichtigungen extends Tracker.Component {
     checkSettings = () =>{
         var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
         if(!settings[0]){
-            Settings.insert({
+            Settings_DB.insert({
                 username: Meteor.user().username, 
                 p_d: 1,
                 e: 1,

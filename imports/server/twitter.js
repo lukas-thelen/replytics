@@ -508,7 +508,6 @@ export function initial(){
 	//MentionCount.remove({});
 	//FollowerCount.remove({});
 	//Posts.remove({});
-
 	//var myVar03 = setInterval(getPosts, 1200000);*/
 	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
