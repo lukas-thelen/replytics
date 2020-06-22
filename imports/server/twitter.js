@@ -420,7 +420,6 @@ async function getRetweets(){
 //Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
 async function getMentions(){
 	
-	Mentions.remove({});
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
@@ -435,30 +434,33 @@ async function getMentions(){
 			//API Anfrage nach alles Mentions(@)	
 			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});	
 			var mentionArray = result.data;
-			var mentions = mentionArray.length;
 
 			//Anzahl der Autoren initialisieren
-			var authorCount = 0
+			var authorCount = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0].authors
+			var count = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0].mentions
 
 			//Iteration durch alle Mentions
 			for (i=0; i<mentionArray.length-1; i++){
+				var mentionExists = Mentions.find({id02:mentionArray[i].id_str}).fetch()
+				if(!mentionExists[0]){
+					count ++
+					//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
+					var author = await Mentions.find({author: mentionArray[i].user.name, username: name}).fetch();
+					if(!author[0]){
+						authorCount ++
+					}
+					//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
+					
+					await Mentions.insert({
+						date: new Date(mentionArray[i].created_at),
+						id01: mentionArray[i].id,
+						id02: mentionArray[i].id_str,
+						content: mentionArray[i].text,
+						author: mentionArray[i].user.name,
+						username: name
+					})
 
-				//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
-				var author = await Mentions.find({author: mentionArray[i].user.name, username: name}).fetch();
-				if(!author[0]){
-					authorCount ++
 				}
-				//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
-				await Mentions.insert({
-					date: new Date(mentionArray[i].created_at),
-					id01: mentionArray[i].id,
-					id02: mentionArray[i].id_str,
-					content: mentionArray[i].text,
-					author: mentionArray[i].user.name,
-					username: name
-				})
-
-			
 				//mentionSentiment(mentionArray[i].text);
 
 			}
@@ -469,16 +471,16 @@ async function getMentions(){
 			if(MentionCount.find({username: name}).count()>0){
 
 				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
-				if (!checkDaily(MentionCount, name) || (checkDaily(MentionCount, name) && (!checkCount("mentions", mentions, MentionCount, name) || !checkCount("authors", authorCount, MentionCount, name)))){
+				if (!checkDaily(MentionCount, name) || (checkDaily(MentionCount, name) && (!checkCount("mentions", count, MentionCount, name) || !checkCount("authors", authorCount, MentionCount, name)))){
 					
 					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
 					if(checkDaily(MentionCount, name)){
 						removeLast(MentionCount, name)
 					}
-					MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount, username: name})
+					MentionCount.insert({date: new Date(), mentions: count, authors: authorCount, username: name})
 				}
 			}else{
-				MentionCount.insert({date: new Date(), mentions: mentions, authors: authorCount, username: name})
+				MentionCount.insert({date: new Date(), mentions: count, authors: authorCount, username: name})
 			}
 		}
 	}
