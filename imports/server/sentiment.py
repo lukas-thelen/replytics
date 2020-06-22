@@ -45,11 +45,11 @@ for account in accountscollection.find():
             #Ausgabe der Sentiments in Prozent
             onepercent = float(1 / counter)
             sentimentnegativpercent = float(sentimentnegativ) * onepercent
-            sentimentcollection.update_one({"username":name},{"$set": {"s_neg%": sentimentnegativpercent}})
+            sentimentcollection.update_one({"username":name},{"$set": {"s_neg_p": sentimentnegativpercent}})
             sentimentneutralpercent = float(sentimentneutral) * onepercent
-            sentimentcollection.update_one({"username":name},{"$set": {"s_neu%": sentimentneutralpercent}})
+            sentimentcollection.update_one({"username":name},{"$set": {"s_neu_p": sentimentneutralpercent}})
             sentimentpositivpercent = float(sentimentpositiv) * onepercent
-            sentimentcollection.update_one({"username":name},{"$set": {"s_pos%": sentimentpositivpercent}})
+            sentimentcollection.update_one({"username":name},{"$set": {"s_pos_p": sentimentpositivpercent}})
 
             #Durchschnitt des Sentiments
             averagesentiment = totalsentiment / counter # Durchschnitt
