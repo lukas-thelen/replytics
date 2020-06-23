@@ -14,6 +14,7 @@ import { Login } from './Login.jsx';
 import { TopPosts} from './TopPosts.jsx';
 import { DimensionenRadar } from './Dimensionen.jsx';
 import { Settings } from './Settings.jsx';
+import { SearchPosts } from './SearchPosts.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
@@ -29,10 +30,13 @@ class App extends Tracker.Component {
     super(props);
     this.state = {
       authorize_screen: false,
-      settings_screen: false
+      settings_screen: false,
+      topVsPopular: true
     }
     this.twitter_authorization = this.twitter_authorization.bind(this);
     this.goToSettings = this.goToSettings.bind(this)
+    this.toTop = this.toTop.bind(this)
+    this.toPop = this.toPop.bind(this)
   }
 
   twitter_authorization(){
@@ -58,7 +62,14 @@ class App extends Tracker.Component {
         }
         return false
     }
-}
+  }
+
+  toTop(){
+    this.setState({topVsPopular:true})
+  }
+  toPop(){
+    this.setState({topVsPopular:false})
+  }
      render() {
 
        //Zugriff auf Datenbank ist langsamer als Aufruf der ganzen Funktionen
@@ -82,7 +93,12 @@ class App extends Tracker.Component {
                     <Selbstposten/>
                     <br/>
                     <Benachrichtigungen/>
-                    <TopPosts/>
+                    <div className="btn-group" role="group" aria-label="Basic example">
+                      <button type="button" className="btn btn-secondary" onClick={this.toTop}>Top Posts</button>
+                      <button type="button" className="btn btn-secondary" onClick={this.toPop}>Posts suchen</button>
+                    </div>
+                    {this.state.topVsPopular && <TopPosts/>}
+                    {!this.state.topVsPopular && <SearchPosts/>}
                   </div>
           
                   <div className="col-md-7">
