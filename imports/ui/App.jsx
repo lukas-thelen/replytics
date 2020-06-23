@@ -13,6 +13,7 @@ import { Selbstposten } from './posten.jsx';
 import { Login } from './Login.jsx';
 import { TopPosts} from './TopPosts.jsx';
 import { DimensionenRadar } from './Dimensionen.jsx';
+import { BarChart } from './BarChart.jsx';
 import { Settings } from './Settings.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
@@ -72,31 +73,31 @@ class App extends Tracker.Component {
               {this.state.authorize_screen && Meteor.user() &&
                 <Login twitter_authorization = {this.twitter_authorization} />
               }
-              {this.state.settings_screen && 
+              {this.state.settings_screen &&
                 <Settings goToSettings={this.goToSettings} />
               }
               {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen &&
                 <div className="row">
-                  
+
                   <div className="col-md-5 ">
                     <Selbstposten/>
                     <br/>
                     <Benachrichtigungen/>
                     <TopPosts/>
                   </div>
-          
+
                   <div className="col-md-7">
                     <DimensionenRadar/>
                     <br/>
+                      <BarChart/>
                     <div className="col-md-2 row ">
                       <KeyFacts/>
-
                     </div>
                     <div className="col-md-5 row">
 
                       <FollowerChart/>
                     </div>
-                  
+
                   </div>
 
                 </div>

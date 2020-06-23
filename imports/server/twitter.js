@@ -30,7 +30,7 @@ const path = require('path');
 	consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
 	access_token: Accounts.find({username: Meteor.user().username}).fetch()[0].token,
 	access_token_secret: Accounts.find({username: Meteor.user().username}).fetch()[0].secret});*/
-	
+
 
 Meteor.methods({
 
@@ -41,17 +41,17 @@ Meteor.methods({
 			consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
 			access_token: Accounts.find({username: user}).fetch()[0].token,
 			access_token_secret: Accounts.find({username: user}).fetch()[0].secret});
-			
+
 		let result = await UserAPI.post('statuses/update', { status: text});
 		var id = result.data.id_str;
 		var date = result.data.created_at;
 		//speichert Post inklusive Dimension in Datenbank
 		Posts.insert({
-			id: id, 
-			date: new Date(date), 
-			text: text, 
-			dimension: dimension, 
-			retweet: false, 
+			id: id,
+			date: new Date(date),
+			text: text,
+			dimension: dimension,
+			retweet: false,
 			replies: [],
 			s_neg: 0,
 			s_neu: 0,
@@ -104,10 +104,10 @@ async function getDailyFollowers(){
 			//API Anfrage nach Liste der Follower
 			let result = await TwitterAPI.get('followers/ids', { screen_name: screen_name});
 			follower = result.data.ids.length;
-			
+
 			//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
 			if (FollowerCount.find({username: name}).count()>0){
-				
+
 				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
 				if (!checkDaily(FollowerCount, name) || (!checkCount("count", follower, FollowerCount, name) && checkDaily(FollowerCount, name))){
 					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
@@ -134,7 +134,7 @@ async function getPosts(){
 			var screen_name = accounts[a].screen_name;
 			let result = await TwitterAPI.get('statuses/user_timeline', { screen_name: screen_name, count:500 });
 			var postArray = result.data;
-			
+
 			//Iteration durch alle Posts
 			for (i=0; i<postArray.length;i++){
 				//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
@@ -165,14 +165,14 @@ async function getPosts(){
 						username: name
 					})
 				}
-				
+
 			}
 		}
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
 	getMentions();
-	
-	
+
+
 	//console.log(Posts.find({retweet: false}).fetch());
 }
 
@@ -207,7 +207,7 @@ async function getDimensions(){
 					username:name
 				})
 			}
-			
+
 			for (var i=0; i< 6; i++){
 				var postInDimension = await Posts.find({username: name, dimension: dimensionsArray[i]}).fetch();
 				var favorites = 0;
@@ -220,7 +220,7 @@ async function getDimensions(){
 				var s_pos= 0;
 				var bestEngagement = "none";
 				var bestEngagementScore = 0;
-		
+
 				if (postInDimension[0]){
 					for (var k=0; k< postInDimension.length; k++){
 						favorites += postInDimension[k].fav;
@@ -316,7 +316,7 @@ async function getReplies(nutzer){
 	var replies = 0
 	for(var j=0;j<posts.length;j++){
 		replies += posts[j].replies.length;
-	} 
+	}
 	if (replies<1){
 		return 1
 	}
@@ -328,7 +328,7 @@ async function getFavorites(nutzer){
 	var favs = 0
 	for(var j=0;j<posts.length;j++){
 		favs += posts[j].fav;
-	} 
+	}
 	if (favs<1){
 		return 1
 	}
@@ -348,8 +348,8 @@ async function postSentiment(){
 				consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
-			//API Anfrage nach alles Mentions(@)	
-			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});	
+			//API Anfrage nach alles Mentions(@)
+			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});
 			var mentionArray = result.data;
 			for (i=0; i<mentionArray.length-1; i++){
 				var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
@@ -377,7 +377,7 @@ async function postSentiment(){
 						}
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -389,7 +389,7 @@ async function getRetweets(){
 	var l = accounts.length;
 	for(var k=0;k<l;k++){
 		if(accounts[k].twitter_auth){
-			
+
 			var name = accounts[k].username;
 			var screen_name = accounts[k].screen_name;
 			var posts = Posts.find({retweet: false, username: name}).fetch();
@@ -400,7 +400,7 @@ async function getRetweets(){
 			}
 			//nur wenn Collection nicht leer ist, diese vor dem neuen Eintrag überprüfen
 			if (RetweetCount.find({username: name}).count()>0){
-						
+
 				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
 				if (!checkDaily(RetweetCount, name) || (!checkCount("retweets", retweets, RetweetCount, name) && checkDaily(RetweetCount, name))){
 					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
@@ -419,7 +419,7 @@ async function getRetweets(){
 
 //Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
 async function getMentions(){
-	
+
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
@@ -431,8 +431,8 @@ async function getMentions(){
 				consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
-			//API Anfrage nach alles Mentions(@)	
-			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});	
+			//API Anfrage nach alles Mentions(@)
+			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});
 			var mentionArray = result.data;
 
 			//Anzahl der Autoren initialisieren
@@ -450,7 +450,7 @@ async function getMentions(){
 						authorCount ++
 					}
 					//Erstellt einen Eintrag für die Mention in der Collection für die Inahlte der Mentions
-					
+
 					await Mentions.insert({
 						date: new Date(mentionArray[i].created_at),
 						id01: mentionArray[i].id,
@@ -472,7 +472,7 @@ async function getMentions(){
 
 				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
 				if (!checkDaily(MentionCount, name) || (checkDaily(MentionCount, name) && (!checkCount("mentions", count, MentionCount, name) || !checkCount("authors", authorCount, MentionCount, name)))){
-					
+
 					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
 					if(checkDaily(MentionCount, name)){
 						removeLast(MentionCount, name)
@@ -535,13 +535,13 @@ export function initial(){
 
 //Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
 async function python(){
-    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function (err) {
+    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/test.py'), null, function (err) {
     if (err) throw err;
 	postSentiment();
 	});
 }
 
-//gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 
+//gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält
 function checkDaily(collection, name){
 	var today = new Date();
 	var latestObject = collection.findOne({username: name},{ sort:{ date:-1 } })
@@ -571,4 +571,3 @@ function checkCount(name, number, collection, user){
 function removeLast(collection, name){
 	collection.remove({date: collection.findOne({username: name},{ sort:{ date:-1 } }).date})
 }
-
