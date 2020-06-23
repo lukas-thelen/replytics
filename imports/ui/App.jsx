@@ -14,6 +14,7 @@ import { Login } from './Login.jsx';
 import { TopPosts} from './TopPosts.jsx';
 import { DimensionenRadar } from './Dimensionen.jsx';
 import { BarChart } from './BarChart.jsx';
+import { BarChartGesamt } from './BarChartGesamt.jsx';
 import { Settings } from './Settings.jsx';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
@@ -88,10 +89,11 @@ class App extends Tracker.Component {
 
                   <div className="col-md-7">
                     <DimensionenRadar/>
+                    <BarChart/>
                     <br/>
-                      <BarChart/>
                     <div className="col-md-2 row ">
                       <KeyFacts/>
+                      <BarChartGesamt/>
                     </div>
                     <div className="col-md-5 row">
 
