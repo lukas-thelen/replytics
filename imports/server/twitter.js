@@ -464,8 +464,13 @@ async function getMentions(){
 			var mentionArray = result.data;
 
 			//Anzahl der Autoren initialisieren
-			var authorCount = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0].authors
-			var count = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0].mentions
+			var authorCount = 0
+			var count = 0
+			var oldData = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0]
+			if (oldData){
+				authorCount = oldData.authors
+				count = oldData.mentions
+			}
 
 			//Iteration durch alle Mentions
 			for (i=0; i<mentionArray.length-1; i++){
