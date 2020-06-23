@@ -31,7 +31,8 @@ class App extends Tracker.Component {
     this.state = {
       authorize_screen: false,
       settings_screen: false,
-      topVsPopular: true
+      showTop: false,
+      showPop: true
     }
     this.twitter_authorization = this.twitter_authorization.bind(this);
     this.goToSettings = this.goToSettings.bind(this)
@@ -65,17 +66,19 @@ class App extends Tracker.Component {
   }
 
   toTop(){
-    this.setState({topVsPopular:true})
+    this.setState({showPop:false})
+    this.setState({showTop:true})
   }
   toPop(){
-    this.setState({topVsPopular:false})
+    this.setState({showPop:true})
+    this.setState({showTop:false})
   }
+
      render() {
 
        //Zugriff auf Datenbank ist langsamer als Aufruf der ganzen Funktionen
        //Rendern muss verzögert werden oder Platzhalter durch automatische updates ausgetauscht werden
        //if-Bedingung wichtig, um Fehlermeldungen zu vermeiden während die Daten laden
-
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
@@ -97,8 +100,8 @@ class App extends Tracker.Component {
                       <button type="button" className="btn btn-secondary" onClick={this.toTop}>Top Posts</button>
                       <button type="button" className="btn btn-secondary" onClick={this.toPop}>Posts suchen</button>
                     </div>
-                    {this.state.topVsPopular && <TopPosts/>}
-                    {!this.state.topVsPopular && <SearchPosts/>}
+                    {this.state.showTop && <TopPosts/>}
+                    {this.state.showPop && <SearchPosts/>}
                   </div>
           
                   <div className="col-md-7">

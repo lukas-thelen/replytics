@@ -25,7 +25,6 @@ export class SearchPosts extends Tracker.Component {
     }
     getTweets=()=>{
         var posts = Popular.find({username:Meteor.user().username}).fetch()
-        console.log(posts[0].posts[0].text)
         return posts[0].posts
     }
     getDate (createdAt) {
@@ -47,7 +46,7 @@ export class SearchPosts extends Tracker.Component {
             <a href={post.link} target="_blank">{post.text}</a><br/>
             <span>{post.autor}</span>
             <span>{this.getDate(post.date)}</span>
-            <span>  {post.favorites}</span>
+            <span> {post.favorites}</span>
         </div>
       );
     return (
