@@ -38,7 +38,8 @@ getDate (i) {
  //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
   render() { 
 	  
-    //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+	//Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+	if(this.props.renderCondition){
     return (
 
 
@@ -85,6 +86,9 @@ getDate (i) {
 
 </div>
   )
+	}else{
+		return null
+	}
   }
   
 

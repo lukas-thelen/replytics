@@ -31,8 +31,8 @@ class App extends Tracker.Component {
     this.state = {
       authorize_screen: false,
       settings_screen: false,
-      showTop: false,
-      showPop: true
+      showTop: true,
+      showPop: false
     }
     this.twitter_authorization = this.twitter_authorization.bind(this);
     this.goToSettings = this.goToSettings.bind(this)
@@ -100,8 +100,8 @@ class App extends Tracker.Component {
                       <button type="button" className="btn btn-secondary" onClick={this.toTop}>Top Posts</button>
                       <button type="button" className="btn btn-secondary" onClick={this.toPop}>Posts suchen</button>
                     </div>
-                    {this.state.showTop && <TopPosts/>}
-                    {this.state.showPop && <SearchPosts/>}
+                    <TopPosts renderCondition={this.state.showTop}/>
+                    <SearchPosts renderCondition={this.state.showPop}/>
                   </div>
           
                   <div className="col-md-7">

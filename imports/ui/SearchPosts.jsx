@@ -49,6 +49,7 @@ export class SearchPosts extends Tracker.Component {
             <span> {post.favorites}</span>
         </div>
       );
+    if(this.props.renderCondition){  
     return (
         //alles, was zurück geschickt werden soll
         <div>
@@ -59,5 +60,8 @@ export class SearchPosts extends Tracker.Component {
         <div>{Posts}</div>
         </div>
     );
+    }else{
+        return null
+    }
   }
 }
