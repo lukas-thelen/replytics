@@ -87,13 +87,23 @@ Meteor.methods({
 		var array = [];
         var post = {text:"", autor:"", favorites:0, date:new Date(), link:""}
         for (var i= 0; i<posts.data.statuses.length; i++){
-            post = {
-                text: posts.data.statuses[i].text.replace(new RegExp(/https:\/\/.*/),""),
-                autor: posts.data.statuses[i].user.name,
-                favorites: posts.data.statuses[i].favorite_count,
-				date: new Date(posts.data.statuses[i].created_at),
-				link: posts.data.statuses[i].entities.urls[0].expanded_url
-            }
+			if(posts.data.statuses[i].entities.urls[0]){
+				post = {
+					text: posts.data.statuses[i].text.replace(new RegExp(/https:\/\/.*/),""),
+					autor: posts.data.statuses[i].user.name,
+					favorites: posts.data.statuses[i].favorite_count,
+					date: new Date(posts.data.statuses[i].created_at),
+					link: posts.data.statuses[i].entities.urls[0].expanded_url
+				}
+			}else{
+				post = {
+					text: posts.data.statuses[i].text.replace(new RegExp(/https:\/\/.*/),""),
+					autor: posts.data.statuses[i].user.name,
+					favorites: posts.data.statuses[i].favorite_count,
+					date: new Date(posts.data.statuses[i].created_at)
+				}
+				console.log(posts.data.statuses[i].entities)
+			}
             array.push(post);
         }
 		console.log(array)
