@@ -12,7 +12,7 @@ import { Accounts } from '../api/accounts.js';
 import { RetweetCount } from '../api/twitter_retweetCount.js';
 import { Dimensionen } from '../api/twitter_dimensionen.js';
 import { Settings_DB } from '../api/settings.js';
-import { Settings } from '../ui/Settings.jsx';
+import { Popular } from '../api/twitter_popular.js';
 import { data } from 'jquery';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
@@ -81,6 +81,34 @@ Meteor.methods({
 			g_v: z
 		}})
 		return false
+	},
+	async searchPosts(name,word){
+		let posts = await TwitterAPI.get('search/tweets', { q: word, result_type: 'popular', lang: 'de', count: 3 });
+		var array = [];
+        var post = {text:"", autor:"", favorites:0, date:new Date(), link:""}
+        for (var i= 0; i<posts.data.statuses.length; i++){
+			if(posts.data.statuses[i].entities.urls[0]){
+				post = {
+					text: posts.data.statuses[i].text.replace(new RegExp(/https:\/\/.*/),""),
+					autor: posts.data.statuses[i].user.name,
+					favorites: posts.data.statuses[i].favorite_count,
+					date: new Date(posts.data.statuses[i].created_at),
+					link: posts.data.statuses[i].entities.urls[0].expanded_url
+				}
+			}else{
+				post = {
+					text: posts.data.statuses[i].text.replace(new RegExp(/https:\/\/.*/),""),
+					autor: posts.data.statuses[i].user.name,
+					favorites: posts.data.statuses[i].favorite_count,
+					date: new Date(posts.data.statuses[i].created_at)
+				}
+				console.log(posts.data.statuses[i].entities)
+			}
+            array.push(post);
+        }
+		console.log(array)
+		Popular.remove({username: name})
+        Popular.insert({posts: array, username: name})
 	}
 });
 
@@ -436,8 +464,13 @@ async function getMentions(){
 			var mentionArray = result.data;
 
 			//Anzahl der Autoren initialisieren
-			var authorCount = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0].authors
-			var count = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0].mentions
+			var authorCount = 0
+			var count = 0
+			var oldData = MentionCount.find({username: name}, {sort:{date:-1}}).fetch()[0]
+			if (oldData){
+				authorCount = oldData.authors
+				count = oldData.mentions
+			}
 
 			//Iteration durch alle Mentions
 			for (i=0; i<mentionArray.length-1; i++){
@@ -521,8 +554,8 @@ export function initial(){
 	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
-	getDailyFollowers();
-	getPosts();
+	//getDailyFollowers();
+	//getPosts();
 }
 
 //

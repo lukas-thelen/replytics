@@ -38,18 +38,22 @@ getDate (i) {
  //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
   render() { 
 	  
-    //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+	//Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+	if(this.props.renderCondition){
     return (
 
 
 <div>
 	{this.getText().length>0 && <div>
-	<h5 style={{paddingBottom:6}} className="border-bottom">Top Posts</h5>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
-	<div className="d-flex w-100 justify-content-between">
-	<span style={{margin:2}}>{this.getText()[0].text}</span>
+	<div className="d-flex w-100 justify-content-between ">
+	<strong style={{margin:2, fontSize:11}}>{this.getText()[0].username}</strong>
 	<span style={{fontSize:10, margin: 2}}>{this.getDate(0)}</span>
 	</div>
+	<div className="d-flex w-100 justify-content-between ">
+	<span style={{margin:2,fontSize:14}}>{this.getText()[0].text}</span>
+	</div>
+	
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(0)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[0].fav}</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[0].replies.length}</p>
@@ -59,9 +63,12 @@ getDate (i) {
     
 	{this.getText().length>1 && <div>
 	<div style={{paddingBottom:6}}className="border-bottom col-md-12"> 
-	<div className="d-flex w-100 justify-content-between">
-	<span style={{margin:2}}>{this.getText()[1].text}</span>
+	<div className="d-flex w-100 justify-content-between ">
+	<strong style={{margin:2, fontSize:11}}>{this.getText()[0].username}</strong>
 	<span style={{fontSize:10, margin: 2}}>{this.getDate(1)}</span>
+	</div>
+	<div className="d-flex w-100 justify-content-between ">
+	<span style={{margin:2, fontSize:14}}>{this.getText()[1].text}</span>
 	</div>
 	<p className="btn btn-outline-success" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement:{this.getEngagement(1)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[1].fav}</p>
@@ -72,9 +79,12 @@ getDate (i) {
 
 	{this.getText().length>1 && <div>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
-	<div className="d-flex w-100 justify-content-between">
-	<span style={{margin:2}}>{this.getText()[2].text}</span>
+	<div className="d-flex w-100 justify-content-between ">
+	<strong style={{margin:2, fontSize:11}}>{this.getText()[0].username}</strong>
 	<span style={{fontSize:10, margin: 2}}>{this.getDate(2)}</span>
+	</div>
+	<div className="d-flex w-100 justify-content-between ">
+	<a style={{margin:2, fontSize:14}}>{this.getText()[2].text}</a>
 	</div>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(2)} %</p>
 	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[2].fav}</p>
@@ -85,6 +95,9 @@ getDate (i) {
 
 </div>
   )
+	}else{
+		return null
+	}
   }
   
 
