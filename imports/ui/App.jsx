@@ -19,6 +19,8 @@ import { SearchPosts } from './SearchPosts.jsx';
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
 import { Benachrichtigungen } from './Benachrichtigungen.jsx';
+import { BarChart } from './BarChart.jsx';
+import { BarChartGesamt } from './BarChartGesamt.jsx';
 
 
 
@@ -106,13 +108,14 @@ class App extends Tracker.Component {
           
                   <div className="col-md-7">
                     <DimensionenRadar/>
+                    <BarChart/>
                     <br/>
                     <div className="col-md-2 row ">
                       <KeyFacts/>
 
                     </div>
                     <div className="col-md-5 row">
-
+                      <BarChartGesamt/>
                       <FollowerChart/>
                     </div>
                   
