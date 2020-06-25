@@ -25,7 +25,10 @@ export class SearchPosts extends Tracker.Component {
     }
     getTweets=()=>{
         var posts = Popular.find({username:Meteor.user().username}).fetch()
-        return posts[0].posts
+		if(posts[0]){
+			return posts[0].posts
+		}
+		return []
     }
     getDate (createdAt) {
         var day = createdAt.getDate();
@@ -41,21 +44,30 @@ export class SearchPosts extends Tracker.Component {
     }
 
   render() {
+
       const Posts = this.getTweets().map((post)=>
-        <div>
-            <a href={post.link} target="_blank">{post.text}</a><br/>
-            <span>{post.autor}</span>
-            <span>{this.getDate(post.date)}</span>
-            <span> {post.favorites}</span>
+	    
+        <div style={{margin:3}}className="border-bottom col-md-12">
+			<div className="d-flex w-100 justify-content-between ">
+			<strong style={{fontSize:11}}>{post.autor}</strong>
+			<span style={{fontSize:10, margin: 2}}>{this.getDate(post.date)}</span>
+			</div>
+			<div className="d-flex w-100 justify-content-between ">
+            <a className="alert alert-light" href={post.link} target="_blank" style={{margin:2, fontSize:13}}>{post.text}</a><br/>
+            
+			<span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2, margin: 15}}className="btn btn-outline-danger btn-sm"> Likes:{post.favorites}</span>
+			</div>
+			
+            
         </div>
       );
     if(this.props.renderCondition){  
     return (
         //alles, was zurück geschickt werden soll
-        <div>
-        <form onSubmit={ this.suchen }>
-		    <input type="text" onChange={this.changeText}></input>
-            <input type="submit"></input>
+        <div style={{marginTop:6}}>
+        <form onSubmit={ this.suchen } className="form-inline">
+		    <input style={{height: 25, fontSize: 15, padding: 4, margin: 3}} className="form-control mr-sm-2 button-xs" type="suchen" placeholder="Suchbegriff eingeben" aria-label="Search" type="text" onChange={this.changeText}></input>
+            <input style={{height: 25, fontSize: 11, padding: 4, margin: 3}} className="btn btn-outline-secondary my-2 my-sm-0 button-xs" type="submit" value="Suchen"></input>
         </form>
         <div>{Posts}</div>
         </div>
