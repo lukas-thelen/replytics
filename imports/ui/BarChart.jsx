@@ -13,7 +13,6 @@ export class BarChart extends Tracker.Component {
     var dimensionen_s_pos =[];
     var dimensionen_s_neu =[];
     var dimensionen_s_neg =[];
-
     for (var i = 0; i< 6; i++){
       dimensionen_s_pos.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_pos)
     }
@@ -25,7 +24,7 @@ export class BarChart extends Tracker.Component {
     }
 
 return{
-  labels: ["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"],
+  labels: ["Emotionen","Produkt/Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","ges. Verantwortung"],
   datasets:
     /*{
       label: 'Sentiment',
@@ -39,16 +38,19 @@ return{
     [{
       label: 'positiv',
         data :dimensionen_s_pos,
-        backgroundColor: 'rgba(154,246,154,0.7)'
+        backgroundColor: 'rgba(92, 184, 92, 0.6)',
+        barThickness:20
       },
       {
         label: 'neutral',
         data:  dimensionen_s_neu,
-        backgroundColor: "rgba(7, 213, 230, 0.5)"
+        backgroundColor: "rgba(91, 192, 222, 0.6)",
+        barThickness:20
       },{
         label: 'negativ',
         data:  dimensionen_s_neg,
-        backgroundColor: 'rgba(244, 66, 76, 0.7)'
+        backgroundColor: 'rgba(217, 83, 79, 0.6)',
+        barThickness:20
       }
     ]};
   }
@@ -56,10 +58,11 @@ return{
   render() {
     if(true) {
       return (
-        <div>
+        <div className="barchart">
+        <h5>Sentiment</h5>
 
-          <h5>Sentiment</h5>
-          <HorizontalBar
+        <div>
+          <HorizontalBar className="chartcanvas"
             options = {{
             //  bezierCurve: false,
               //linetension: 0,
@@ -73,11 +76,11 @@ return{
                 }]
               },
               responsive: true,
-              aspectRatio: 3,
-              //maintainAspectRatio: false
+              maintainAspectRatio: false
             }}
             data = {this.getSentiment()}
           />
+        </div>
         </div>
 
 

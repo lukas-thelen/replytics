@@ -51,20 +51,19 @@ console.log(s_twitter_neg);
 return{
   labels: ["Twitter"],
   datasets:
-
     [{
       label: 'positiv',
         data :s_twitter_pos,
-        backgroundColor: 'rgba(154,246,154,0.7)'
+        backgroundColor: 'rgba(92, 184, 92, 0.6)'
       },
       {
         label: 'neutral',
         data:  s_twitter_neu,
-        backgroundColor: "rgba(7, 213, 230, 0.5)"
+        backgroundColor: "rgba(91, 192, 222, 0.6)"
       },{
         label: 'negativ',
         data:  s_twitter_neg,
-        backgroundColor: 'rgba(244, 66, 76, 0.7)'
+        backgroundColor: 'rgba(217, 83, 79, 0.6)'
       }
     ]};
   }
@@ -72,9 +71,10 @@ return{
   render() {
     if(true) {
       return (
-        <div>
+        <div className="barchart02">
 
           <h5>Gesamt Sentiment</h5>
+          <div>
           <HorizontalBar
             options = {{
               scales: {
@@ -86,10 +86,11 @@ return{
                 }]
               },
               responsive: true,
-              aspectRatio: 3,
+              maintainAspectRatio: false
             }}
             data = {this.getSentimentGesamt()}
           />
+          </div>
         </div>
 
         );
