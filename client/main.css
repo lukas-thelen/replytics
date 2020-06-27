@@ -31,6 +31,17 @@ body {
 .elem{
   margin-top:10px;
 }
+ 
+.account{
+  align-items:center;
+  display: flex;
+  padding: 12px;
+}
+
+.navelem{
+  align-items:center;
+  display: flex;
+}
 .chart {
     width: 600px;
     height: 300px;

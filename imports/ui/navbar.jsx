@@ -42,14 +42,14 @@ export class Navbar extends Tracker.Component {
 				</ul>
 				
 				<div className="collapse navbar-collapse " id="navbarTogglerDemo02">
-				<ul class="navbar-nav ml-auto">	
-                  <li className="nav-item active">
-						<button role="navigation" type="button" className="btn btn-dark text-light"  style={{ fontSize:13}}>
+				<ul className="navbar-nav ml-auto">	
+                  <li className="nav-item active account">
+						<span role="navigation"  className="text-light"  style={{fontSize:13}}>
 						<strong>Eingeloggt als: </strong>
                         <AccountsUIWrapper />
-						</button>
+						</span>
                   </li>    
-					<li className="nav-item active">
+					<li className="nav-item active navelem">
 					 <div className="dropdown">
                             <button type="button" className="btn bg-dark text-white dropdown-toggle " id="dropdownSettingsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                                 <svg className="bi bi-gear text-light"  width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -60,13 +60,13 @@ export class Navbar extends Tracker.Component {
                             </button>
                             <div className="dropdown-menu" aria-labelledby="dropdownSettingsButton">
                                 {this.isAuthorized() && <a className="dropdown-item" href="#" onClick={this.props.twitter_authorization}>Twitter autorisieren</a>}
-                                <a style={{fontSize:12}} className="dropdown-item border-bottom" href="#" onClick={this.props.goToSettings}>Einstellungen</a>
-                                <a style={{fontSize:12}} className="dropdown-item" href="#">Ausloggen</a>
+                                <a style={{fontSize:14}} className="dropdown-item border-bottom" href="#" onClick={this.props.goToSettings}>Einstellungen</a>
+                                <a style={{fontSize:14}} className="dropdown-item" href="#">Ausloggen</a>
                             </div>
 							
                        </div>
 					</li>
-					<li className="nav-item">
+					<li className="nav-item navelem">
 						<button style={{ fontSize:13}} type="button" className="btn btn-dark text light" disabled>#stayconnected</button>
 					</li>
 					</ul>	
