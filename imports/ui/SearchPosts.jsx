@@ -65,7 +65,7 @@ export class SearchPosts extends Tracker.Component {
     return (
         //alles, was zurück geschickt werden soll
         <div style={{marginTop:6}}>
-        <form onSubmit={ this.suchen } className="form-inline">
+        <form onSubmit={ this.suchen } style={{justifyContent:"center"}} className="form-inline">
 		    <input style={{height: 25, fontSize: 15, padding: 4, margin: 3}} className="form-control mr-sm-2 button-xs" type="suchen" placeholder="Suchbegriff eingeben" aria-label="Search" type="text" onChange={this.changeText}></input>
             <input style={{height: 25, fontSize: 11, padding: 4, margin: 3}} className="btn btn-outline-secondary my-2 my-sm-0 button-xs" type="submit" value="Suchen"></input>
         </form>

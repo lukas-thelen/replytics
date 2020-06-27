@@ -1,12 +1,11 @@
 .spalte {
-  width: 200px;
-  height: 100px;
-  border: 1px outset black;
+  box-shadow: -5px 5px 10px silver;
+  padding:10px;
   margin: 5px;
-  padding: 5px;
-  display: inline-block;
-  font-style: normal;
-  font-size: 8px;
+}
+
+.container{
+  justify-content:center; 
 }
 
 .avatar {
@@ -19,6 +18,7 @@
 body {
     padding: 10px;
     font-family: sans-serif;
+    font-size: 15px;
 }
 
 /* canvas{
@@ -33,12 +33,41 @@ body {
     border-style: groove;
 }
 
-.container {
-   width: 210px;
-   height: 550px;
-   border: 1px solid;
-   border-color: white;
-   padding: 0;
-   position: middle;
-   float: right;
+.barchart canvas{
+  height: 24vh;
+} 
+
+.barchart02 canvas{
+  height: 11vh;
+}
+
+.followerchart canvas{
+  height: 24vh;
+}
+
+
+@media (max-width:1500px){
+  body{
+    font-size:12px !important;
+  }
+  .barchart canvas{
+    height: 35vh !important;
+  } 
+  .followerchart canvas{
+    height: 32vh !important;
+  }
+  .keyfacts h6{
+    font-size: 15px;
+  }
+}
+
+.nopad{
+  padding:0px !important;
+}
+.keyfacts.row{
+  margin: 0px !important;
+}
+
+.content{
+  margin:0px !important;
 }

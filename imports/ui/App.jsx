@@ -91,35 +91,42 @@ class App extends Tracker.Component {
               {this.state.settings_screen && 
                 <Settings goToSettings={this.goToSettings} />
               }
+              
               {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen &&
-                <div className="row">
+                
+                <div className="content row" >
                   
-                  <div className="col-md-5 ">
+                  <div className="col-xl-5 ">
                     <Selbstposten/>
-                    <br/>
                     <Benachrichtigungen/>
-                    <div className="btn-group" role="group" aria-label="Basic example">
-                      <button type="button" className="btn btn-secondary" onClick={this.toTop}>Top Posts</button>
-                      <button type="button" className="btn btn-secondary" onClick={this.toPop}>Posts suchen</button>
+                    <br/>
+                    <div className="d-flex w-100 justify-content-between " >
+                    <h5 style={{display:"inline"}} >bisherige Posts</h5>
+                    <span className="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                      <button type="button" className="btn " onClick={this.toTop}>Top Posts</button>
+                      <button type="button" className="btn " onClick={this.toPop}>Posts suchen</button>
+                    </span>
                     </div>
                     <TopPosts renderCondition={this.state.showTop}/>
                     <SearchPosts renderCondition={this.state.showPop}/>
                   </div>
-          
-                  <div className="col-md-7">
+                  <div className="col-xl-7 row">
+                  <div className="col-md-7 nopad">
                     <DimensionenRadar/>
-                    <BarChart/>
+                    <br/>      
                     <br/>
-                    <div className="col-md-2 row ">
-                      <KeyFacts/>
+                    <br/>
+                    <KeyFacts/>
+                  </div>
 
-                    </div>
-                    <div className="col-md-5 row">
+                    <div className="col-md-5 nopad">
+                      <BarChart/>
+                      <br/>
                       <BarChartGesamt/>
+                      <br/>
                       <FollowerChart/>
                     </div>
-                  
-                  </div>
+                    </div>
 
                 </div>
               }

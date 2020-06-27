@@ -27,7 +27,7 @@ export class Selbstposten extends Tracker.Component {
 		return (
 			//alles, was zurück geschickt werden soll
 			<form onSubmit={ this.submitPost }>
-				<p>Hier ist Platz fürs Posten:</p>
+				<h5>Tweete etwas:</h5>
 				<textarea 
 					placeholder="Schreibe etwas..."
 					className="form-control" 
@@ -37,7 +37,7 @@ export class Selbstposten extends Tracker.Component {
 				/>
 				<br></br>
 				<div className= "row col-md-10">
-				<select onChange = {this.changeDimension} className="custom-select mr-sm-2 col-md-7">
+				<select onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
 					<option value="Dimension wählen">Kategorie wählen</option>
 					<option value="not defined">keine Angabe</option>
 					<option value="Produkt und Dienstleistung">Produkt und Dienstleistung</option>
@@ -47,9 +47,7 @@ export class Selbstposten extends Tracker.Component {
 					<option value="Vision und Führung">Vision und Führung</option>
 					<option value="Gesellschaftliche Verantwortung">Gesellschaftliche Verantwortung</option>
 				</select>
-				<br/>
-				<br/>
-				<input className="col-md-3 btn " type='submit' value="Posten"/>
+				<input style={{height:"38px", marginBottom:"4%"}}className="col-md-3 btn" type='submit' value="Posten"/>
 				</div>
 		  </form>
 		);

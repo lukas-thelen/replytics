@@ -23,7 +23,9 @@ export class FollowerChart extends Tracker.Component {
       var follower = this.getFollower();
 
     var l = follower.length-1;
-
+    if (l>=6){
+      l = 6
+    }
     //alert(l);
     //alert(follower);
     for(var i=l;i>=0;i--){
@@ -31,16 +33,8 @@ export class FollowerChart extends Tracker.Component {
       followerList.push(follower[i].count);
     }
 
-    /*
-    if (l>=6){
-      l = 6
-    }else{
-      for(var x=0; x<7;x++){
-        if(followerList[x] == undefined){
-          followerList.push(0);
-        }
-      }
-    }*/
+    
+
 
     for(var j=l; j>=0; j--){
       followerDate.push(follower[j].date);
@@ -70,7 +64,7 @@ export class FollowerChart extends Tracker.Component {
       datasets: [
         {
           label: "Follower Anzahl",
-          borderColor:["rgba(0, 132, 180, 0.8)"],
+          borderColor:["rgb(91, 192, 222)"],
           data: followerList,
           lineTension: 0,
           fill: false
@@ -82,17 +76,20 @@ export class FollowerChart extends Tracker.Component {
   render() {
     if(this.getFollower()[0] != undefined) {
       return (
-        <div style ={{position: "relative", width: 600, height: 550}}>
-          <h3>Follower Anzahl</h3>
+        <div className="followerchart">
+          <h5>Follower Anzahl</h5>
+          <div>
           <Line
             options = {{
               bezierCurve: false,
               linetension: 0,
-              scales: {yAxes: [{ticks: {suggestedMin: 0}}]},
-              responsive: true
+              scales: {yAxes: [{ticks: {suggestedMin: 0, precision:0}}]},
+              responsive: true,
+              maintainAspectRatio: false
             }}
             data = {this.getFollowerList()}
           />
+          </div>
         </div>
 
 
