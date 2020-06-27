@@ -25,7 +25,7 @@ export class Navbar extends Tracker.Component {
         return (
             
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark" >
-			 <a className="navbar-brand" href="test.html"><img width="100" height="60" src="/logoneu.png" alt="Selfhtml"/></a>
+			 <a className="navbar-brand" href="test.html"><img width="90" height="50" src="/logoneu.png" alt="Selfhtml"/></a>
              <a className="nav-link float-left" href="http://www.twitter.com"><img width="35em" height="auto" src="/twitter1.png" alt="Selfhtml"/></a>
 			 <a className="nav-link float-left" href="http://www.reddit.com"><img width="35em" height="auto" src="/Reddit.png" alt="Selfhtml"/></a>
                   

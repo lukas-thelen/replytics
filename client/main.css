@@ -74,6 +74,15 @@ body {
   .keyfacts h6{
     font-size: 15px;
   }
+  .barchart02 canvas{
+    height: 17vh;
+  }
+}
+
+@media (max-width:1200px){
+  .followerchart canvas{
+    height: 22vh !important;
+  }
 }
 
 .nopad{
