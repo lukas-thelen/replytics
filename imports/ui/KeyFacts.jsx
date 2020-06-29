@@ -123,11 +123,13 @@ export class KeyFacts extends Tracker.Component {
     
     if (this.getFollower()[0] != undefined && this.getMentions()[0] != undefined) {
      return (
-     
-    <div>
+	 
+    <div> 
+   
       <h5 style={{textAlign:"center"}}>Allgemeines</h5>
       <div className="container row keyfacts">
-        <section className="spalte card col-4">
+	   
+        <section className="spalte card col-3">
           <h5>Follower Anzahl</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getFollower()[0].count}</h3>
@@ -135,21 +137,23 @@ export class KeyFacts extends Tracker.Component {
 
         </section>
 
-        <section className="spalte card col-4">
+        <section className="spalte card col-3">
           <h5>Erwäh&shy;nungen</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].mentions}</h3>
           <h6>{this.getDifference7mention()}  zu letzter Woche</h6>
         </section>
-  
-        <section className="spalte card col-4">
+		
+	
+		
+        <section className="spalte card col-3">
           <h5>Anzahl Autoren</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].authors}</h3>
           <h6>{this.getDifference7authors()} zu letzter Woche</h6>
         </section>
   
-        <section className="spalte card col-4">
+        <section className="spalte card col-3">
           <h5>Retweets</h5>
           <h3  style={{color:"#A4A4A4"}}>{this.getRetweets()[0].retweets}</h3>
           <h6>{this.getDifference7Retweets()} zu letzter Woche</h6>
