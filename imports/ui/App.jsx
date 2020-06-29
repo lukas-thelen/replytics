@@ -96,7 +96,7 @@ class App extends Tracker.Component {
                 
                 <div className="content row" >
                   
-                  <div className="col-xl-4 ">
+                  <div className="col-xl-4 elem">
                     <Selbstposten/>
                     <Benachrichtigungen/>
                     <br/>
@@ -110,17 +110,17 @@ class App extends Tracker.Component {
                     <TopPosts renderCondition={this.state.showTop}/>
                     <SearchPosts renderCondition={this.state.showPop}/>
                   </div>
+
                   <div className="col-xl-8 row">
-                  <div className="col-md-6 nopad">
-                    <DimensionenRadar/>
-                    <br/>      
+                  <div className="col-md-6 nopad elem">
+                    <DimensionenRadar/>     
                     <br/>
                     <br/>
 					<BarChart/>
                     
                   </div>
 
-                    <div className="col-md-6 nopad">
+                    <div className="col-md-6 nopad elem">
                       <KeyFacts/>
                       <br/>
                      
