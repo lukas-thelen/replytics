@@ -21,6 +21,7 @@ import { Navbar } from './navbar.jsx';
 import { Benachrichtigungen } from './Benachrichtigungen.jsx';
 import { BarChart } from './BarChart.jsx';
 import { BarChartGesamt } from './BarChartGesamt.jsx';
+import { Reddit_Login } from './reddit_Login.jsx';
 
 
 
@@ -123,6 +124,7 @@ class App extends Tracker.Component {
 
                 </div>
               }
+            <Reddit_Login/>
             </div>
 
            );
