@@ -7,7 +7,9 @@ var snoowrap = require('snoowrap');
 export class Reddit_Login extends Tracker.Component {
     authenticationUrl = snoowrap.getAuthUrl({
         clientId: 'E6ul0OQ6hTnePQ',
-        scope: ['identity', 'wikiread', 'wikiedit'],
+        scope: ['identity', 'wikiread', 'wikiedit','account', 'creddits','edit',
+          'flair', 'history', 'livemanage', 'mysubreddits', 'read', 'report',
+          'save', 'submit', 'subscribe', 'vote'],
         redirectUri: 'http://localhost:3000',
         permanent: true,
         state: 'fe211bebc52eb3da9bef8db6e63104d3' // a random string, this could be validated when the user is redirected back

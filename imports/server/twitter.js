@@ -556,6 +556,7 @@ export function initial(){
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
 	//getDailyFollowers();
 	//getPosts();
+	//console.log(Posts.find({username:"testaccount02"}).fetch())
 }
 
 //
