@@ -3,6 +3,9 @@ import Tracker from 'tracker-component';
 
 export class Hilfe extends Tracker.Component {
 
+  zurück = () =>{
+     this.props.goToHelp();
+  }
     render() {
 
         return (
@@ -42,6 +45,7 @@ export class Hilfe extends Tracker.Component {
 
             <h4>Engagement</h4>
             <p>Das Engagement gibt die Interaktion und Aktivität von Ihren Posts im Verhältnis zu Ihrer Followeranzahl an. In Kombination mit dem Sentiment können so bspw. Shitstorms frühzeitig erkannt werden.</p>
+            <input className="btn btn-light" type="button" onClick={this.zurück} value="Zurück"></input>
           </div>
         );
     }
