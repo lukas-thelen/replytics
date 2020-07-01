@@ -1,6 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { TwitterAPI } from '../api/twitter_credentials.js';
 let {PythonShell} = require('python-shell')
+var Codebird = require("codebird");
+var cb = new Codebird;
+cb.setConsumerKey("yCR61JPigbhs8tQUDMjy1Bgz3", "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT");
 
 //Datenbanken
 import { FollowerCount } from '../api/twitter_followerCount.js';
@@ -14,6 +17,7 @@ import { Dimensionen } from '../api/twitter_dimensionen.js';
 import { Settings_DB } from '../api/settings.js';
 import { Popular } from '../api/twitter_popular.js';
 import { data } from 'jquery';
+import { async } from 'rsvp';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -66,10 +70,12 @@ Meteor.methods({
 			id: reply.user_id,
 			screen_name: reply.screen_name
 		  }});
+		  return true
 	},
-	updateServer(){
+	"updateServer": async() =>{
 		getDailyFollowers();
-		getPosts();
+		let test = await getPosts();
+		return test
 	},
 	updateSettings(name,q,w,e,r,t,z){
 		Settings_DB.update({username: name},{$set:{
@@ -154,6 +160,7 @@ async function getDailyFollowers(){
 
 //Aktualisiert die Favorites und Retweets der eigenen Posts
 async function getPosts(){
+	console.log("getPosts")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
@@ -162,7 +169,6 @@ async function getPosts(){
 			var screen_name = accounts[a].screen_name;
 			let result = await TwitterAPI.get('statuses/user_timeline', { screen_name: screen_name, count:500 });
 			var postArray = result.data;
-			
 			//Iteration durch alle Posts
 			for (i=0; i<postArray.length;i++){
 				//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
@@ -198,13 +204,13 @@ async function getPosts(){
 		}
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
-	getMentions();
-	
-	
+	let test = await getMentions();
+	return test	
 	//console.log(Posts.find({retweet: false}).fetch());
 }
 
 async function getDimensions(){
+	console.log("getDimensions")
 	var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
 	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
 	var accounts = await Accounts.find({}).fetch();
@@ -298,9 +304,11 @@ async function getDimensions(){
 			}
 		}
 	}
+	return true
 }
 
 async function getEngagement(){
+	console.log("getEngagement")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
@@ -336,7 +344,8 @@ async function getEngagement(){
 			}
 		}
 	}
-	getDimensions();
+	let test = await getDimensions();
+	return test
 }
 
 async function getReplies(nutzer){
@@ -365,6 +374,7 @@ async function getFavorites(nutzer){
 }
 
 async function postSentiment(){
+	console.log("postSentiment")
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
@@ -409,10 +419,12 @@ async function postSentiment(){
 			}
 		}
 	}
-	getEngagement();
+	let test = await getEngagement();
+	return test
 }
 
 async function getRetweets(){
+	console.log("getRetweets")
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var k=0;k<l;k++){
@@ -447,7 +459,7 @@ async function getRetweets(){
 
 //Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
 async function getMentions(){
-	
+	console.log("getMentions")
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
@@ -462,7 +474,6 @@ async function getMentions(){
 			//API Anfrage nach alles Mentions(@)	
 			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});	
 			var mentionArray = result.data;
-
 			//Anzahl der Autoren initialisieren
 			var authorCount = 0
 			var count = 0
@@ -474,7 +485,7 @@ async function getMentions(){
 
 			//Iteration durch alle Mentions
 			for (i=0; i<mentionArray.length-1; i++){
-				var mentionExists = Mentions.find({id02:mentionArray[i].id_str}).fetch()
+				var mentionExists = Mentions.find({id02:mentionArray[i].id_str, username:name}).fetch()
 				if(!mentionExists[0]){
 					count ++
 					//Wenn der Autor der aktuellen Mention noch nicht in der Collection vorkommt, Anzahl der Autoren erhöhen
@@ -517,8 +528,9 @@ async function getMentions(){
 			}
 		}
 	}
-	python()
+	let test = await python()
 	getRetweets();
+	return test
 	//console.log(Mentions.find({}).fetch())
 	//console.log(MentionCount.find({}).fetch())
 	//console.log(Posts.find({retweet: false}).fetch());
@@ -533,7 +545,7 @@ async function getMentions(){
 //
 //
 
-export function initial(){
+export async function initial(){
 	/*Posts.remove({});
 	getDailyFollowers();
 	getPosts();
@@ -556,8 +568,16 @@ export function initial(){
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
 	//getDailyFollowers();
 	//getPosts();
-	//console.log(Posts.find({username:"testaccount02"}).fetch())
+	//FollowerCount.remove({username:"testaccount3"})
+	//Accounts.remove({username:"testaccount3"})
+	//Posts.remove({username:"lukas"})
+	//Mentions.remove({})
+	//console.log(Mentions.find({}).fetch())
+	let test = await getPosts()
+	console.log(test)
+
 }
+	//console.log(Posts.find({username:"testaccount3"}).fetch())
 
 //
 //
@@ -569,10 +589,13 @@ export function initial(){
 
 //Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
 async function python(){
-    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function (err) {
-    if (err) throw err;
-	postSentiment();
+	console.log("python")
+    let xyz = await PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, async function (err) {
+	if (err) throw err;
 	});
+	let test = await postSentiment();
+	return test
+	
 }
 
 //gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält 

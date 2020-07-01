@@ -42,11 +42,6 @@ export class BarChartGesamt extends Tracker.Component {
     s_twitter_neu.push(100* sentiment_twitter_neu/ sentiment_ges)
     s_twitter_neg.push(100* sentiment_twitter_neg/ sentiment_ges)
 
-console.log(sentiment_ges);
-
-console.log(s_twitter_pos);
-console.log(s_twitter_neu);
-console.log(s_twitter_neg);
 
 return{
   labels: ["Twitter"],

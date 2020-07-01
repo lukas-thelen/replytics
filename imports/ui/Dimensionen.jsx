@@ -10,7 +10,10 @@ import { Dimensionen } from '../api/twitter_dimensionen.js';
 export class DimensionenRadar extends Tracker.Component {
   getFollower(){
     var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
-    return follower;
+    if(follower[i]){
+      return follower;
+    }
+    return 0
   }
   getDimension(){
     var nutzer = Meteor.user().username;
@@ -23,7 +26,7 @@ export class DimensionenRadar extends Tracker.Component {
     var favorites = 0;
     var engagement = 0;
     var followerSum = [];
-    followerSum = this.getFollower()[0].count;
+    //followerSum = this.getFollower()[0].count;
 
     /*for (var i=0; i< 6; i++){
       var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();

@@ -70,7 +70,7 @@ async function getDailySubscribers(){
 			}
 		}
     }
-    console.log(Reddit_SubscriberCount.find({}).fetch())
+    //console.log(Reddit_SubscriberCount.find({}).fetch())
 }
 
 async function getPosts(){
@@ -90,7 +90,7 @@ async function getPosts(){
                    replies.push(x[z].body)
                 }
 				//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
-                var idChecked = Reddit_Posts.find({id: postArray[i].id_str}).fetch();
+                var idChecked = Reddit_Posts.find({id: postArray[i].id}).fetch();
                 
 				if(idChecked[i]){
 					//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
@@ -318,7 +318,7 @@ async function getDimensions(){
 			}
 		}
     }
-    console.log(Reddit_Dimensionen.find({}).fetch())
+    //console.log(Reddit_Dimensionen.find({}).fetch())
 }
 
 
@@ -358,9 +358,9 @@ export async function initialR() {
     );
      */
     //Reddit_Posts.remove({})
-    getDailySubscribers();
-    getPosts();
-    getSentiment();
+    //getDailySubscribers();
+    //getPosts();
+    //getSentiment();
     //Reddit_Posts.update({id:"aai0j3"}, {$set:{dimension:"Emotionen"}})
     //console.log(Reddit_Posts.find({}).fetch())
 }

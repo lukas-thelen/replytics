@@ -182,7 +182,6 @@ export class Benachrichtigungen extends Tracker.Component {
     checkShitstorm = ()=>{
         var postArray = Posts.find({username: Meteor.user().username, retweet:false}).fetch();
         postArray = postArray.slice(0,11)
-        console.log(postArray)
         for (var i=0; i<postArray.length;i++){
             if(postArray[i].s_neg>=2*postArray[i].s_pos && postArray[i].s_pos!=0){
                 var he = this.state.handlungsempfehlungen
@@ -287,16 +286,13 @@ export class Benachrichtigungen extends Tracker.Component {
         var posts = Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         var notPosted = []
         var veryImportant = this.getVeryImportantDimensions();
-        console.log(veryImportant)
         for(var d=0; d<veryImportant.length; d++){
             var dimensionVorhanden = false
                 for (var x=0;x<Math.min(7,posts.length);x++){              
                     if(posts[x].dimension === this.übersetzung[veryImportant[d]]){
-                        console.log("sdfasdfasdf")
                         dimensionVorhanden = true
                     }
                 }
-                console.log(dimensionVorhanden)
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
                 he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[veryImportant[d]] +" gepostet")
@@ -406,7 +402,6 @@ export class Benachrichtigungen extends Tracker.Component {
         this.setState({showMore:!this.state.showMore})
     }
     infos = (index) =>{
-        console.log(this[String("i"+index)])
         if(this["i"+index].className === "d-none text-left"){
             this["i"+index].className = "d-block text-left"
         }else{
