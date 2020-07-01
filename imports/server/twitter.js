@@ -1,9 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { TwitterAPI } from '../api/twitter_credentials.js';
 let {PythonShell} = require('python-shell')
-var Codebird = require("codebird");
-var cb = new Codebird;
-cb.setConsumerKey("yCR61JPigbhs8tQUDMjy1Bgz3", "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT");
 
 //Datenbanken
 import { FollowerCount } from '../api/twitter_followerCount.js';
@@ -573,8 +570,8 @@ export async function initial(){
 	//Posts.remove({username:"lukas"})
 	//Mentions.remove({})
 	//console.log(Mentions.find({}).fetch())
-	let test = await getPosts()
-	console.log(test)
+	//let test = await getPosts()
+	//console.log(test)
 
 }
 	//console.log(Posts.find({username:"testaccount3"}).fetch())
