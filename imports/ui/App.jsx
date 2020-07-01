@@ -21,6 +21,7 @@ import { Navbar } from './navbar.jsx';
 import { Benachrichtigungen } from './Benachrichtigungen.jsx';
 import { BarChart } from './BarChart.jsx';
 import { BarChartGesamt } from './BarChartGesamt.jsx';
+import {Hilfe} from './Hilfe.jsx';
 
 
 
@@ -33,11 +34,13 @@ class App extends Tracker.Component {
     this.state = {
       authorize_screen: false,
       settings_screen: false,
+      help_screen: false,
       showTop: true,
       showPop: false
     }
     this.twitter_authorization = this.twitter_authorization.bind(this);
     this.goToSettings = this.goToSettings.bind(this)
+    this.goToHelp = this.goToHelp.bind(this)
     this.toTop = this.toTop.bind(this)
     this.toPop = this.toPop.bind(this)
   }
@@ -45,10 +48,17 @@ class App extends Tracker.Component {
   twitter_authorization(){
     this.setState({authorize_screen: !this.state.authorize_screen})
     this.setState({settings_screen: false})
+    this.setState({help_screen: false})
   }
 
   goToSettings(){
     this.setState({settings_screen: !this.state.settings_screen})
+    this.setState({authorize_screen: false})
+    this.setState({help_screen: false})
+  }
+  goToHelp(){
+    this.setState({help_screen: !this.state.help_screen})
+    this.setState({settings_screen: false})
     this.setState({authorize_screen: false})
   }
 
@@ -84,18 +94,21 @@ class App extends Tracker.Component {
         if ( 1==1 ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
-              <Navbar twitter_authorization={this.twitter_authorization} goToSettings={this.goToSettings}/>
+              <Navbar twitter_authorization={this.twitter_authorization} goToSettings={this.goToSettings} goToHelp={this.goToHelp}/>
               {this.state.authorize_screen && Meteor.user() &&
                 <Login twitter_authorization = {this.twitter_authorization} />
               }
-              {this.state.settings_screen && 
+              {this.state.settings_screen &&
                 <Settings goToSettings={this.goToSettings} />
               }
-              
-              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen &&
-                
+              {this.state.help_screen &&
+                <Hilfe goToHelp={this.goToHelp} />
+              }
+
+              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen &&
+
                 <div className="content row" >
-                  
+
                   <div className="col-xl-5 elem erste">
                     <Selbstposten/>
                     <Benachrichtigungen/>
@@ -118,38 +131,38 @@ class App extends Tracker.Component {
                   <div className="col-xl-7 row">
                   <div className="col-md-6 elem zweite">
                     Kategorien
-					<DimensionenRadar/>     
+					<DimensionenRadar/>
                     <br/>
                     <br/>
 					<BarChart/>
 					 <div className="info text-bottom spalte">
-					Fragen? Dann schreiben sie uns!
+					Fragen? Dann schreiben Sie uns!
 					<br/>
 					Telefonnummer: 08001233477
 					<br/>
 					E-Mail: replytics@hotmail.de</div>
-					
+
 					</div>
                     <div className="col-md-6 elem dritte">
                       <KeyFacts/>
                       <br/>
-                     
+
 					  <FollowerChart/>
                       <br/>
                        <BarChartGesamt/>
 					   <br/>
-					 
-                    
+
+
 					</div>
                     </div>
-					
+
                   <div className="footer-copyright text-center py-3 footer bg-dark ">© 2020 Copyright:
 			<a href="https://mdbootstrap.com/"> Replytics.com</a>
-			</div> 
-			
+			</div>
+
 
                 </div>
-				
+
               }
             </div>
 
