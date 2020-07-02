@@ -126,10 +126,14 @@ export class KeyFacts extends Tracker.Component {
 	 
     <div> 
    
-      <h5 style={{textAlign:"center"}}>Allgemeines</h5>
+      <h5 className="ueberblick">Überblick
+	  <button type="button" className="hover btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Hier erhalten Sie einen Überblick zur Anzahl Ihrer Follower, Erwähnungen, Autoren und Retweets im Vergleich zur Vorwoche."><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+		<path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+		</svg></button></h5>
       <div className="container row keyfacts">
 	   
-        <section className="spalte card col-3">
+        <section className="spalte card col-5">
           <h5>Follower Anzahl</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getFollower()[0].count}</h3>
@@ -137,7 +141,7 @@ export class KeyFacts extends Tracker.Component {
 
         </section>
 
-        <section className="spalte card col-3">
+        <section className="spalte card col-5">
           <h5>Erwäh&shy;nungen</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].mentions}</h3>
@@ -146,14 +150,14 @@ export class KeyFacts extends Tracker.Component {
 		
 	
 		
-        <section className="spalte card col-3">
+        <section className="spalte card col-5">
           <h5>Anzahl Autoren</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].authors}</h3>
           <h6>{this.getDifference7authors()} zu letzter Woche</h6>
         </section>
   
-        <section className="spalte card col-3">
+        <section className="spalte card col-5">
           <h5>Retweets</h5>
           <h3  style={{color:"#A4A4A4"}}>{this.getRetweets()[0].retweets}</h3>
           <h6>{this.getDifference7Retweets()} zu letzter Woche</h6>

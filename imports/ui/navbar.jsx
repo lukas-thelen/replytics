@@ -3,7 +3,7 @@ import Tracker from 'tracker-component';
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Accounts } from '../api/accounts.js';
 
- 
+
 
 export class Navbar extends Tracker.Component {
     isAuthorized(){
@@ -23,32 +23,32 @@ export class Navbar extends Tracker.Component {
     render() {
         //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
         return (
-            
+
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark" >
 			 <a className="navbar-brand" href="test.html"><img width="90" height="50" src="/logoneu.png" alt="Selfhtml"/></a>
              <a className="nav-link float-left" href="http://www.twitter.com"><img width="35em" height="auto" src="/twitter1.png" alt="Selfhtml"/></a>
 			 <a className="nav-link float-left" href="http://www.reddit.com"><img width="35em" height="auto" src="/Reddit.png" alt="Selfhtml"/></a>
-                  
-				
+
+
 			<div style={{fontSize:14}} className="text-light d-none d-sm-block">...dein Weg zum Erfolg!</div>
-					
-				
+
+
 				<ul className="navbar-nav ml-auto ">
-					
+
 					<button className="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
-					
+
 				</ul>
-				
+
 				<div className="collapse navbar-collapse " id="navbarTogglerDemo02">
-				<ul className="navbar-nav ml-auto">	
+				<ul className="navbar-nav ml-auto">
                   <li className="nav-item active account">
 						<span role="navigation"  className="text-light"  style={{fontSize:13}}>
 						<strong>Eingeloggt als: </strong>
                         <AccountsUIWrapper />
 						</span>
-                  </li>    
+                  </li>
 					<li className="nav-item active navelem">
 					 <div className="dropdown">
                             <button type="button" className="btn bg-dark text-white dropdown-toggle " id="dropdownSettingsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
@@ -62,22 +62,23 @@ export class Navbar extends Tracker.Component {
 
                                 <a className="dropdown-item" href="#" onClick={this.props.twitter_authorization}>Twitter autorisieren</a>
                                 <a style={{fontSize:14}} className="dropdown-item border-bottom" href="#" onClick={this.props.goToSettings}>Einstellungen</a>
+                                  <a style={{fontSize:14}} className="dropdown-item border-bottom" href="#" onClick={this.props.goToHelp}>Hilfe</a>
                                 <a style={{fontSize:14}} className="dropdown-item" href="#">Ausloggen</a>
 
                             </div>
-							
+
                        </div>
 					</li>
 					<li className="nav-item navelem">
 						<button style={{ fontSize:13}} type="button" className="btn btn-dark text light" disabled>#stayconnected</button>
 					</li>
-					</ul>	
+					</ul>
 				</div>
-					
-                    
-					
+
+
+
                 </nav>
-            
+
         );
     }
 }
