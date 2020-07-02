@@ -151,9 +151,8 @@ export class Benachrichtigungen extends Tracker.Component {
         eng = Number(eng/i).toFixed(2)
         return (
         <div>
-        <li className="list-group-item">
+        <li className="list-group-item" >
             <div className="d-flex w-100 justify-content-between">
-            <strong className="w-75 font-weight-lighter">Wochenbericht:</strong>
             </div>
             <div className="row">
             <span className="col-6 col-xl-3"><span className="text-muted">Postanzahl: </span>{count} </span>
@@ -449,15 +448,15 @@ export class Benachrichtigungen extends Tracker.Component {
         );
         return (
         //alles, was zurück geschickt werden soll
-        <div> {/* this.showState().handlungsempfehlungen */} <ul className="list-group list-group-flush">
+        <div> {/* this.showState().handlungsempfehlungen */}<h5>Wochenbericht:</h5><ul className="list-group list-group-flush">
             {this.wochenbericht()}
             {this.state.handlungsempfehlungen.length===0 && <span>keine Handlungsempfehlungen verfügbar</span>}
             {this.state.showMore && Element}{!this.state.showMore && ElementSmall}</ul>
         <form>
-                <input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="test"></input>
+                {/*<input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="test"></input>*/}
                 {this.state.handlungsempfehlungen.length>2 && <span>
-                {!this.state.showMore && <input className="btn btn-link" type="button" onClick={this.showMore} value="Mehr anzeigen"></input>}
-                {this.state.showMore && <input className="btn btn-link" type="button" onClick={this.showMore} value="Weniger anzeigen"></input>}
+                {!this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Mehr anzeigen"></input>}
+                {this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Weniger anzeigen"></input>}
                 </span>}
             </form>
         </div>

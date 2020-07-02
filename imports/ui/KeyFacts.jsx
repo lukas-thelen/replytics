@@ -31,7 +31,11 @@ export class KeyFacts extends Tracker.Component {
   getDifference7(){
     var today = this.getFollower()[0].count;
     var old = this.get7th();
-    return today - old;
+    var value = today - old
+    if (value >=0){
+      return "+"+ value
+    }
+    return value;
   }
 
   getRetweets(){
@@ -57,7 +61,11 @@ export class KeyFacts extends Tracker.Component {
   getDifference7Retweets(){
     var today = this.getRetweets()[0].retweets;
     var old = this.get7thRetweetCount();
-    return today - old;
+    var value = today - old
+    if (value >=0){
+      return "+"+ value
+    }
+    return value;
   }
 
   getMentions() {
@@ -83,7 +91,11 @@ export class KeyFacts extends Tracker.Component {
   getDifference7mention(){
     var today = this.getMentions()[0].mentions;
     var old = this.get7thMentionCount();
-    return today - old;
+    var value = today - old
+    if (value >=0){
+      return "+"+ value
+    }
+    return value;
   }
 
   get7thMentionAuthors() {
@@ -98,7 +110,11 @@ export class KeyFacts extends Tracker.Component {
   getDifference7authors(){
     var today = this.getMentions()[0].authors;
     var old = this.get7thMentionAuthors();
-    return today - old;
+    var value = today - old
+    if (value >=0){
+      return "+"+ value
+    }
+    return value;
   }
 
   render() {
@@ -107,36 +123,42 @@ export class KeyFacts extends Tracker.Component {
     
     if (this.getFollower()[0] != undefined && this.getMentions()[0] != undefined) {
      return (
-     
-    
-      <div className="container">
-        <section className="spalte card">
+	 
+    <div> 
+   
+      <h5 style={{textAlign:"center"}}>Allgemeines</h5>
+      <div className="container row keyfacts">
+	   
+        <section className="spalte card col-3">
           <h5>Follower Anzahl</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getFollower()[0].count}</h3>
-          <h6>+{this.getDifference7()} zu letzter Woche</h6>
+          <h6>{this.getDifference7()} zu letzter Woche</h6>
 
         </section>
 
-        <section className="spalte card">
-          <h5>Erwähnungen</h5>
+        <section className="spalte card col-3">
+          <h5>Erwäh&shy;nungen</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].mentions}</h3>
-          <h6>+{this.getDifference7mention()}  zu letzter Woche</h6>
+          <h6>{this.getDifference7mention()}  zu letzter Woche</h6>
         </section>
-  
-        <section className="spalte card">
+		
+	
+		
+        <section className="spalte card col-3">
           <h5>Anzahl Autoren</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getMentions()[0].authors}</h3>
-          <h6>+{this.getDifference7authors()} zu letzter Woche</h6>
+          <h6>{this.getDifference7authors()} zu letzter Woche</h6>
         </section>
   
-        <section className="spalte card">
+        <section className="spalte card col-3">
           <h5>Retweets</h5>
           <h3  style={{color:"#A4A4A4"}}>{this.getRetweets()[0].retweets}</h3>
-          <h6>+ {this.getDifference7Retweets()} zu letzter Woche</h6>
+          <h6>{this.getDifference7Retweets()} zu letzter Woche</h6>
         </section>
+      </div>
       </div>
      );
     } else {

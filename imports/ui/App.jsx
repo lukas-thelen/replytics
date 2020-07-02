@@ -109,40 +109,51 @@ class App extends Tracker.Component {
               {this.state.settings_screen && 
                 <Settings goToSettings={this.goToSettings} />
               }
+
               {this.code &&
               <div className="alert alert-success mt-2 pl-3" role="alert">
                 Reddit Einrichtung bestätigen:
                 <button className="btn btn-sm btn-light" onClick={this.saveReddit}> OK </button>
               </div>}
-              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen && 
-                <div className="row">
+          
+              {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen &&
+                
+                <div className="content row" >
+
                   
-                  <div className="col-md-5 ">
+                  <div className="col-xl-4 elem">
                     <Selbstposten/>
-                    <br/>
                     <Benachrichtigungen/>
-                    <div className="btn-group" role="group" aria-label="Basic example">
-                      <button type="button" className="btn btn-secondary" onClick={this.toTop}>Top Posts</button>
-                      <button type="button" className="btn btn-secondary" onClick={this.toPop}>Posts suchen</button>
+                    <br/>
+                    <div className="d-flex w-100 justify-content-between " >
+                    <h5 style={{display:"inline"}} >bisherige Posts</h5>
+                    <span className="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                      <button type="button" className="btn " onClick={this.toTop}>Top Posts</button>
+                      <button type="button" className="btn " onClick={this.toPop}>Posts suchen</button>
+                    </span>
                     </div>
                     <TopPosts renderCondition={this.state.showTop}/>
                     <SearchPosts renderCondition={this.state.showPop}/>
                   </div>
-          
-                  <div className="col-md-7">
-                    <DimensionenRadar/>
-                    <BarChart/>
-                    <br/>
-                    <div className="col-md-2 row ">
-                      <KeyFacts/>
 
-                    </div>
-                    <div className="col-md-5 row">
-                      <BarChartGesamt/>
-                      <FollowerChart/>
-                    </div>
-                  
+                  <div className="col-xl-8 row">
+                  <div className="col-md-6 nopad elem">
+                    <DimensionenRadar/>     
+                    <br/>
+                    <br/>
+					<BarChart/>
+                    
                   </div>
+
+                    <div className="col-md-6 nopad elem">
+                      <KeyFacts/>
+                      <br/>
+                     
+					  <FollowerChart/>
+                      <br/>
+                       <BarChartGesamt/>
+                    </div>
+                    </div>
 
                 </div>
               }

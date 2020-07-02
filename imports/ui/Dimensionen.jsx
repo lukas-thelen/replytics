@@ -62,13 +62,13 @@ export class DimensionenRadar extends Tracker.Component {
   }
 
 return {
-  labels: ["Emotional Appeal", "Products/ Services", "Workplace Environment", "Financial Performance", "Vision/Leadership", "Social/Environmental Responsibility"],
+  labels: ["Emotionen", "Produkt/Dienstleitung", "Arbeitsplatzumgebung", "Finanzleistung", "Vision&Führung", "ges. Verantwortung"],
   datasets: [
     {
       label: 'Engagement',
-      backgroundColor: 'rgba(51, 164, 255,0.3)',
-      borderColor: 'rgba(51, 164, 255,1)',
-      pointBackgroundColor: 'rgba(51, 164, 255,1)',
+      backgroundColor: 'rgba(92, 184, 92, 0.2)',
+      borderColor: 'rgba(92, 184, 92, 0.8)',
+      pointBackgroundColor: 'rgba(92, 184, 92, 0.8)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(179,181,198,1)',
@@ -76,9 +76,9 @@ return {
     },
     {
       label: 'Post Count',
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
-      pointBackgroundColor: 'rgba(255,99,132,1)',
+      backgroundColor: 'rgba(91, 192, 222, 0.2)',
+      borderColor: 'rgb(91, 192, 222)',
+      pointBackgroundColor: 'rgb(91, 192, 222)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(255,99,132,1)',
@@ -89,12 +89,15 @@ return {
 
   render() {
     return (
-      <div style ={{position: "relative", width: 550, height: 350}}>
+      <div>
+        <h5 style={{textAlign:"center"}}>Postkategorien Überblick</h5>
+        <div>
         <Radar
         data={this.getDimension()}
         options = {{
             responsive: true
           }} />
+        </div>
       </div>
     );
   }
