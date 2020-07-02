@@ -145,6 +145,7 @@ class App extends Tracker.Component {
 					
                   <div className="footer-copyright text-center py-3 footer bg-dark ">© 2020 Copyright:
 			<a href="https://mdbootstrap.com/"> Replytics.com</a>
+			<div cols= "40" className="kontakt"> bei Fragen rufen sie uns einfach an unter :08001233477 </div>
 			</div> 
 			
 
