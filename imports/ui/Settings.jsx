@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import{ Settings_DB } from '../api/settings.js';
 import { Accounts } from '../api/accounts.js';
- 
+var snoowrap = require('snoowrap');
 
 export class Settings extends Tracker.Component {
  //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
@@ -128,6 +128,48 @@ getDefault = ()=>{
     this.setState({r_name: event.target.value})
  }
 
+ reddit_code =async()=>{
+    var userExists = Accounts.find({username: Meteor.user().username}).fetch()
+    if(!userExists[0]){
+      let test02 = await Accounts.insert({
+        owner: Meteor.userId(),
+        username: Meteor.user().username,
+        p_d: this.state.p_d,
+        e: this.state.e,
+        a: this.state.a,
+        f: this.state.f,
+        v_f: this.state.v_f,
+        g_v: this.state.g_v,
+        sub: this.state.sub, 
+        r_name: this.state.r_name
+      });
+    }else{
+    let test = await Meteor.callPromise('updateSettings',
+        Meteor.user().username,
+        this.state.p_d,
+        this.state.e,
+        this.state.a,
+        this.state.f,
+        this.state.v_f,
+        this.state.g_v
+    )
+    let test02 = await Meteor.callPromise('update_reddit', this.state.sub, this.state.r_name, Meteor.user().username)
+    }
+    window.location = this.authenticationUrl;
+ }
+
+ authenticationUrl = snoowrap.getAuthUrl({
+    clientId: 'E6ul0OQ6hTnePQ',
+    scope: ['identity', 'wikiread', 'wikiedit','account', 'creddits','edit',
+      'flair', 'history', 'livemanage', 'mysubreddits', 'read', 'report',
+      'save', 'submit', 'subscribe', 'vote','modconfig', 'modflair', 'modlog', 'modposts', 'modwiki'],
+    redirectUri: 'http://localhost:3000',
+    permanent: true,
+    state: 'fe211bebc52eb3da9bef8db6e63104d3' // a random string, this could be validated when the user is redirected back
+  });
+
+ 
+
   render() {
       //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
@@ -228,13 +270,7 @@ getDefault = ()=>{
                 <input className="form-check-input" name="Gesellschaftliche_Verantwortung" type="radio" ref={(input)=>{this.g_v2 = input}} value="2" />
                 <label className="form-check-label" htmlFor="inlineRadio3">sehr wichtig</label>
                 </div>
-            </form>
-            <br/>
-            <form>
-                <input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="Speichern"></input>
-
-                <input className="btn btn-light" type="button" onClick={this.abbrechen} value="Abbrechen"></input>
-            </form>
+            </form>           
             <br/>
             <form>
                 <label for="formGroupExampleInput">Subreddit der Firma</label>
@@ -242,6 +278,16 @@ getDefault = ()=>{
                 <br/>
                 <label for="formGroupExampleInput2">Reddit Nutzername</label>
                 <input type="text" className="form-control" onChange={this.changeName} ref={(input)=>{this.r_name = input}} id="formGroupExampleInput2"></input>
+            </form>
+            <br/>
+            <form action={this.authenticationUrl}>
+                <input className="btn btn-info mr-3" type="button" onClick={this.reddit_code} value="Reddit autorisieren"></input>
+            </form>
+            <br/>
+            <form>
+                <input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="Speichern"></input>
+
+                <input className="btn btn-light" type="button" onClick={this.abbrechen} value="Abbrechen"></input>
             </form>
         </div>
     );

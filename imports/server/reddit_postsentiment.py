@@ -8,14 +8,15 @@ postcollection = db.reddit_Posts
 #sentimentcollection = db.reddit_NewSubreddit
 #accountscollection = db.accounts
 #s = sentimentcollection.find()
+if True:
+    for post in postcollection.find(): 
 
-for post in postcollection.find():
-    try: 
         sentimentnegativ = 0
         sentimentneutral = 0
         sentimentpositiv = 0
         a = post["replies"]
         for content in post["replies"]:
+
             blob = TextBlob(content)
             textsentiment = blob.sentiment
                 
@@ -30,19 +31,13 @@ for post in postcollection.find():
             elif textsentiment[0] > 0:
                 sentimentpositiv += 1
                 #sentimentcollection.update_one({"username":name},{"$set": {"s_neu": sentimentneutral}})
-
-        print(sentimentnegativ)
-        postcollection.update({"id":post["id"]},{"$set": {
-            "s_pos": sentimentpositiv, 
-            "s_neu": sentimentneutral,
-            "s_neg": sentimentnegativ,
-        }})
-
+      
+        postcollection.update({"_id":post["_id"]},{"$set": {"s_pos": sentimentpositiv}})
+        postcollection.update({"_id":post["_id"]},{"$set": {"s_neg": sentimentnegativ}})
+        postcollection.update({"_id":post["_id"]},{"$set": {"s_neu": sentimentneutral}})
             #Durchschnitt des Sentiments
             #averagesentiment = totalsentiment / counter # Durchschnitt
             #sentimentcollection.update_one({"username":name},{"$set": {"s_average": averagesentiment}})
-    except:
-        pass
 
 
 #    wordlist = blob.tokens

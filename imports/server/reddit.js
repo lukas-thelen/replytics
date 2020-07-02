@@ -4,6 +4,7 @@ import { RedditContent } from 'snoowrap';
 import { Accounts } from '../api/accounts.js';
 import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
 import { Reddit_Posts } from '../api/reddit_posts.js';
+import { Reddit_Hot } from '../api/reddit_hot.js';
 import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
 import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 import { unstable_batchedUpdates } from 'react-dom';
@@ -23,26 +24,61 @@ const red = new snoowrap({
     refreshToken: '553271810001-VLKWIbnsuaBvJBV5rskKFI7ZjLA'
 });
 
+
 Meteor.methods({
-    async reddit_post(code){
+    async reddit_requester(name, code){
         console.log(code)
+        let test02 = test.bind(this);
 		snoowrap.fromAuthCode({
             code: code,
             userAgent: 'replytics for web v0 (by u/replytics)',
             clientId: 'E6ul0OQ6hTnePQ',
-            redirectUri: 'http://localhost:3000'
+            clientSecret: '--2tzGInEmSscmccd32ozQjf-wE',
+            redirectUri: 'http://localhost:3000',
+            refreshToken: '553271810001-VLKWIbnsuaBvJBV5rskKFI7ZjLA'
           }).then(r => {
-            console.log(r)
-          })
+            return test02(r, name)
+        })
+    },
+    async reddit_code(name, code){
+        let test = await Accounts.update({username:name}, {$set:{reddit_auth: true, reddit_code:code}})
+        return true
     },
     update_reddit(sub, name, user){
         Accounts.update({username:user}, {$set:{sub:sub, r_name: name}})
         console.log(Accounts.find({}).fetch())
         return false
+    },
+    async reddit_posten(name, title, text, dimension){
+        let r = await Accounts.find({username:name}).fetch()[0].requester
+        reddit = new snoowrap(r)
+        let sub = await Accounts.find({username:name}).fetch()[0].sub
+        let result = await reddit.submitSelfpost({
+            subredditName:sub,
+            title: title,
+            text: text
+        }).fetch()
+        Reddit_Posts.insert({
+			id: result.id, 
+			date: new Date(result.created_utc*1000), 
+            text: title,
+            dimension: dimension,
+            ups: 0,
+            downs: 0,
+            num_replies: 0,
+            replies: [],
+            s_neg: 0,
+            s_neu: 0,
+            s_pos: 0,
+            username: name			
+		});
     }
 })
 
 
+async function test(r, name){
+    Accounts.update({username:name}, {$set:{requester:r, reddit_auth: true}})
+}
 async function getDailySubscribers(){
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
@@ -80,7 +116,7 @@ async function getPosts(){
 		if(accounts[a].r_name){
 			var name = accounts[a].username;
 			var reddit_name = accounts[a].r_name;
-            let postArray = await red.getUser('ThyfaultTime').getSubmissions()
+            let postArray = await red.getUser(reddit_name).getSubmissions()
             
 			//Iteration durch alle Posts
 			for (i=0; i<postArray.length;i++){
@@ -94,7 +130,7 @@ async function getPosts(){
                 
 				if(idChecked[i]){
 					//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
-					Reddit_Posts.update({id: postArray[i].id}, {$set:{
+					let test01 = await Reddit_Posts.update({id: postArray[i].id}, {$set:{
                         ups: postArray[i].ups,
                         downs: postArray[i].downs,
                         num_replies: postArray[i].num_comments,
@@ -102,7 +138,7 @@ async function getPosts(){
                     }})
 				}else{
 					//erstellt Eintrag, wenn Post noch nicht existiert
-					Reddit_Posts.insert({
+					let test = await Reddit_Posts.insert({
 						id: postArray[i].id,
 						date: new Date(postArray[i].created_utc*1000),
 						text: postArray[i].title,
@@ -122,8 +158,18 @@ async function getPosts(){
 		}
     }
     //console.log(Reddit_Posts.find({}).fetch())
-    getEngagement();
+    console.log("ende posts")
+    return true
     
+}
+
+async function getPostSentiment(){
+    console.log("anfang sentiment")
+    let wait = await PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_postsentiment.py'), null, function (err) {
+        if (err) throw err;
+        console.log("ende python")
+    });
+    return true
 }
 
 async function getSentiment(){
@@ -321,48 +367,48 @@ async function getDimensions(){
     //console.log(Reddit_Dimensionen.find({}).fetch())
 }
 
-
-/*var RedditApi = require('reddit-oauth');
-var reddit = new RedditApi({
-    app_id: 'E6ul0OQ6hTnePQ',
-    app_secret: '--2tzGInEmSscmccd32ozQjf-wE',
-    redirect_uri: 'http://localhost:3000'
-});
-
-*/
-
-export async function initialR() {
- 
-    //r.getHot().map(post => post.title).then(console.log);
-    //let data = await r.getUser('ThyfaultTime').getSubmissions()
-    //let com = await data[0].comments.fetchAll()
-    //console.log(com)
-    /*r.submitSelfpost({
-        subredditName: 'test',
-        title: 'This is a selfpost',
-        text: 'This is the text body of the selfpost'
-      }).then(console.log)*/
-     // r.getTop('test').then(console.log)
-    /*// Authenticate with username/password
-    reddit.passAuth(
-    'replytics',
-    'replytics1234',
-    function (success) {
-        if (success) {
-            // Print the access token we just retrieved
-            console.log(reddit.access_token);
-        } else {
-            console.log('Auth failed');
+async function getHot(){
+    var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var a=0;a<len;a++){
+		if(accounts[a].sub && accounts[a].sub!=""){
+            var name = accounts[a].username;
+            var sub = accounts[a].sub;
+            let result = await red.getHot(sub, {limit:2})
+            let posts =[]
+            for(var v=0; v<result.length; v++){
+                var post ={
+                    title: result[v].title,
+                    ups: result[v].ups,
+                    downs: result[v].downs,
+                    date: new Date(result[v].created_utc*1000),
+                    link: result[v].url
+                }
+                posts.push(post)
+            }
+            Reddit_Hot.remove({username:name})
+            Reddit_Hot.insert({
+                username: name,
+                posts: posts
+            })
         }
     }
-    );
-     */
-    //Reddit_Posts.remove({})
-    //getDailySubscribers();
-    //getPosts();
-    //getSentiment();
-    //Reddit_Posts.update({id:"aai0j3"}, {$set:{dimension:"Emotionen"}})
-    //console.log(Reddit_Posts.find({}).fetch())
+}
+
+
+export async function initialR() {
+    /*console.log(Accounts.find({}).fetch())
+    console.log(Reddit_Posts.find({}).fetch())
+    console.log(Reddit_SubscriberCount.find({}).fetch())
+    console.log(Reddit_Dimensionen.find({}).fetch())
+    console.log(Reddit_Hot.find({}).fetch())
+    console.log(Reddit_NewSubreddit.find({}).fetch())*/
+    getDailySubscribers();
+    getHot();
+    let posts = await getPosts();
+    let sent = await getPostSentiment();
+    let en = await getEngagement();
+    getSentiment();
 }
   
 function checkDaily(collection, name){

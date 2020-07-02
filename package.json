@@ -24,6 +24,7 @@
     "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.1",
     "react-meteor-data": "^0.2.11",
+    "reddit": "^1.0.3",
     "reddit-oauth": "^1.1.1",
     "rsvp": "^4.8.5",
     "sentimental": "^0.1.2",
