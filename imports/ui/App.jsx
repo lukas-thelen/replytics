@@ -21,6 +21,7 @@ import { Navbar } from './navbar.jsx';
 import { Benachrichtigungen } from './Benachrichtigungen.jsx';
 import { BarChart } from './BarChart.jsx';
 import { BarChartGesamt } from './BarChartGesamt.jsx';
+import { Reddit_Login } from './reddit_Login.jsx';
 
 
 
@@ -41,6 +42,8 @@ class App extends Tracker.Component {
     this.toTop = this.toTop.bind(this)
     this.toPop = this.toPop.bind(this)
   }
+  
+  code = new URL(window.location.href).searchParams.get('code');
 
   twitter_authorization(){
     this.setState({authorize_screen: !this.state.authorize_screen})
@@ -75,13 +78,28 @@ class App extends Tracker.Component {
     this.setState({showPop:true})
     this.setState({showTop:false})
   }
+  saveReddit=async()=>{
+    var name = Meteor.user().username;
+    var userExists = Accounts.find({username: name}).fetch()
+    if(!userExists[0]){
+      let test02 = await Accounts.insert({
+        owner: Meteor.userId(),
+        username: Meteor.user().username,
+        reddit_auth: true, 
+        reddit_code: this.code
+      })
+    }else{
+    let wait = await Meteor.callPromise("reddit_requester", name, this.code)
+    }
+    window.location = "http://localhost:3000"
+  }
 
      render() {
 
        //Zugriff auf Datenbank ist langsamer als Aufruf der ganzen Funktionen
        //Rendern muss verzögert werden oder Platzhalter durch automatische updates ausgetauscht werden
        //if-Bedingung wichtig, um Fehlermeldungen zu vermeiden während die Daten laden
-        if ( 1==1 ){ //Platzhalter für spätere Bedingungen
+        if ( true ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
               <Navbar twitter_authorization={this.twitter_authorization} goToSettings={this.goToSettings}/>
@@ -91,10 +109,17 @@ class App extends Tracker.Component {
               {this.state.settings_screen && 
                 <Settings goToSettings={this.goToSettings} />
               }
-              
+
+              {this.code &&
+              <div className="alert alert-success mt-2 pl-3" role="alert">
+                Reddit Einrichtung bestätigen:
+                <button className="btn btn-sm btn-light" onClick={this.saveReddit}> OK </button>
+              </div>}
+          
               {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen &&
                 
                 <div className="content row" >
+
                   
                   <div className="col-xl-4 elem">
                     <Selbstposten/>
@@ -138,7 +163,7 @@ class App extends Tracker.Component {
           }else{
 
             return(
-              <p>  </p>
+            <div></div>
             );
           }
 
