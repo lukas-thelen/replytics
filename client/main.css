@@ -10,7 +10,7 @@
 }
 
 .container{
-  justify-content:center; 
+  justify-content:center;
 }
 
 .avatar {
@@ -36,7 +36,7 @@ body {
 .elem{
   margin-top:10px;
 }
- 
+
 .account{
   align-items:center;
   display: flex;
@@ -55,7 +55,7 @@ body {
 
 .barchart canvas{
   height: 30vh;
-} 
+}
 
 .barchart02 canvas{
   height: 11vh;
@@ -67,19 +67,19 @@ body {
   padding-left:6%;
 }
 .erste {
-	
+
 	margin-right: 1vh;
 }
 .zweite {
 	box-shadow: -15px 0px 8px -15px silver, 15px 0px 8px -15px silver;
 	padding:10px;
-  
-	
+
+
 }
 .dritte {
 	padding-left:4vh;
 	background-color:light;
-	
+
 }
 .followerverlauf{
 	margin-left:4vh;
@@ -98,13 +98,12 @@ body {
 	text-align:center;
 	width: 220vh;
 	color:white;
-	
+
 }
 .info{
 	font-size: 120%;
 	text-align:center;
 	margin: 9vh;
-	
 }
 
 @media (max-width:1500px){
@@ -113,7 +112,7 @@ body {
   }
   .barchart canvas{
     height: 40vh !important;
-  } 
+  }
   .followerchart canvas{
     height: 25vh !important;
   }
@@ -129,7 +128,7 @@ body {
 @media (max-width:1200px){
   .followerchart canvas{
     height: 22vh !important;
-	
+
   }
   .zweite{
 	  box-shadow:none;
@@ -149,5 +148,10 @@ body {
 .content{
   margin:2px !important;
   padding:2px;
-  
+
+}
+
+.hilfeseite{
+  margin-left: 2%;
+  margin-top: 1%;
 }
