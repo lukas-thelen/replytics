@@ -372,14 +372,15 @@ async function getHot(){
             var name = accounts[a].username;
             var sub = accounts[a].sub;
             let result = await red.getHot(sub, {limit:2})
-            let posts =[]
+			let posts =[]
             for(var v=0; v<result.length; v++){
                 var post ={
                     title: result[v].title,
                     ups: result[v].ups,
                     downs: result[v].downs,
                     date: new Date(result[v].created_utc*1000),
-                    link: result[v].url
+					link: result[v].url,
+					autor: result[v].author.name
                 }
                 posts.push(post)
             }
@@ -394,17 +395,17 @@ async function getHot(){
 
 
 export async function initialR() {
-    getDailySubscribers();
+    //getDailySubscribers();
 	getHot();
-    let posts = await getPosts();
-    let sent = await getPostSentiment();
-	getSentiment();
-	/*console.log(Accounts.find({}).fetch())
-    console.log(Reddit_Posts.find({}).fetch())
-    console.log(Reddit_SubscriberCount.find({}).fetch())
-    console.log(Reddit_Dimensionen.find({}).fetch())
-    console.log(Reddit_Hot.find({}).fetch())
-    console.log(Reddit_NewSubreddit.find({}).fetch())*/
+    //let posts = await getPosts();
+    //let sent = await getPostSentiment();
+	//getSentiment();
+	//console.log(Accounts.find({}).fetch())
+    //console.log(Reddit_Posts.find({}).fetch())
+    //console.log(Reddit_SubscriberCount.find({}).fetch())
+    //console.log(Reddit_Dimensionen.find({}).fetch())
+    //console.log(Reddit_Hot.find({}).fetch())
+    //console.log(Reddit_NewSubreddit.find({}).fetch())
 
 }
   
