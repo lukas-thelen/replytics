@@ -593,9 +593,20 @@ export async function initial(){
 //Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
 async function python(){
 	console.log("python")
-    let xyz = await PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, async function (err) {
-	if (err) throw err;
-	});
+	const { success, err = '', results } = await new Promise((resolve, reject) => {
+    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function(
+		err,
+		results
+	  ) {
+		if (err) {
+		  logger.error(err, '[ config - runManufacturingTest() ]');
+		  reject({ success: false, err });
+		}
+		resolve({ success: true, results });
+		console.log("erster")
+	  });
+	})
+	console.log("zweiter")
 	let test = await postSentiment();
 	return test
 	
