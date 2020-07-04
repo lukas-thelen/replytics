@@ -206,6 +206,7 @@ export class Benachrichtigungen extends Tracker.Component {
         /*for (var i=0; i<unwichtig.length;i++){
             delete datenbankWerte[0][this.übersetzung02[unwichtig[i]]]
         }*/
+        if(!datenbankWerte[0]){return true}
         for (var i=0; i<dimensionen.length;i++){
             sortedEngagement.push(this.übersetzung02[dimensionen[i]])
         }

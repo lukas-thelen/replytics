@@ -56,9 +56,15 @@ export class DimensionenRadar extends Tracker.Component {
     count.push(postCount/gesamtPosts);
     }
   }*/
-  for (var i=0; i< 6; i++){
-    daten.push(parseInt(Dimensionen.find({username:nutzer}).fetch()[0][dimensionen02[i]].engagement*100))
-    count.push(parseInt(((Dimensionen.find({username:nutzer}).fetch()[0][dimensionen02[i]].count)/gesamtPosts)*100))
+  var d = Dimensionen.find({username:nutzer}).fetch()
+  if(d[0]){
+    for (var i=0; i< 6; i++){
+      daten.push(parseInt(d[0][dimensionen02[i]].engagement*100))
+      count.push(parseInt(((d[0][dimensionen02[i]].count)/gesamtPosts)*100))
+    }
+  }else{
+    daten = [0,0,0,0,0,0]
+    count = [0,0,0,0,0,0]
   }
 
 return {

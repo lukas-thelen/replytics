@@ -10,37 +10,26 @@ export class BarChartGesamt extends Tracker.Component {
 
   getSentimentGesamt(){
     var dimensionen= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
-    var dimensionen_s_pos =[];
-    var dimensionen_s_neu =[];
-    var dimensionen_s_neg =[];
-    var sentiment_twitter_pos =0;
-    var sentiment_twitter_neu =0;
-    var sentiment_twitter_neg =0;
-    var sentiment_ges = 0;
     var s_twitter_pos = [];
     var s_twitter_neu = [];
     var s_twitter_neg = [];
+    var d = Dimensionen.find({username:Meteor.user().username}).fetch()
+    if(d[0]){
+      for (var i = 0; i< 6; i++){
+        s_twitter_pos.push(100* d[0][dimensionen[i]].s_pos_p)
+      }
+      for (var i = 0; i< 6; i++){
+        s_twitter_neu.push(100* d[0][dimensionen[i]].s_neu_p)
+      }
+      for (var i = 0; i< 6; i++){
+        s_twitter_neg.push(100* d[0][dimensionen[i]].s_neg_p)
+      }
+    }else {
+      s_twitter_pos = [0,0,0,0,0,0];
+      s_twitter_neu = [0,0,0,0,0,0];
+      s_twitter_neg = [0,0,0,0,0,0];
+    }
 
-    for (var i = 0; i< 6; i++){
-      dimensionen_s_pos.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_pos)
-    }
-    for (var i = 0; i< 6; i++){
-      dimensionen_s_neu.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_neu)
-    }
-    for (var i = 0; i< 6; i++){
-      dimensionen_s_neg.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_neg)
-    }
-
-    for(var i =0; i<6; i++){
-      sentiment_ges += dimensionen_s_pos[i] + dimensionen_s_neu[i] + dimensionen_s_neg[i]
-      sentiment_twitter_pos += dimensionen_s_pos[i]
-      sentiment_twitter_neu += dimensionen_s_neu[i]
-      sentiment_twitter_neg += dimensionen_s_neg[i]
-    }
-
-    s_twitter_pos.push(100* sentiment_twitter_pos/ sentiment_ges)
-    s_twitter_neu.push(100* sentiment_twitter_neu/ sentiment_ges)
-    s_twitter_neg.push(100* sentiment_twitter_neg/ sentiment_ges)
 
 
 return{

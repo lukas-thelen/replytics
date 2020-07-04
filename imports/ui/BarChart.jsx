@@ -13,14 +13,21 @@ export class BarChart extends Tracker.Component {
     var dimensionen_s_pos =[];
     var dimensionen_s_neu =[];
     var dimensionen_s_neg =[];
-    for (var i = 0; i< 6; i++){
-      dimensionen_s_pos.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_pos)
-    }
-    for (var i = 0; i< 6; i++){
-      dimensionen_s_neu.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_neu)
-    }
-    for (var i = 0; i< 6; i++){
-      dimensionen_s_neg.push(100* Dimensionen.find({username:Meteor.user().username}).fetch()[0][dimensionen[i]].s_neg)
+    var d = Dimensionen.find({username:Meteor.user().username}).fetch()
+    if(d[0]){
+      for (var i = 0; i< 6; i++){
+        dimensionen_s_pos.push(100* d[0][dimensionen[i]].s_pos)
+      }
+      for (var i = 0; i< 6; i++){
+        dimensionen_s_neu.push(100* d[0][dimensionen[i]].s_neu)
+      }
+      for (var i = 0; i< 6; i++){
+        dimensionen_s_neg.push(100* d[0][dimensionen[i]].s_neg)
+      }
+    }else{
+      dimensionen_s_pos =[0,0,0,0,0,0];
+      dimensionen_s_neu =[0,0,0,0,0,0];
+      dimensionen_s_neg =[0,0,0,0,0,0];
     }
 
 return{
