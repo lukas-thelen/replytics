@@ -575,7 +575,7 @@ export async function initial(){
 	//Accounts.remove({username:"testaccount3"})
 	//Posts.remove({username:"lukas"})
 	//Mentions.remove({})
-	//console.log(Mentions.find({}).fetch())
+	//console.log(Sentiment.find({}).fetch())
 	//let test = await getPosts()
 	//console.log(test)
 

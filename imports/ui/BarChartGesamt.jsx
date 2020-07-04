@@ -9,25 +9,18 @@ import { Sentiment } from '../api/twitter_sentiment.js';
 export class BarChartGesamt extends Tracker.Component {
 
   getSentimentGesamt(){
-    var dimensionen= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
     var s_twitter_pos = [];
     var s_twitter_neu = [];
     var s_twitter_neg = [];
-    var d = Dimensionen.find({username:Meteor.user().username}).fetch()
+    var d = Sentiment.find({username:Meteor.user().username}).fetch()
     if(d[0]){
-      for (var i = 0; i< 6; i++){
-        s_twitter_pos.push(100* d[0][dimensionen[i]].s_pos_p)
-      }
-      for (var i = 0; i< 6; i++){
-        s_twitter_neu.push(100* d[0][dimensionen[i]].s_neu_p)
-      }
-      for (var i = 0; i< 6; i++){
-        s_twitter_neg.push(100* d[0][dimensionen[i]].s_neg_p)
-      }
+      s_twitter_pos.push(100* d[0].s_pos)
+      s_twitter_neu.push(100* d[0].s_neu)
+      s_twitter_neg.push(100* d[0].s_neg)
     }else {
-      s_twitter_pos = [0,0,0,0,0,0];
-      s_twitter_neu = [0,0,0,0,0,0];
-      s_twitter_neg = [0,0,0,0,0,0];
+      s_twitter_pos = [0];
+      s_twitter_neu = [0];
+      s_twitter_neg = [0];
     }
 
 
