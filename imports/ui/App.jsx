@@ -26,6 +26,10 @@ import { BarChartGesamt } from './BarChartGesamt.jsx';
 import {Hilfe} from './Hilfe.jsx';
 import { Reddit_Login } from './reddit_Login.jsx';
 
+import {Reddit_TopPosts } from './Reddit_TopPosts.jsx';
+import {Subreddit_TopPosts } from './Subreddit_TopPosts.jsx';
+import {Reddit_Benachrichtigungen } from './Reddit_Benachrichtigungen.jsx';
+
 
 
 

@@ -126,9 +126,8 @@ async function getPosts(){
                    replies.push(x[z].body)
                 }
 				//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
-                var idChecked = Reddit_Posts.find({id: postArray[i].id}).fetch();
-                
-				if(idChecked[i]){
+				var idChecked = Reddit_Posts.find({id: postArray[i].id}).fetch();
+				if(idChecked[0]){
 					//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
 					let test01 = await Reddit_Posts.update({id: postArray[i].id}, {$set:{
                         ups: postArray[i].ups,
@@ -158,16 +157,14 @@ async function getPosts(){
 		}
     }
     //console.log(Reddit_Posts.find({}).fetch())
-    console.log("ende posts")
     return true
     
 }
 
 async function getPostSentiment(){
-    console.log("anfang sentiment")
-    let wait = await PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_postsentiment.py'), null, function (err) {
+    let wait = await PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_postsentiment.py'), null, async function (err) {
         if (err) throw err;
-        console.log("ende python")
+		let en = await getEngagement();
     });
     return true
 }
@@ -189,7 +186,7 @@ async function getSentiment(){
         }
     }
     PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_sentiment.py'), null, function (err) {
-        if (err) throw err;
+		if (err) throw err;
     });
 }
 
@@ -375,14 +372,15 @@ async function getHot(){
             var name = accounts[a].username;
             var sub = accounts[a].sub;
             let result = await red.getHot(sub, {limit:2})
-            let posts =[]
+			let posts =[]
             for(var v=0; v<result.length; v++){
                 var post ={
                     title: result[v].title,
                     ups: result[v].ups,
                     downs: result[v].downs,
                     date: new Date(result[v].created_utc*1000),
-                    link: result[v].url
+					link: result[v].url,
+					autor: result[v].author.name
                 }
                 posts.push(post)
             }
@@ -397,18 +395,18 @@ async function getHot(){
 
 
 export async function initialR() {
-    /*console.log(Accounts.find({}).fetch())
-    console.log(Reddit_Posts.find({}).fetch())
-    console.log(Reddit_SubscriberCount.find({}).fetch())
-    console.log(Reddit_Dimensionen.find({}).fetch())
-    console.log(Reddit_Hot.find({}).fetch())
-    console.log(Reddit_NewSubreddit.find({}).fetch())*/
-    getDailySubscribers();
-    getHot();
-    let posts = await getPosts();
-    let sent = await getPostSentiment();
-    let en = await getEngagement();
-    getSentiment();
+    //getDailySubscribers();
+	getHot();
+    //let posts = await getPosts();
+    //let sent = await getPostSentiment();
+	//getSentiment();
+	//console.log(Accounts.find({}).fetch())
+    //console.log(Reddit_Posts.find({}).fetch())
+    //console.log(Reddit_SubscriberCount.find({}).fetch())
+    //console.log(Reddit_Dimensionen.find({}).fetch())
+    //console.log(Reddit_Hot.find({}).fetch())
+    //console.log(Reddit_NewSubreddit.find({}).fetch())
+
 }
   
 function checkDaily(collection, name){

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import { Settings_DB } from '../api/settings.js';
-import { Posts } from '../api/twitter_posts.js';
-import { Dimensionen } from '../api/twitter_dimensionen.js';
+import { Reddit_Posts } from '../api/reddit_posts.js';
+import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 import { Settings } from './Settings.jsx';
 
 
-export class Benachrichtigungen extends Tracker.Component {
+export class Reddit_Benachrichtigungen extends Tracker.Component {
     constructor(props){
         super(props);
         this.state={
@@ -131,7 +131,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     wochenbericht =()=>{
-        var postArray = Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
+        var postArray = Reddit_Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         var lastWeek = new Date();
         var pastDate = lastWeek.getDate() - 7;
         lastWeek.setDate(pastDate);
@@ -168,7 +168,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     checkNegativePosts = ()=>{
-        var postArray = Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
+        var postArray = Reddit_Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
         postArray = postArray.slice(0,11)
         for (var i=0; i<postArray.length;i++){
             if(postArray[i].s_neg>postArray[i].s_pos && postArray[i].s_neg<2*postArray[i].s_pos){
@@ -182,10 +182,10 @@ export class Benachrichtigungen extends Tracker.Component {
         }
     }
     checkShitstorm = ()=>{
-        var postArray = Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
+        var postArray = Reddit_Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         postArray = postArray.slice(0,11)
         for (var i=0; i<postArray.length;i++){
-            if(postArray[i].s_neg>=2*postArray[i].s_pos && postArray[i].s_pos!=0){
+            if(postArray[i].s_neg>=2*postArray[i].s_pos && postArray[i].s_neg!=0){
                 var he = this.state.handlungsempfehlungen
                 he.push("Achtung! Ihr Post \""+postArray[i].text+"\" könnte zu einem Shitstorm geführt haben.")
                 this.setState({handlungsempfehlungen: he})
@@ -199,14 +199,13 @@ export class Benachrichtigungen extends Tracker.Component {
     checkEngagementCountRatio = () =>{
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var importantDimensionen = this.getVeryImportantDimensions().concat(this.getImportantDimensions())
-        var datenbankWerte = Dimensionen.find({username:Meteor.user().username}).fetch()
+        var datenbankWerte = Reddit_Dimensionen.find({username:Meteor.user().username}).fetch()
         var sortedEngagement = []
         var sortedCount = []
         var sortedSentiment = []
         /*for (var i=0; i<unwichtig.length;i++){
             delete datenbankWerte[0][this.übersetzung02[unwichtig[i]]]
         }*/
-        if(!datenbankWerte[0]){return true}
         for (var i=0; i<dimensionen.length;i++){
             sortedEngagement.push(this.übersetzung02[dimensionen[i]])
         }
@@ -276,17 +275,17 @@ export class Benachrichtigungen extends Tracker.Component {
         for(var i=0;i<2;i++){
             if(sortedSentiment[i]!=sortedCount[sortedCount.length-1] && importantDimensionen.includes(sortedSentiment[i])){
                 var he = this.state.handlungsempfehlungen
-                    he.push("Die Kategorie " + this.übersetzung03[sortedSentiment[i]] +" kommt sehr gut bei den Kunden an. Nutzen Sie dies und posten Sie mehr darüber.")
-                    this.setState({handlungsempfehlungen: he})
-                    var dm = this.state.dimensionen
-                    dm.push(sortedSentiment[i])
-                    this.setState({dimensionen: dm})
+                he.push("Die Kategorie " + this.übersetzung03[sortedSentiment[i]] +" kommt sehr gut bei den Kunden an. Nutzen Sie dies und posten Sie mehr darüber.")
+                this.setState({handlungsempfehlungen: he})
+                var dm = this.state.dimensionen
+                dm.push(sortedSentiment[i])
+                this.setState({dimensionen: dm})
             }
         }
     }
 
     checkVeryImportant = () => {
-        var posts = Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
+        var posts = Reddit_Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         var notPosted = []
         var veryImportant = this.getVeryImportantDimensions();
         for(var d=0; d<veryImportant.length; d++){
@@ -308,7 +307,7 @@ export class Benachrichtigungen extends Tracker.Component {
     }
 
     checkImportant = () => {
-        var posts = Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
+        var posts = Reddit_Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         var notPosted = []
         var important = this.getImportantDimensions();
         for(var d=0; d<important.length; d++){
