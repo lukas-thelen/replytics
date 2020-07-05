@@ -106,10 +106,16 @@ class App extends Tracker.Component {
   showTwitter(){
     this.setState({reddit:false})
     this.setState({twitter:true})
+    this.setState({settings_screen: false})
+    this.setState({authorize_screen: false})
+    this.setState({help_screen: false})
   }
   showReddit(){
     this.setState({reddit:true})
     this.setState({twitter:false})
+    this.setState({settings_screen: false})
+    this.setState({authorize_screen: false})
+    this.setState({help_screen: false})
   }
   
   saveReddit=async()=>{
