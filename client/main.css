@@ -96,10 +96,25 @@ body {
 }
 .footer {
 	text-align:center;
-	width: 220vh;
-	color:white;
-
+	width: 100%;
+  color:white;
+  position: absolute;
+  bottom: 0;
+  left:0;
+  height: 74px; /* Set the fixed height of the footer here */
 }
+html {
+  position: relative;
+  min-height: 100%;
+}
+.main{
+  margin-bottom: 74px;;
+}
+
+.noHover{
+  pointer-events: none;
+}
+
 .info{
 	font-size: 120%;
 	text-align:center;

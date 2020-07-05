@@ -27,12 +27,8 @@ export class RedditSubscriberChart extends Tracker.Component {
     }
 
     for(var i=l;i>=0;i--){
-
       subscriberList.push(subscriber[i].subscriber);
     }
-
-
-
 
     for(var j=l; j>=0; j--){
       subscriberDate.push(subscriber[j].date);
@@ -48,8 +44,11 @@ export class RedditSubscriberChart extends Tracker.Component {
     }else{
         var last = datum.length-1;
       for(var k=l; k<6;k++){
-        var d = (datum[last]+1+k)%7;
-
+        if(last<0){
+          var d = 0
+        }else{
+          var d = (datum[last]+1+k)%7;
+        }
         datum.push(d); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
       }
     }

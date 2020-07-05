@@ -26,16 +26,12 @@ export class FollowerChart extends Tracker.Component {
     if (l>=6){
       l = 6
     }
-    //alert(l);
-    //alert(follower);
+
     for(var i=l;i>=0;i--){
-      //alert("test");
       followerList.push(follower[i].count);
     }
-
+ 
     
-
-
     for(var j=l; j>=0; j--){
       followerDate.push(follower[j].date);
     }
@@ -48,8 +44,14 @@ export class FollowerChart extends Tracker.Component {
     if (l>=6){
       l = 6
     }else{
+      var last = datum.length-1;
       for(var k=l; k<6;k++){
-        datum.push(k-1); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
+        if(last<0){
+          var d = 0
+        }else{
+          var d = (datum[last]+1+k)%7;
+        }
+        datum.push(d); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
       }
     }
     //alert(datum);

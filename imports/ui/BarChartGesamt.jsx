@@ -14,9 +14,9 @@ export class BarChartGesamt extends Tracker.Component {
     var s_twitter_neg = [];
     var d = Sentiment.find({username:Meteor.user().username}).fetch()
     if(d[0]){
-      s_twitter_pos.push(100* d[0].s_pos)
-      s_twitter_neu.push(100* d[0].s_neu)
-      s_twitter_neg.push(100* d[0].s_neg)
+      s_twitter_pos.push(100* d[0].s_pos_p)
+      s_twitter_neu.push(100* d[0].s_neu_p)
+      s_twitter_neg.push(100* d[0].s_neg_p)
     }else {
       s_twitter_pos = [0];
       s_twitter_neu = [0];

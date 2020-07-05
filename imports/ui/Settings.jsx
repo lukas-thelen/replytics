@@ -176,6 +176,8 @@ getDefault = ()=>{
 		<div className="col col-lg-7 offset-lg-3 text-left"> 
             <h2>Einstellungen</h2> 
             <hr className="mt-4 mb-4 " />
+            <h5>Priorität der Postkategorien</h5>
+            <br/>
             <form onChange = {this.changeProdukt_und_Dienstleistung} className="row">
                 <h6 className="col-xs-12 col-sm-5">Produkt und Dienstleistung  </h6>
                 <div className="form-check form-check-inline Produkt_und_Dienstleistung">
@@ -271,6 +273,8 @@ getDefault = ()=>{
                 <label className="form-check-label" htmlFor="inlineRadio3">sehr wichtig</label>
                 </div>
             </form>           
+            <hr className="mt-4 mb-4 " />
+            <h5>Reddit Monitoring Einstellungen</h5>
             <br/>
             <form>
                 <label for="formGroupExampleInput">Subreddit der Firma</label>
@@ -283,7 +287,7 @@ getDefault = ()=>{
             <form action={this.authenticationUrl}>
                 <input className="btn btn-info mr-3" type="button" onClick={this.reddit_code} value="Reddit autorisieren"></input>
             </form>
-            <br/>
+            <hr className="mt-4 mb-4 " />
             <form>
                 <input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="Speichern"></input>
 

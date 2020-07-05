@@ -6,6 +6,7 @@ import { Accounts } from '../api/accounts.js';
 
 
 export class Navbar extends Tracker.Component {
+
     isAuthorized(){
         if(Meteor.user()){
             var nutzer = Meteor.user().username;
@@ -20,17 +21,32 @@ export class Navbar extends Tracker.Component {
             return true
         }
     }
+    twitterDesign=()=>{
+        if(this.props.twitter){
+            return "btn-outline-info btn float-left noHover mr-2"
+        }else{
+            return "btn-dark btn float-left mr-2"
+        } 
+    }
+    redditDesign=()=>{
+        if(this.props.reddit){
+            return "btn-outline-danger btn float-left noHover mr-2"
+        }else{
+            return "btn-dark btn float-left mr-2"
+        } 
+    }
+
     render() {
         //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
         return (
 
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark" >
 			 <a className="navbar-brand" href="test.html"><img width="90" height="50" src="/logoneu.png" alt="Selfhtml"/></a>
-             <a className="nav-link float-left" href="http://www.twitter.com"><img width="35em" height="auto" src="/twitter1.png" alt="Selfhtml"/></a>
-			 <a className="nav-link float-left" href="http://www.reddit.com"><img width="35em" height="auto" src="/Reddit.png" alt="Selfhtml"/></a>
+             <button ref={(input)=>{this.twitter = input}} className={this.twitterDesign()} onClick={this.props.showTwitter}><img width="35em" height="auto" src="/twitter1.png" alt="Selfhtml"/></button>
+			 <button ref={(input)=>{this.reddit = input}} className={this.redditDesign()} onClick={this.props.showReddit}><img width="35em" height="auto" src="/Reddit.png" alt="Selfhtml"/></button>
 
 
-			<div style={{fontSize:14}} className="text-light d-none d-sm-block">...dein Weg zum Erfolg!</div>
+			<div style={{fontSize:14}} className="text-light d-none d-sm-block">...Ihr Weg zum Erfolg!</div>
 
 
 				<ul className="navbar-nav ml-auto ">
