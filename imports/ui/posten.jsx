@@ -12,6 +12,7 @@ export class Selbstposten extends Tracker.Component {
 	}
 	submitPost = (event) => {
 		Meteor.call('postTweet', this.state.content, this.state.dimension, Meteor.user().username)
+		Meteor.call('updateServer')
 	}
 	
 	changeContent = (event) => {
@@ -47,8 +48,7 @@ export class Selbstposten extends Tracker.Component {
 				<br></br>
 				<div className= "row col-md-10">
 				<select onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
-					<option value="Dimension wählen">Kategorie wählen</option>
-					<option value="not defined">keine Angabe</option>
+					<option selected disabled value="not defined">Kategorie wählen</option>
 					<option value="Produkt und Dienstleistung">Produkt und Dienstleistung</option>
 					<option value="Emotionen">Emotionen</option>
 					<option value="Arbeitsplatzumgebung">Arbeitsplatzumgebung</option>

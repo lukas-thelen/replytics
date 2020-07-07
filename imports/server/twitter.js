@@ -27,8 +27,8 @@ const path = require('path');
 
 
 /*var TwitterAPI = new Twit({
-	consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
-	consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+	consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
+	consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
 	access_token: Accounts.find({username: Meteor.user().username}).fetch()[0].token,
 	access_token_secret: Accounts.find({username: Meteor.user().username}).fetch()[0].secret});*/
 
@@ -38,8 +38,8 @@ Meteor.methods({
 	//Methode, um etwas auf Twitter zu posten
 	async postTweet(text, dimension, user){
 		var UserAPI = new Twit({
-			consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
-			consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+			consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
+			consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
 			access_token: Accounts.find({username: user}).fetch()[0].token,
 			access_token_secret: Accounts.find({username: user}).fetch()[0].secret});
 
@@ -70,8 +70,7 @@ Meteor.methods({
 		  return true
 	},
 	"updateServer": async() =>{
-		getDailyFollowers();
-		let test = await getPosts();
+		let test = await getEverything()
 		return test
 	},
 	updateSettings(name,q,w,e,r,t,z){
@@ -125,6 +124,7 @@ Meteor.methods({
 
 //Ergänzt einen neuen Eintrag für die Followerzahlen, wenn heute noch kein Eintrag gemacht wurde oder der Wert von den bisherigen abweicht
 async function getDailyFollowers(){
+	console.log("start followers")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
@@ -152,12 +152,14 @@ async function getDailyFollowers(){
 			}
 		}
 	}
+	console.log("ende followers")
+	return true
 }
 
 
 //Aktualisiert die Favorites und Retweets der eigenen Posts
 async function getPosts(){
-	console.log("getPosts")
+	console.log("start posts")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
@@ -202,15 +204,14 @@ async function getPosts(){
 		}
 	}
 	//console.log(Posts.find({retweet: false}).fetch());
-
-	let test = await getMentions();
-	return test	
+	console.log("ende posts")
+	return true	
 
 	//console.log(Posts.find({retweet: false}).fetch());
 }
 
 async function getDimensions(){
-	console.log("getDimensions")
+	console.log("start Dimensionen")
 	var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
 	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
 	var accounts = await Accounts.find({}).fetch();
@@ -304,11 +305,12 @@ async function getDimensions(){
 			}
 		}
 	}
+	console.log("ende Dimensionen")
 	return true
 }
 
 async function getEngagement(){
-	console.log("getEngagement")
+	console.log("start Engagement")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
@@ -344,8 +346,8 @@ async function getEngagement(){
 			}
 		}
 	}
-	let test = await getDimensions();
-	return test
+	console.log("ende Engagement")
+	return true
 }
 
 async function getReplies(nutzer){
@@ -374,7 +376,7 @@ async function getFavorites(nutzer){
 }
 
 async function postSentiment(){
-	console.log("postSentiment")
+	console.log("start PostSentiment")
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
@@ -382,8 +384,8 @@ async function postSentiment(){
 			var name = accounts[a].username;
 			var screen_name = accounts[a].screen_name;
 			var UserAPI = new Twit({
-				consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
-				consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+				consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
+				consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
 			//API Anfrage nach alles Mentions(@)
@@ -419,12 +421,12 @@ async function postSentiment(){
 			}
 		}
 	}
-	let test = await getEngagement();
-	return test
+	console.log("ende PostSentiment")
+	return true
 }
 
 async function getRetweets(){
-	console.log("getRetweets")
+	console.log("start Retweets")
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
 	for(var k=0;k<l;k++){
@@ -454,13 +456,14 @@ async function getRetweets(){
 			}
 		}
 	}
-	//console.log(RetweetCount.find({}).fetch())
+	console.log("ende Retweets")
+	return true
 }
 
 //Aktualisiert oder speichert die Anzahl der Mentions, die Anzahl der Autoren, den Inhalt der Mentions und die Antorten der eigenen Posts
 async function getMentions(){
 
-	console.log("getMentions")
+	console.log("start Mentions")
 
 	var accounts = Accounts.find({}).fetch();
 	var l = accounts.length;
@@ -469,8 +472,8 @@ async function getMentions(){
 			var name = accounts[a].username;
 			var screen_name = accounts[a].screen_name;
 			var UserAPI = new Twit({
-				consumer_key: "yCR61JPigbhs8tQUDMjy1Bgz3", // API key
-				consumer_secret: "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT", // API secret
+				consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
+				consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
 			//API Anfrage nach alles Mentions(@)
@@ -530,13 +533,24 @@ async function getMentions(){
 			}
 		}
 	}
-	let test = await python()
-	getRetweets();
-	return test
+	console.log("ende Mentions")
+	return true
 	//console.log(Mentions.find({}).fetch())
 	//console.log(MentionCount.find({}).fetch())
 	//console.log(Posts.find({retweet: false}).fetch());
 	//console.log(Sentiment.find({}).fetch())
+}
+
+async function getEverything(){
+	let a1 = await getDailyFollowers();
+	let a2 = await getPosts();
+	let a3 = await getMentions();
+	let a4 = await getRetweets();
+	let a5 = await python();
+	let a6 = await postSentiment();
+	let a7 = await getEngagement();
+	let a8 = await getDimensions();	
+	return true
 }
 
 //
@@ -548,18 +562,10 @@ async function getMentions(){
 //
 
 export async function initial(){
-	/*Posts.remove({});
-	getDailyFollowers();
-	getPosts();
-	var myVar = setInterval(getDailyFollowers, 1200000);
-	var myVar03 = setInterval(getPosts, 1200000);
-	var myVar04 = setInterval(python, 1200000);*/
-	//MentionCount.remove({});
-	//FollowerCount.remove({});
-	//Posts.remove({});
-	//var myVar03 = setInterval(getPosts, 1200000);*/
-	/*getPosts();
-	Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
+	getEverything();
+	//var myVar = setInterval(getEverything, 1200000);
+	
+	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})
@@ -569,18 +575,9 @@ export async function initial(){
 	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
-	//getDailyFollowers();
-	//getPosts();
-	//FollowerCount.remove({username:"testaccount3"})
-	//Accounts.remove({username:"testaccount3"})
-	//Posts.remove({username:"lukas"})
-	//Mentions.remove({})
-	//console.log(Sentiment.find({}).fetch())
-	//let test = await getPosts()
-	//console.log(test)
-
 }
-	//console.log(Posts.find({username:"testaccount3"}).fetch())
+
+
 
 //
 //
@@ -592,7 +589,7 @@ export async function initial(){
 
 //Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
 async function python(){
-	console.log("python")
+	console.log("start Sentiment")
 	const { success, err = '', results } = await new Promise((resolve, reject) => {
     PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function(
 		err,
@@ -603,12 +600,10 @@ async function python(){
 		  reject({ success: false, err });
 		}
 		resolve({ success: true, results });
-		console.log("erster")
 	  });
 	})
-	console.log("zweiter")
-	let test = await postSentiment();
-	return test
+	console.log("ende Sentiment")
+	return true
 	
 }
 

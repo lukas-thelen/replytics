@@ -8,9 +8,26 @@ import { FollowerCount } from '/imports/api/twitter_followerCount';
 export class FollowerChart extends Tracker.Component {
 
   getFollower(){
-    var follower = FollowerCount.find({username: Meteor.user().username }, {sort: {date: -1}}).fetch();
+    var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     //console.log(follower);
     return follower;
+  }
+
+  getMin(){
+    var list = this.getFollowerList().datasets[0].data
+    var min = Math.min(...list)
+    if (Math.max(...list)-min <21){
+      return min-1
+    }
+    return undefined
+  }
+  getMax(){
+    var list = this.getFollowerList().datasets[0].data
+    var max = Math.max(...list)
+    if (max-Math.min(...list) <21){
+      return max+1
+    }
+    return undefined
   }
 
   getFollowerList(){
@@ -76,6 +93,8 @@ export class FollowerChart extends Tracker.Component {
   }
 
   render() {
+    let minimum = this.getMin()
+    let maximum = this.getMax()
     if(this.getFollower()[0] != undefined) {
       return (
         <div className="followerchart">
@@ -89,7 +108,7 @@ export class FollowerChart extends Tracker.Component {
             options = {{
               bezierCurve: false,
               linetension: 0,
-              scales: {yAxes: [{ticks: {suggestedMin: 0, precision:0}}]},
+              scales: {yAxes: [{ticks: {min: minimum, max:maximum, precision:0}}]},
               responsive: true,
               maintainAspectRatio: false
             }}

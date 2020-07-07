@@ -8,6 +8,9 @@ import { Reddit_Hot } from '../api/reddit_hot.js';
 import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
 import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 import { unstable_batchedUpdates } from 'react-dom';
+import { Reddit_UserSubscriberCount } from '../api/reddit_userSubscriberCount.js';
+import { Reddit_Karma } from '../api/reddit_karma.js';
+import {Reddit_Popular} from '../api/reddit_popular.js';
 
 let {PythonShell} = require('python-shell')
 const path = require('path');
@@ -72,7 +75,30 @@ Meteor.methods({
             s_pos: 0,
             username: name			
 		});
-    }
+	},
+	async searchReddit(suchbegriff, name){
+		console.log(suchbegriff)
+		console.log(name)
+		let posts = await red.search({query: suchbegriff, time: 'week', sort: 'top', limit:3});
+		console.log(posts);
+		var array =[]
+		var post = {text:"", autor:"", ups:0, downs:0, subreddit:"", date:new Date(), link:""}
+        for (var i= 0; i<posts.length; i++){
+				post = {
+					text: posts[i].title,
+					autor: posts[i].author.name,
+					ups: posts[i].ups,
+					downs: posts[i].downs,
+					subreddit: posts[i].subreddit.display_name,
+					date: new Date(posts[i].created_utc*1000),
+					link: posts[i].url
+				}
+            array.push(post);
+        }
+		console.log(array)
+		Reddit_Popular.remove({username: name})
+        Reddit_Popular.insert({posts: array, username: name})
+	}
 })
 
 
@@ -99,14 +125,14 @@ async function getDailySubscribers(){
 					if(!checkCount("subscriber", subs, Reddit_SubscriberCount, name) && checkDaily(Reddit_SubscriberCount, name)){
 						removeLast(Reddit_SubscriberCount, name)
 					}
-					Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+					Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name, subreddit: sub});
 				}
 			}else{
-				Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+				Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name, subreddit: sub});
 			}
 		}
-    }
-    //console.log(Reddit_SubscriberCount.find({}).fetch())
+	}
+    console.log(Reddit_SubscriberCount.find({}).fetch())
 }
 
 async function getPosts(){
@@ -393,13 +419,82 @@ async function getHot(){
     }
 }
 
+async function getDailyKarma(name){
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		if(accounts[i].reddit_auth){
+			var name = accounts[i].username;
+			r = accounts[i].requester
+			reddit = new snoowrap(r)
+			let karma = await reddit.getKarma()
+			commentkarma = karma[0].comment_karma
+			postkarma = karma[0].link_karma
+			if (Reddit_Karma.find({username: name}).count()>0){
+				var daily = checkDaily(Reddit_Karma, name)
+				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+				if (!daily || (!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily) || (!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
+					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+					if((!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily)||(!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
+						removeLast(Reddit_Karma, name)
+					}
+					Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
+				}
+			}else{
+				Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
+			}
+		}
+	}
+	console.log(Reddit_Karma.find({}).fetch())
+}
+	
+async function getDailySubscribersUser(){
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		if(accounts[i].reddit_auth){
+			var name = accounts[i].username;
+			r = accounts[i].requester
+			reddit = new snoowrap(r)
+			let subs = await reddit.getMe().subreddit.display_name.subscribers
+			if (Reddit_UserSubscriberCount.find({username: name}).count()>0){
+						
+				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+				if (!checkDaily(Reddit_UserSubscriberCount, name) || (!checkCount("subscriber", subs, Reddit_UserSubscriberCount, name) && checkDaily(Reddit_UserSubscriberCount, name))){
+					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+					if(!checkCount("subscriber", subs, Reddit_UserSubscriberCount, name) && checkDaily(Reddit_UserSubscriberCount, name)){
+						removeLast(Reddit_UserSubscriberCount, name)
+					}
+					Reddit_UserSubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+				}
+			}else{
+				Reddit_UserSubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+			}
+		}
+	}
+
+	console.log(Reddit_UserSubscriberCount.find({}).fetch())
+}
+	
+	
+//Account muss für die Funktion mindestens 30 Tage alt sein und geht vermutlich nur für Subreddit die man erstellt hat oder Moderator ist
+/*async function getDailyContributors(name){
+let r = await Accounts.find({username:name}).fetch()[0].requester
+		reddit = new snoowrap(r)
+		let contributors = await reddit.getSubreddit("redditdev").getContributors()
+		console.log(contributors)
+		console.log("contributors")
+}*/
+
 
 export async function initialR() {
-    //getDailySubscribers();
-	getHot();
+	//getDailySubscribers();
+	//getDailyKarma();
     //let posts = await getPosts();
     //let sent = await getPostSentiment();
 	//getSentiment();
+	//getPosts()
+	//getEngagement()
 	//console.log(Accounts.find({}).fetch())
     //console.log(Reddit_Posts.find({}).fetch())
     //console.log(Reddit_SubscriberCount.find({}).fetch())

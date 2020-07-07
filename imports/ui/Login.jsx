@@ -5,7 +5,7 @@ import { FollowerCount } from '../api/twitter_followerCount.js';
 
 var Codebird = require("codebird");
 var cb = new Codebird;
-cb.setConsumerKey("yCR61JPigbhs8tQUDMjy1Bgz3", "ltkN0xgHBeUX9i3mF1fYIQAgsTNYMUc4H6ZyM7sXEvtgVt9JhT");
+cb.setConsumerKey("JHnN531dsAv6a4OmaMWJMbh8t", "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg");
 
 
 

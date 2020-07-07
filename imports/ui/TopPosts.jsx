@@ -54,10 +54,10 @@ getDate (i) {
 	<span style={{margin:2,fontSize:14}}>{this.getText()[0].text}</span>
 	</div>
 	
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(0)} %</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[0].fav}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[0].replies.length}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[0].dimension}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-dark btn-sm">Engagement: {this.getEngagement(0)} %</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Likes: {this.getText()[0].fav}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-info btn-sm">Kommentare: {this.getText()[0].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-secondary btn-sm">{this.getText()[0].dimension}</p>
 	</div>
 	</div>}
     
@@ -70,10 +70,10 @@ getDate (i) {
 	<div className="d-flex w-100 justify-content-between ">
 	<span style={{margin:2, fontSize:14}}>{this.getText()[1].text}</span>
 	</div>
-	<p className="btn btn-outline-success" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement:{this.getEngagement(1)} %</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[1].fav}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[1].replies.length}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[1].dimension}</p>
+	<p className="btn btn-outline-dark btn-sm" style={{height: 18, fontSize: 11, padding: 1, margin: 3}}>Engagement: {this.getEngagement(1)} %</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Likes: {this.getText()[1].fav}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-info btn-sm">Kommentare: {this.getText()[1].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-secondary btn-sm">{this.getText()[1].dimension}</p>
 	</div>
 	</div>}
 
@@ -86,10 +86,10 @@ getDate (i) {
 	<div className="d-flex w-100 justify-content-between ">
 	<a style={{margin:2, fontSize:14}}>{this.getText()[2].text}</a>
 	</div>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Engagement:{this.getEngagement(2)} %</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-danger btn-sm">Likes:{this.getText()[2].fav}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-primary btn-sm">Kommentare: {this.getText()[2].replies.length}</p>
-	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-warning btn-sm">{this.getText()[2].dimension}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-dark btn-sm">Engagement: {this.getEngagement(2)} %</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-success btn-sm">Likes: {this.getText()[2].fav}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-info btn-sm">Kommentare: {this.getText()[2].replies.length}</p>
+	<p style={{height: 18, fontSize: 11, padding: 1, margin: 3}}className="btn btn-outline-secondary btn-sm">{this.getText()[2].dimension}</p>
 	</div>
 	</div>}
 

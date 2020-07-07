@@ -3,7 +3,7 @@ import Tracker from 'tracker-component';
  
 
 //Components
-import { KeyFacts } from './KeyFacts.jsx';
+import { Reddit_KeyFacts } from './Reddit_KeyFacts.jsx';
 import { RedditSelbstposten } from './reddit_posten.jsx';
 import { Reddit_Benachrichtigungen } from './Reddit_Benachrichtigungen.jsx';
 import { Reddit_TopPosts } from './Reddit_TopPosts.jsx';
@@ -12,6 +12,7 @@ import { RedditBarChart } from './RedditBarChart.jsx';
 import { RedditBarChartGesamt } from './RedditBarChartGesamt.jsx';
 import { RedditSubscriberChart } from './RedditSubscriberChart.jsx';
 import { RedditDimensionenRadar } from './RedditDimensionen.jsx';
+import { Reddit_SearchPosts } from './Reddit_SearchPosts.jsx';
 
 
 export class Reddit_Dashboard extends Tracker.Component {
@@ -56,7 +57,7 @@ export class Reddit_Dashboard extends Tracker.Component {
                         </span>
                     </div>
                         <Reddit_TopPosts renderCondition={this.state.showTop}/>
-                        <Subreddit_TopPosts renderCondition={this.state.showPop}/>
+                        <Reddit_SearchPosts renderCondition={this.state.showPop}/>
                 </div>
 
                 <div className="col-xl-7 row">
@@ -67,7 +68,7 @@ export class Reddit_Dashboard extends Tracker.Component {
                         <RedditBarChart/>   
                     </div>
                     <div className="col-md-6 elem dritte">
-                        <KeyFacts/>
+                        <Reddit_KeyFacts/>
                         <br/>
                         <RedditSubscriberChart/>
                         <br/>
@@ -78,7 +79,7 @@ export class Reddit_Dashboard extends Tracker.Component {
             </div>
         );
     }else{
-        return null
+        return <Reddit_SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
     }
   }
 }

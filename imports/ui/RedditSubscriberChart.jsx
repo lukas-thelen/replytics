@@ -3,13 +3,33 @@ import Tracker from 'tracker-component';
 import Chart from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
+import {Accounts} from '../api/accounts.js'
 
 export class RedditSubscriberChart extends Tracker.Component {
 
   getSubscriber_r(){
-    var subscriber = Reddit_SubscriberCount.find({username: Meteor.user().username }, {sort: {date: -1}}).fetch();
+    var acc = Accounts.find({username: Meteor.user().username}).fetch()
+    var sub = acc[0].sub
+    var subscriber = Reddit_SubscriberCount.find({username: Meteor.user().username, subreddit: sub}, {sort: {date: -1}}).fetch();
 
     return subscriber;
+  }
+
+  getMin(){
+    var list = this.getSubscriberList_r().datasets[0].data
+    var min = Math.min(...list)
+    if (Math.max(...list)-min <21){
+      return min-1
+    }
+    return undefined
+  }
+  getMax(){
+    var list = this.getSubscriberList_r().datasets[0].data
+    var max = Math.max(...list)
+    if (max-Math.min(...list) <21){
+      return max+1
+    }
+    return undefined
   }
 
   getSubscriberList_r(){
@@ -73,6 +93,8 @@ export class RedditSubscriberChart extends Tracker.Component {
   }
 
   render() {
+    let minimum = this.getMin()
+    let maximum = this.getMax()
     if(this.getSubscriber_r()[0] != undefined) {
       return (
         <div className="followerchart">
@@ -86,7 +108,7 @@ export class RedditSubscriberChart extends Tracker.Component {
             options = {{
               bezierCurve: false,
               linetension: 0,
-              scales: {yAxes: [{ticks: {suggestedMin: 0, precision:0}}]},
+              scales: {yAxes: [{ticks: {min: minimum, max:maximum, precision:0}}]},
               responsive: true,
               maintainAspectRatio: false
             }}

@@ -151,6 +151,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
             tweetDate = postArray[i].date
             i++
         }
+        console.log(eng)
         eng = Number(eng/i).toFixed(2)
         return (
         <div>

@@ -78,7 +78,7 @@ export class Twitter_Dashboard extends Tracker.Component {
             </div>
         );
         }else{
-            return null
+            return <SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
         }
   }
 }
