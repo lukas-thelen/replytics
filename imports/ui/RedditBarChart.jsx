@@ -52,7 +52,7 @@ return{
   }
 
   render() {
-    if(true) {
+    if(this.props.renderCondition) {
       return (
         <div className="barchart">
         <h5>Sentiment-Analyse der Kategorien
@@ -86,9 +86,7 @@ return{
 
       );
     } else {
-      return (
-        <p> Daten werden geladen...</p>
-      );
+        return null
     }
   }
 };

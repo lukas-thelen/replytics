@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import { TwitterAPI } from '../api/twitter_credentials.js';
-import { Popular } from '../api/twitter_popular.js';
+import { Reddit_Popular } from '../api/reddit_popular.js';
  
 
-export class SearchPosts extends Tracker.Component {
+export class Reddit_SearchPosts extends Tracker.Component {
     constructor () {
         super();
     
@@ -20,11 +20,11 @@ export class SearchPosts extends Tracker.Component {
 
     suchen =(event)=>{
         event.preventDefault()
-        Meteor.call('searchPosts', Meteor.user().username, this.state.text)
+        Meteor.call('searchReddit', this.state.text, Meteor.user().username)
         event.target.reset()
     }
     getTweets=()=>{
-        var posts = Popular.find({username:Meteor.user().username}).fetch()
+        var posts = Reddit_Popular.find({username:Meteor.user().username}).fetch()
 		if(posts[0]){
 			return posts[0].posts
 		}
@@ -49,13 +49,15 @@ export class SearchPosts extends Tracker.Component {
 	    
         <div style={{margin:3}}className="border-bottom col-md-12">
 			<div className="d-flex w-100 justify-content-between ">
-			<strong style={{fontSize:11}}>{post.autor}</strong>
+            <strong style={{fontSize:11}}>{post.autor} - {post.subreddit}</strong>
 			<span style={{fontSize:10, margin: 2}}>{this.getDate(post.date)}</span>
 			</div>
 			<div className="d-flex w-100 justify-content-between ">
             <a className="alert alert-light" href={post.link} target="_blank" style={{margin:2, fontSize:13}}>{post.text}</a><br/>
             <div className="text-right">
-			    <span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2, marginTop: 15}}className="btn btn-outline-danger btn-sm"> Likes:{post.favorites}</span>
+			    <span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2}}className="btn btn-outline-success btn-sm"> Upvotes: {post.ups}</span>
+                <br/>
+                <span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2}}className="btn btn-outline-danger btn-sm"> Downvotes: {post.downs}</span>
             </div>
             </div>
 			

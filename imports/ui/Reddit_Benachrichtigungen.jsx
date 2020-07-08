@@ -151,6 +151,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
             tweetDate = postArray[i].date
             i++
         }
+        console.log(eng)
         eng = Number(eng/i).toFixed(2)
         return (
         <div>
@@ -206,7 +207,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         /*for (var i=0; i<unwichtig.length;i++){
             delete datenbankWerte[0][this.übersetzung02[unwichtig[i]]]
         }*/
-		if(!datenbankWerte[0]){return true}
+        if(!datenbankWerte[0]){return true}
         for (var i=0; i<dimensionen.length;i++){
             sortedEngagement.push(this.übersetzung02[dimensionen[i]])
         }
@@ -418,7 +419,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         <div>
         <li className="list-group-item">
             <div className="d-flex w-100 justify-content-between">
-            <span className="w-75 font-weight-lighter">{text}</span>
+            <span className="w-75">{text}</span>
             {this.state.dimensionen[index]==="Shitstorm" && <small className="text-danger text-right">{this.übersetzung03[this.state.dimensionen[index]]}</small>}
             {this.state.dimensionen[index]!="Shitstorm" && <small className="text-right">{this.übersetzung03[this.state.dimensionen[index]]}</small>}
             <input ref={(input)=>{this[index] = input}}type="checkbox" onClick={() => this.erledigt(index)} className="form-check-input"/>
@@ -436,7 +437,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         <div>
         <li className="list-group-item">
             <div className="d-flex w-100 justify-content-between">
-            <span className="w-75 font-weight-lighter">{text}</span>
+            <span className="w-75">{text}</span>
             {this.state.dimensionen[index]==="Shitstorm" && <small className="text-danger text-right">{this.übersetzung03[this.state.dimensionen[index]]}</small>}
             {this.state.dimensionen[index]!="Shitstorm" && <small className="text-right">{this.übersetzung03[this.state.dimensionen[index]]}</small>}
             <input ref={(input)=>{this[index] = input}}type="checkbox" onClick={() => this.erledigt(index)} className="form-check-input"/>
@@ -450,25 +451,27 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         </li>
         </div>
         );
-        return (
-        //alles, was zurück geschickt werden soll
-        <div> {/* this.showState().handlungsempfehlungen */}<h5>Handlungsempfehlungen 
-		<button type="button" className="btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Zunächst sehen Sie Ihren Wochenbericht der letzten sieben Tage. Darunter erhalten Sie Empfehlungen, um Ihre Social-Media-Präsenz zu optimieren. Sie haben die Möglichkeit diese über die linke Checkbox auszublenden. "><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-		<path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-		<path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
-		</svg></button></h5>
-		<ul className="list-group list-group-flush">
-            <strong className="border-top">Wochenbericht:</strong> {this.wochenbericht()}
-            {this.state.handlungsempfehlungen.length===0 && <span>keine Handlungsempfehlungen verfügbar</span>}
-            {this.state.showMore && Element}{!this.state.showMore && ElementSmall}</ul>
-        <form>
-                {/*<input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="test"></input>*/}
-                {this.state.handlungsempfehlungen.length>2 && <span>
-                {!this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Mehr anzeigen"></input>}
-                {this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Weniger anzeigen"></input>}
-                </span>}
-            </form>
-        </div>
-        );
+        if(this.props.renderCondition){ 
+            return (
+            //alles, was zurück geschickt werden soll
+            <div className="boxshadow"> {/* this.showState().handlungsempfehlungen */}<h5>Handlungsempfehlungen 
+            <button type="button" className="btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Zunächst sehen Sie Ihren Wochenbericht der letzten sieben Tage. Darunter erhalten Sie Empfehlungen, um Ihre Social-Media-Präsenz zu optimieren. Sie haben die Möglichkeit diese über die linke Checkbox auszublenden. "><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+            </svg></button></h5>
+            <ul className="list-group list-group-flush">
+                <h6>Wochenbericht:</h6> {this.wochenbericht()}
+                {this.state.handlungsempfehlungen.length===0 && <span>keine Handlungsempfehlungen verfügbar</span>}
+                {this.state.showMore && Element}{!this.state.showMore && ElementSmall}</ul>
+            <form>
+                    {/*<input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="test"></input>*/}
+                    {this.state.handlungsempfehlungen.length>2 && <span>
+                    {!this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Mehr anzeigen"></input>}
+                    {this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Weniger anzeigen"></input>}
+                    </span>}
+                </form>
+            </div>
+            );
+        }else{return null}
     }
 }

@@ -3,8 +3,9 @@
   padding:10px;
   margin:5px;
 }
-
-
+.boxshadow{
+  box-shadow: 0px 15px 8px -15px silver,  0px -15px 8px -15px silver
+}
 .grey{
 	background-color: #fafafa;
 }

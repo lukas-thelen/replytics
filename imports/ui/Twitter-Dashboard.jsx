@@ -29,10 +29,14 @@ export class Twitter_Dashboard extends Tracker.Component {
     toTop(){
         this.setState({showPop:false})
         this.setState({showTop:true})
+        this.top.className="btn btn-secondary btn-sm active"
+        this.pop.className="btn btn-secondary btn-sm"
     }
     toPop(){
         this.setState({showPop:true})
         this.setState({showTop:false})
+        this.top.className="btn btn-secondary btn-sm"
+        this.pop.className="btn btn-secondary btn-sm active"
     }
   render() {
     if(this.props.renderCondition){  
@@ -51,8 +55,8 @@ export class Twitter_Dashboard extends Tracker.Component {
                         </svg></button></h5>
                         
                         <span className="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                            <button type="button" className="btn " onClick={this.toTop}>Top Posts</button>
-                            <button type="button" className="btn " onClick={this.toPop}>Posts suchen</button>
+                            <button type="button" className="btn btn-secondary active" ref={(input)=>{this.top = input}} onClick={this.toTop}>Top Posts</button>
+                            <button type="button" className="btn btn-secondary" ref={(input)=>{this.pop = input}} onClick={this.toPop}>Posts suchen</button>
                         </span>
                     </div>
                         <TopPosts renderCondition={this.state.showTop}/>
@@ -78,7 +82,7 @@ export class Twitter_Dashboard extends Tracker.Component {
             </div>
         );
         }else{
-            return null
+            return <SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
         }
   }
 }

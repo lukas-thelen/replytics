@@ -8,6 +8,10 @@ import { Reddit_Hot } from '../api/reddit_hot.js';
 import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
 import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 import { unstable_batchedUpdates } from 'react-dom';
+import { Reddit_UserSubscriberCount } from '../api/reddit_userSubscriberCount.js';
+import { Reddit_Karma } from '../api/reddit_karma.js';
+import {Reddit_Popular} from '../api/reddit_popular.js';
+import { Posts } from '../api/twitter_posts.js';
 
 let {PythonShell} = require('python-shell')
 const path = require('path');
@@ -44,9 +48,9 @@ Meteor.methods({
         let test = await Accounts.update({username:name}, {$set:{reddit_auth: true, reddit_code:code}})
         return true
     },
-    update_reddit(sub, name, user){
-        Accounts.update({username:user}, {$set:{sub:sub, r_name: name}})
-        console.log(Accounts.find({}).fetch())
+    async update_reddit(sub, name, user){
+        let wait01 = await Accounts.update({username:user}, {$set:{sub:sub, r_name: name}})
+        let wait = await getEverything();
         return false
     },
     async reddit_posten(name, title, text, dimension){
@@ -72,7 +76,35 @@ Meteor.methods({
             s_pos: 0,
             username: name			
 		});
-    }
+		getEverything();
+	},
+	async searchReddit(suchbegriff, name){
+		console.log(suchbegriff)
+		console.log(name)
+		let posts = await red.search({query: suchbegriff, time: 'week', sort: 'top', limit:3});
+		console.log(posts);
+		var array =[]
+		var post = {text:"", autor:"", ups:0, downs:0, subreddit:"", date:new Date(), link:""}
+        for (var i= 0; i<posts.length; i++){
+				post = {
+					text: posts[i].title,
+					autor: posts[i].author.name,
+					ups: posts[i].ups,
+					downs: posts[i].downs,
+					subreddit: posts[i].subreddit.display_name,
+					date: new Date(posts[i].created_utc*1000),
+					link: posts[i].url
+				}
+            array.push(post);
+        }
+		console.log(array)
+		Reddit_Popular.remove({username: name})
+        Reddit_Popular.insert({posts: array, username: name})
+	},
+	async update_reddit_server (){
+		let wait = await getEverything();
+		return true
+	}
 })
 
 
@@ -80,6 +112,7 @@ async function test(r, name){
     Accounts.update({username:name}, {$set:{requester:r, reddit_auth: true}})
 }
 async function getDailySubscribers(){
+	console.log("anfang subs")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
@@ -99,17 +132,19 @@ async function getDailySubscribers(){
 					if(!checkCount("subscriber", subs, Reddit_SubscriberCount, name) && checkDaily(Reddit_SubscriberCount, name)){
 						removeLast(Reddit_SubscriberCount, name)
 					}
-					Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+					Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name, subreddit: sub});
 				}
 			}else{
-				Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+				Reddit_SubscriberCount.insert({subscriber: subs, date: new Date(), username: name, subreddit: sub});
 			}
 		}
-    }
-    //console.log(Reddit_SubscriberCount.find({}).fetch())
+	}
+	console.log("ende subs")
+    return true
 }
 
 async function getPosts(){
+	console.log("anfang posts")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
@@ -156,20 +191,32 @@ async function getPosts(){
 			}
 		}
     }
-    //console.log(Reddit_Posts.find({}).fetch())
+    console.log("ende posts")
     return true
     
 }
 
 async function getPostSentiment(){
-    let wait = await PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_postsentiment.py'), null, async function (err) {
-        if (err) throw err;
-		let en = await getEngagement();
-    });
+	console.log("anfang Postsentiment")
+	const { success, err = '', results } = await new Promise((resolve, reject) => {
+    	PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_postsentiment.py'), null, function(
+			err,
+			results
+		  ) {
+			if (err) {
+			  logger.error(err, '[ config - runManufacturingTest() ]');
+			  reject({ success: false, err });
+			}
+			console.log("mitte Postsentiment")
+			resolve({ success: true, results });
+		  });
+		})
+		console.log("ende Postsentiment")
     return true
 }
 
 async function getSentiment(){
+	console.log("anfang sentiment")
     var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
@@ -184,13 +231,26 @@ async function getSentiment(){
             Reddit_NewSubreddit.remove({username: name})
             Reddit_NewSubreddit.insert({username:name, posts:posts, s_pos:0, s_neg:0, s_neu:0, s_pos_p:0, s_neg_p:0, s_neu_p:0, s_average:0})
         }
-    }
-    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_sentiment.py'), null, function (err) {
-		if (err) throw err;
-    });
+	}
+	const { success, err = '', results } = await new Promise((resolve, reject) => {
+		PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_sentiment.py'), null, function(
+			err,
+			results
+		  ) {
+			if (err) {
+			  logger.error(err, '[ config - runManufacturingTest() ]');
+			  reject({ success: false, err });
+			}
+			console.log("mitte sentiment")
+			resolve({ success: true, results });
+		  });
+		})
+		console.log("ende Sentiment")
+		return true
 }
 
 async function getEngagement(){
+	console.log("anfang engagement")
 	var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
@@ -227,7 +287,8 @@ async function getEngagement(){
 			}
 		}
 	}
-	getDimensions();
+	console.log("ende engagement")
+	return true
 }
 
 async function getReplies(nutzer){
@@ -267,6 +328,7 @@ async function getDowns(nutzer){
 }
 
 async function getDimensions(){
+	console.log("anfang dimensionen")
     var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
 	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
 	var accounts = await Accounts.find({}).fetch();
@@ -360,11 +422,13 @@ async function getDimensions(){
 
 			}
 		}
-    }
-    //console.log(Reddit_Dimensionen.find({}).fetch())
+	}
+	console.log("ende dimensionen")
+    return true
 }
 
 async function getHot(){
+	console.log("anfang hot")
     var accounts = Accounts.find({}).fetch();
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
@@ -390,23 +454,109 @@ async function getHot(){
                 posts: posts
             })
         }
-    }
+	}
+	console.log("ende hot")
+	return true
+}
+
+async function getDailyKarma(){
+	console.log("anfang karma")
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		if(accounts[i].reddit_auth){
+			var name = accounts[i].username;
+			r = accounts[i].requester
+			reddit = new snoowrap(r)
+			let karma = await reddit.getKarma()
+			commentkarma = karma[0].comment_karma
+			postkarma = karma[0].link_karma
+			if (Reddit_Karma.find({username: name}).count()>0){
+				var daily = checkDaily(Reddit_Karma, name)
+				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+				if (!daily || (!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily) || (!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
+					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+					if((!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily)||(!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
+						removeLast(Reddit_Karma, name)
+					}
+					Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
+				}
+			}else{
+				Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
+			}
+		}
+	}
+	console.log("ende karma")
+	return true
+}
+	
+async function getDailySubscribersUser(){
+	console.log("anfang usersubs")
+	var accounts = Accounts.find({}).fetch();
+	var len = accounts.length;
+	for(var i=0;i<len;i++){
+		if(accounts[i].reddit_auth){
+			var name = accounts[i].username;
+			r = accounts[i].requester
+			reddit = new snoowrap(r)
+			let subs = await reddit.getMe().subreddit.display_name.subscribers
+			if (Reddit_UserSubscriberCount.find({username: name}).count()>0){
+						
+				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+				if (!checkDaily(Reddit_UserSubscriberCount, name) || (!checkCount("subscriber", subs, Reddit_UserSubscriberCount, name) && checkDaily(Reddit_UserSubscriberCount, name))){
+					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+					if(!checkCount("subscriber", subs, Reddit_UserSubscriberCount, name) && checkDaily(Reddit_UserSubscriberCount, name)){
+						removeLast(Reddit_UserSubscriberCount, name)
+					}
+					Reddit_UserSubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+				}
+			}else{
+				Reddit_UserSubscriberCount.insert({subscriber: subs, date: new Date(), username: name});
+			}
+		}
+	}
+	console.log("ende usersubs")
+	return true
+}
+	
+	
+//Account muss für die Funktion mindestens 30 Tage alt sein und geht vermutlich nur für Subreddit die man erstellt hat oder Moderator ist
+/*async function getDailyContributors(name){
+let r = await Accounts.find({username:name}).fetch()[0].requester
+		reddit = new snoowrap(r)
+		let contributors = await reddit.getSubreddit("redditdev").getContributors()
+		console.log(contributors)
+		console.log("contributors")
+}*/
+
+async function getEverything(){
+	let a1 = await getDailySubscribers();
+	let a6 = await getHot();
+	let a7 = await getDailyKarma();
+	let a8 = await getDailySubscribersUser();
+	let a9 = await getSentiment();
+	let a2 = await getPosts();
+	let a3 = await getPostSentiment();
+	let a4 = await getEngagement();
+	let a5 = await getDimensions();
+	return true
 }
 
 
 export async function initialR() {
-    //getDailySubscribers();
-	getHot();
+	//getDailySubscribers();
+	//getDailyKarma();
     //let posts = await getPosts();
     //let sent = await getPostSentiment();
 	//getSentiment();
-	//console.log(Accounts.find({}).fetch())
+	//getPosts()
+	//getEngagement()
     //console.log(Reddit_Posts.find({}).fetch())
     //console.log(Reddit_SubscriberCount.find({}).fetch())
     //console.log(Reddit_Dimensionen.find({}).fetch())
     //console.log(Reddit_Hot.find({}).fetch())
-    //console.log(Reddit_NewSubreddit.find({}).fetch())
-
+	//console.log(Reddit_NewSubreddit.find({}).fetch())
+	//getEverything();
 }
   
 function checkDaily(collection, name){

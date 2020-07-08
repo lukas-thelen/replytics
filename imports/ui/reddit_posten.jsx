@@ -11,8 +11,10 @@ export class RedditSelbstposten extends Tracker.Component {
 			title: 'Hallo',
 		};
 	}
-	submitSelfPost = () => {
+	submitSelfPost = (event) => {
+		event.preventDefault();
 		Meteor.call('reddit_posten', Meteor.user().username, this.state.title, this.state.content, this.state.dimension )
+		event.target.reset()
 	}
 	changeTitle = (event) => {
 		this.setState({title: event.target.value})
@@ -29,7 +31,7 @@ export class RedditSelbstposten extends Tracker.Component {
 		  //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
 		return (
 			//alles, was zurück geschickt werden soll
-			<div className="grey">
+			<div>
 			<form onSubmit={ this.submitSelfPost }>
 				<div className="container"><h5>Beitrag verfassen:
 				<button type="button" className="hover btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Hier haben Sie die Möglichkeit einen Beitrag zu verfassen, welcher auf Ihrem Account direkt sichbar ist. Der Beitrag unterteilt sich in eine Überschrift und den dazu gehörigen Text. Darunter wählen Sie bitte die ensprechende Kategorie zum Inhalt Ihres Beitrags aus. Falls Sie mehr Informationen benötigen, gehen Sie zu den Einstellungen."><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -81,7 +83,7 @@ $(document).ready(function(){
 					<option value="Vision und Führung">Vision und Führung</option>
 					<option value="Gesellschaftliche Verantwortung">Gesellschaftliche Verantwortung</option>
 				</select>
-				<input style={{height:"38px", marginBottom:"4%"}}className="col-md-3 btn" type='submit' value="Posten"/>
+				<input style={{height:"38px", marginBottom:"4%"}}className="col-md-3 btn btn-secondary" type='submit' value="Posten"/>
 				</div>
 		  </form>
 		  </div>
