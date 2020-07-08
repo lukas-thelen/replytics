@@ -27,7 +27,7 @@ export class Selbstposten extends Tracker.Component {
 		  //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
 		return (
 			//alles, was zurück geschickt werden soll
-			<div className="grey">
+			<div>
 			<form onSubmit={ this.submitPost }>
 				<h5>Tweets verfassen:
 				<button type="button" className="hover btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Hier haben Sie die Möglichkeit einen Tweet zu verfassen, welcher auf Ihrem Account direkt sichbar ist. Darunter wählen Sie bitte die ensprechende Kategorie zum Inhalt Ihres Tweets aus. Falls Sie mehr Informationen benötigen, gehen Sie zu den Einstellungen."><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +56,7 @@ export class Selbstposten extends Tracker.Component {
 					<option value="Vision und Führung">Vision und Führung</option>
 					<option value="Gesellschaftliche Verantwortung">Gesellschaftliche Verantwortung</option>
 				</select>
-				<input style={{height:"38px", marginBottom:"4%"}}className="col-md-3 btn" type='submit' value="Posten"/>
+				<input style={{height:"38px", marginBottom:"4%"}}className="col-md-3 btn btn-secondary" type='submit' value="Posten"/>
 				</div>
 		  </form>
 		  </div>

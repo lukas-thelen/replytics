@@ -56,6 +56,7 @@ export class Reddit_SearchPosts extends Tracker.Component {
             <a className="alert alert-light" href={post.link} target="_blank" style={{margin:2, fontSize:13}}>{post.text}</a><br/>
             <div className="text-right">
 			    <span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2}}className="btn btn-outline-success btn-sm"> Upvotes: {post.ups}</span>
+                <br/>
                 <span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2}}className="btn btn-outline-danger btn-sm"> Downvotes: {post.downs}</span>
             </div>
             </div>

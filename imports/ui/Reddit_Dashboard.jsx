@@ -20,19 +20,37 @@ export class Reddit_Dashboard extends Tracker.Component {
         super(props);
         this.state = {
           showTop: true,
-          showPop: false
+          showPop: false,
+          showSub: false
         }
         this.toTop = this.toTop.bind(this)
         this.toPop = this.toPop.bind(this)
+        this.toSub = this.toSub.bind(this)
     }
 
     toTop(){
         this.setState({showPop:false})
         this.setState({showTop:true})
+        this.setState({showSub:false})
+        this.top.className="btn btn-secondary btn-sm active"
+        this.sub.className="btn btn-secondary btn-sm"
+        this.pop.className="btn btn-secondary btn-sm"
     }
     toPop(){
         this.setState({showPop:true})
         this.setState({showTop:false})
+        this.setState({showSub:false})
+        this.top.className="btn btn-secondary btn-sm"
+        this.sub.className="btn btn-secondary btn-sm"
+        this.pop.className="btn btn-secondary btn-sm active"
+    }
+    toSub(){
+        this.setState({showSub:true})
+        this.setState({showPop:false})
+        this.setState({showTop:false})
+        this.top.className="btn btn-secondary btn-sm"
+        this.sub.className="btn btn-secondary btn-sm active"
+        this.pop.className="btn btn-secondary btn-sm"
     }
   render() {
     if(this.props.renderCondition){
@@ -41,8 +59,8 @@ export class Reddit_Dashboard extends Tracker.Component {
             <div className="content row" >
 
                 <div className="col-xl-5 elem erste">                             
-                    <RedditSelbstposten/>
-                    <Reddit_Benachrichtigungen/>
+                    <RedditSelbstposten renderCondition={this.props.renderCondition}/>
+                    <Reddit_Benachrichtigungen renderCondition={this.props.renderCondition}/>
                     <br/>
                     <div className="d-flex w-100 justify-content-between " >
                         <h5 style={{display:"inline"}} >Post-Analyse
@@ -52,34 +70,49 @@ export class Reddit_Dashboard extends Tracker.Component {
                         </svg></button></h5>
                         
                         <span className="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                            <button type="button" className="btn " onClick={this.toTop}>Meine Posts</button>
-                            <button type="button" className="btn " onClick={this.toPop}>Top im Subreddit</button>
+                            <button type="button" className="btn btn-secondary btn-sm active" ref={(input)=>{this.top = input}} onClick={this.toTop}>Meine Posts</button>
+                            <button type="button" className="btn btn-secondary btn-sm" ref={(input)=>{this.pop = input}} onClick={this.toPop}>Posts suchen</button>
+                            <button type="button" className="btn btn-secondary btn-sm" ref={(input)=>{this.sub = input}} onClick={this.toSub}>Top im Subreddit</button>
                         </span>
                     </div>
                         <Reddit_TopPosts renderCondition={this.state.showTop}/>
                         <Reddit_SearchPosts renderCondition={this.state.showPop}/>
+                        <Subreddit_TopPosts renderCondition={this.state.showSub}/>
                 </div>
 
                 <div className="col-xl-7 row">
                     <div className="col-md-6 elem zweite">    
-                        <RedditDimensionenRadar/>
+                        <RedditDimensionenRadar renderCondition={this.props.renderCondition}/>
                         <br/>
                         <br/>
-                        <RedditBarChart/>   
+                        <RedditBarChart renderCondition={this.props.renderCondition}/>   
                     </div>
                     <div className="col-md-6 elem dritte">
-                        <Reddit_KeyFacts/>
+                        <Reddit_KeyFacts renderCondition={this.props.renderCondition}/>
                         <br/>
-                        <RedditSubscriberChart/>
+                        <RedditSubscriberChart renderCondition={this.props.renderCondition}/>
                         <br/>
-                        <RedditBarChartGesamt/>
+                        <RedditBarChartGesamt renderCondition={this.props.renderCondition}/>
                         <br/>
                     </div>
                 </div> 
             </div>
         );
     }else{
-        return <Reddit_SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
+        return (
+            <div>
+                <div>Hallo</div>
+                <Reddit_SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
+                <Reddit_Benachrichtigungen renderCondition={this.props.renderCondition}/>
+                <Reddit_TopPosts renderCondition={this.state.showTop && this.props.renderCondition}/>
+                <Subreddit_TopPosts renderCondition={this.state.showSub && this.props.renderCondition}/>
+                <RedditDimensionenRadar renderCondition={this.props.renderCondition}/>
+                <RedditBarChart renderCondition={this.props.renderCondition}/>
+                <Reddit_KeyFacts renderCondition={this.props.renderCondition}/>
+                <RedditSubscriberChart renderCondition={this.props.renderCondition}/>
+                <RedditBarChartGesamt renderCondition={this.props.renderCondition}/>
+            </div>
+        )
     }
   }
 }

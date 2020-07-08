@@ -40,7 +40,7 @@ return{
   }
 
   render() {
-    if(true) {
+    if(this.props.renderCondition) {
       return (
         <div className="barchart02">
 
@@ -71,7 +71,7 @@ return{
         );
       } else {
         return (
-          <p> Daten werden geladen...</p>
+          null
         );
       }
     }

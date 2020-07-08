@@ -60,6 +60,13 @@ class App extends Tracker.Component {
     this.showTwitter = this.showTwitter.bind(this)
     this.showReddit = this.showReddit.bind(this)
   }
+
+  componentDidMount =()=>{
+    if(!this.isAuthorized() && this.RedditIsAuthorized()){
+      this.setState({reddit:true})
+      this.setState({twitter:false})
+    }
+  }
   
   code = new URL(window.location.href).searchParams.get('code');
 
@@ -95,10 +102,13 @@ class App extends Tracker.Component {
     }
   }
   RedditIsAuthorized(){
-    var nutzer = Meteor.user().username;
-    var nutzerdata = Accounts.find({username: nutzer}).fetch()
-    if(nutzerdata[0]){
-      return nutzerdata[0].reddit_auth
+    if(Meteor.user()){
+      var nutzer = Meteor.user().username;
+      var nutzerdata = Accounts.find({username: nutzer}).fetch()
+      if(nutzerdata[0]){
+        return nutzerdata[0].reddit_auth
+      }
+      return false
     }
     return false
   }
@@ -134,6 +144,24 @@ class App extends Tracker.Component {
     window.location = "http://localhost:3000"
   }
 
+  accountsExists =()=>{
+    if(Meteor.user()){
+      var acc = Accounts.find({username:Meteor.user().username}).fetch()
+      if(acc[0]){
+        return true
+      }
+      return false
+    }
+  }
+
+  skipVideo=()=>{
+    console.log("usdfgksdfg")
+    Accounts.insert({
+      owner: Meteor.userId(),
+      username: Meteor.user().username
+    })
+  }
+
      render() {
 
        //Zugriff auf Datenbank ist langsamer als Aufruf der ganzen Funktionen
@@ -145,29 +173,61 @@ class App extends Tracker.Component {
               <Navbar twitter_authorization={this.twitter_authorization} goToSettings={this.goToSettings} goToHelp={this.goToHelp} 
                 showReddit={this.showReddit} showTwitter={this.showTwitter} twitter={this.state.twitter} reddit={this.state.reddit}/>
               <div className="main">
-                {this.state.authorize_screen && Meteor.user() &&
+                {this.state.authorize_screen && Meteor.user() && this.accountsExists() &&
                   <Login twitter_authorization = {this.twitter_authorization} />
                 }
-                {this.state.settings_screen &&
+                {this.state.settings_screen && Meteor.user() && this.accountsExists() &&
                   <Settings goToSettings={this.goToSettings} />
                 }
                 {this.state.help_screen &&
                   <Hilfe goToHelp={this.goToHelp} />
                 }
-
-
+                {!Meteor.user() && 
+                  <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}> 
+                    <div>
+                    <h1 className="display-4 d-block col-12">Sie sind nicht angemeldet</h1><br/>
+                    Nutzen Sie die Anmeldefunktion in der Navigationsleiste, <br/> um sich anzumelden oder einen neuen Account zu erstellen.
+                    </div>
+                  </div> 
+                }
+                {Meteor.user() && !this.accountsExists() && 
+                <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}>
+                  <div>
+                  <div>Video</div>
+                  <button className="btn-secondary btn" onClick={this.skipVideo}> Weiter </button>
+                  </div>
+                </div>
+                }
                 {this.code &&
                 <div className="alert alert-success mt-2 pl-3" role="alert">
                   Reddit Einrichtung bestätigen:
                   <button className="btn btn-sm btn-light" onClick={this.saveReddit}> OK </button>
                 </div>}
-                {Meteor.user() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
+                {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
                   
                   <Twitter_Dashboard renderCondition={this.state.twitter}/>
                 }
-                {Meteor.user() && !this.state.authorize_screen && this.RedditIsAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
+                {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && !this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen && this.state.twitter &&
+                  
+                  <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}> 
+                    <div>
+                    <h1 className="display-4 d-block col-12">Sie haben noch keinen <br/>autorisierten Twitter-Account</h1><br/>
+                      unter den Einstellungen in der Navigationsleiste finden Sie den Punkt <br/>"Twitter autorisieren", mit dem Sie ihr Konto verknüpfen können
+                    </div>
+                  </div> 
+                }
+                {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && this.RedditIsAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
                   
                   <Reddit_Dashboard renderCondition={this.state.reddit}/>
+                }
+                {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && !this.RedditIsAuthorized() && !this.state.settings_screen && !this.state.help_screen && this.state.reddit &&
+                  
+                  <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}> 
+                    <div>
+                    <h1 className="display-4 d-block col-12">Sie haben noch keinen <br/>autorisierten Reddit-Account</h1><br/>
+                      unter dem Punkt "Einstellungen" in der Navigationsleiste <br/>finden Sie einen Button, mit dem Sie ihr Konto verknüpfen können
+                    </div>
+                  </div>
                 }
               </div>
               <div className="footer-copyright text-center py-3 footer bg-dark footer mt-auto">© 2020 Copyright:

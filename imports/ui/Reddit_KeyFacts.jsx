@@ -128,7 +128,7 @@ export class Reddit_KeyFacts extends Tracker.Component {
     
 
     
-    if (this.getUserSub()[0] != undefined && this.getKarma()[0] != undefined) {
+    if (this.getUserSub()[0] != undefined && this.getKarma()[0] != undefined && this.props.renderCondition) {
      return (
 	 
     <div> 
@@ -139,7 +139,11 @@ export class Reddit_KeyFacts extends Tracker.Component {
 		<path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
 		</svg></button></h5>
       <div className="container row keyfacts">
-	   
+        <section className="spalte card col-5">
+          <h5>Subred&shy;dit Follower</h5>
+          <h3  style={{color:"#A4A4A4"}}>{this.getSubSubs()[0].subscriber}</h3>
+          <h6>{this.getDifference7SubSubs()} zu letzter Woche</h6>
+        </section>
         <section className="spalte card col-5">
           <h5>Nutzer Follower</h5>
 
@@ -147,34 +151,24 @@ export class Reddit_KeyFacts extends Tracker.Component {
           <h6>{this.getDifference7()} zu letzter Woche</h6>
 
         </section>
-
         <section className="spalte card col-5">
           <h5>Post Karma</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getKarma()[0].postkarma}</h3>
           <h6>{this.getDifference7PostKarma()}  zu letzter Woche</h6>
         </section>
-		
-	
-		
         <section className="spalte card col-5">
           <h5>Kom&shy;men&shy;tar Karma</h5>
 
           <h3 style={{color:"#A4A4A4"}}>{this.getKarma()[0].commentkarma}</h3>
           <h6>{this.getDifference7CommentKarma()} zu letzter Woche</h6>
         </section>
-  
-        <section className="spalte card col-5">
-          <h5>Subred&shy;dit Follower</h5>
-          <h3  style={{color:"#A4A4A4"}}>{this.getSubSubs()[0].subscriber}</h3>
-          <h6>{this.getDifference7SubSubs()} zu letzter Woche</h6>
-        </section>
       </div>
       </div>
      );
     } else {
       return (
-        <p> Daten laden.. </p>
+        null
       );
     }
  

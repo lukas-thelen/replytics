@@ -44,9 +44,10 @@ export class Subreddit_TopPosts extends Tracker.Component {
 			</div>
 			<div className="d-flex w-100 justify-content-between ">
             <a className="alert alert-light" href={post.link} target="_blank" style={{margin:2, fontSize:13}}>{post.title}</a><br/>
-            
-			<span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2, margin: 15}}className="btn btn-outline-danger btn-sm"> Upvotes:{post.ups}</span>
-			</div>
+      <div className="text-right">    
+			  <span style={{height: 18, fontSize: 11, padding: 1,paddingLeft:2, paddingRight: 2, marginTop: 15}}className="btn btn-outline-danger btn-sm"> Upvotes: {post.ups}</span>
+      </div>   
+      </div>
 			
             
         </div>

@@ -16,7 +16,8 @@ export class Settings extends Tracker.Component {
         v_f: "1",
         g_v: "1",
         sub: "",
-        r_name: ""
+        r_name: "",
+        geändert: false
     };
 }
 componentDidMount = () => {
@@ -98,6 +99,7 @@ getDefault = ()=>{
     return new Promise(resolve => setTimeout(resolve, ms));
   }
  absenden = async() => {
+    this.loading.className=""
     let test = await Meteor.callPromise('updateSettings',
         Meteor.user().username,
         this.state.p_d,
@@ -107,12 +109,14 @@ getDefault = ()=>{
         this.state.v_f,
         this.state.g_v
     )
-    let test02 = await Meteor.callPromise('update_reddit', this.state.sub, this.state.r_name, Meteor.user().username)
+    var bool = this.state.geändert
+    if(bool){
+        let test02 = await Meteor.callPromise('update_reddit', this.state.sub, this.state.r_name, Meteor.user().username)
+    }
     this.props.goToSettings();
  }
 
  test = () =>{
-    console.log("sdfghsdfhgsdf")
     this.props.goToSettings()
  }
 
@@ -121,14 +125,19 @@ getDefault = ()=>{
  }
 
  changeSub = (event) =>{
+    console.log("sdfgsdfg")
     this.setState({sub: event.target.value})
+    this.setState({geändert: true})
  }
 
  changeName = (event) =>{
+    console.log("sdfgsdfg")
     this.setState({r_name: event.target.value})
+    this.setState({geändert: true})
  }
 
  reddit_code =async()=>{
+    this.loading.className=""
     var userExists = Accounts.find({username: Meteor.user().username}).fetch()
     if(!userExists[0]){
       let test02 = await Accounts.insert({
@@ -144,16 +153,17 @@ getDefault = ()=>{
         r_name: this.state.r_name
       });
     }else{
-    let test = await Meteor.callPromise('updateSettings',
-        Meteor.user().username,
-        this.state.p_d,
-        this.state.e,
-        this.state.a,
-        this.state.f,
-        this.state.v_f,
-        this.state.g_v
-    )
-    let test02 = await Meteor.callPromise('update_reddit', this.state.sub, this.state.r_name, Meteor.user().username)
+        let test = await Meteor.callPromise('updateSettings',
+            Meteor.user().username,
+            this.state.p_d,
+            this.state.e,
+            this.state.a,
+            this.state.f,
+            this.state.v_f,
+            this.state.g_v
+        )
+        let test02 = await Meteor.callPromise('update_reddit', this.state.sub, this.state.r_name, Meteor.user().username)
+        
     }
     window.location = this.authenticationUrl;
  }
@@ -293,6 +303,12 @@ getDefault = ()=>{
 
                 <input className="btn btn-light" type="button" onClick={this.abbrechen} value="Abbrechen"></input>
             </form>
+            <div className="d-none" ref={(input)=>{this.loading = input}} style={{display:"flex", alignItems:"center", marginTop:"20px"}}>
+                <div className="spinner-border text-secondary mr-2" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+                Neue Daten werden geladen
+            </div>
         </div>
     );
   }
