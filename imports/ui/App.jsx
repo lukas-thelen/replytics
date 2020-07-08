@@ -62,7 +62,9 @@ export class App extends Tracker.Component {
   }
 
   componentDidMount =()=>{
+    console.log(this.isAuthorized())
     if(!this.isAuthorized() && this.RedditIsAuthorized()){
+      console.log("uzsgdiufzseuza")
       this.setState({reddit:true})
       this.setState({twitter:false})
     }
@@ -87,12 +89,12 @@ export class App extends Tracker.Component {
     this.setState({authorize_screen: false})
   }
 
-  isAuthorized(){
+  isAuthorized=()=>{
     if(Meteor.user()){
         var nutzer = Meteor.user().username;
         var nutzerdata = Accounts.find({username: nutzer}).fetch()
         if(nutzerdata[0]){
-            var token = nutzerdata[0].token;
+            var token = nutzerdata[0].twitter_auth;    
             if (token){
                 return true
             }
@@ -155,7 +157,6 @@ export class App extends Tracker.Component {
   }
 
   skipVideo=()=>{
-    console.log("usdfgksdfg")
     Accounts.insert({
       owner: Meteor.userId(),
       username: Meteor.user().username

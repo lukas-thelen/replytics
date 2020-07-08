@@ -101,7 +101,6 @@ export class Reddit_Dashboard extends Tracker.Component {
     }else{
         return (
             <div>
-                <div>Hallo</div>
                 <Reddit_SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
                 <Reddit_Benachrichtigungen renderCondition={this.props.renderCondition}/>
                 <Reddit_TopPosts renderCondition={this.state.showTop && this.props.renderCondition}/>
