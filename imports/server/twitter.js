@@ -564,7 +564,6 @@ async function getEverything(){
 export async function initial(){
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
-	
 	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})

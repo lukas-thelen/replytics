@@ -38,6 +38,7 @@ import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 import { RedditBarChart } from './RedditBarChart.jsx';
 import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
 import { RedditBarChartGesamt } from './RedditBarChartGesamt.jsx';
+import { No_Twitter_Dashboard } from './no_Twitter_Dashboard.jsx';
 
 
 // App component - represents the whole app -> alle anderen Components hier ausgeben
@@ -52,7 +53,8 @@ export class App extends Tracker.Component {
       showTop: true,
       showPop: false,
       twitter: true,
-      reddit: false
+      reddit: false,
+      firstLoading: true
     }
     this.twitter_authorization = this.twitter_authorization.bind(this);
     this.goToSettings = this.goToSettings.bind(this)
@@ -61,14 +63,6 @@ export class App extends Tracker.Component {
     this.showReddit = this.showReddit.bind(this)
   }
 
-  componentDidMount =()=>{
-    console.log(this.isAuthorized())
-    if(!this.isAuthorized() && this.RedditIsAuthorized()){
-      console.log("uzsgdiufzseuza")
-      this.setState({reddit:true})
-      this.setState({twitter:false})
-    }
-  }
   
   code = new URL(window.location.href).searchParams.get('code');
 
@@ -89,33 +83,34 @@ export class App extends Tracker.Component {
     this.setState({authorize_screen: false})
   }
 
-  isAuthorized=()=>{
+isAuthorized=()=>{
     if(Meteor.user()){
         var nutzer = Meteor.user().username;
         var nutzerdata = Accounts.find({username: nutzer}).fetch()
         if(nutzerdata[0]){
-            var token = nutzerdata[0].twitter_auth;    
-            if (token){
+            if(nutzerdata[0].twitter_auth){
                 return true
             }
-            return false
-        }
-        return false
+        }     
     }
-  }
-  RedditIsAuthorized(){
+    return false  
+}
+RedditIsAuthorized=()=>{
     if(Meteor.user()){
-      var nutzer = Meteor.user().username;
-      var nutzerdata = Accounts.find({username: nutzer}).fetch()
-      if(nutzerdata[0]){
-        return nutzerdata[0].reddit_auth
-      }
-      return false
+        var nutzer = Meteor.user().username;
+        var nutzerdata = Accounts.find({username: nutzer}).fetch()
+        if(nutzerdata[0]){
+            if(nutzerdata[0].reddit_auth){
+                return true
+            }
+        }
     }
     return false
   }
 
   showTwitter(){
+    console.log(this.state.firstLoading)
+    this.setState({firstLoading: false})
     this.setState({reddit:false})
     this.setState({twitter:true})
     this.setState({settings_screen: false})
@@ -206,16 +201,11 @@ export class App extends Tracker.Component {
                 </div>}
                 {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
                   
-                  <Twitter_Dashboard renderCondition={this.state.twitter}/>
+                  <Twitter_Dashboard renderCondition={this.state.twitter} showReddit={this.showReddit}/>
                 }
                 {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && !this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen && this.state.twitter &&
                   
-                  <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}> 
-                    <div>
-                    <h1 className="display-4 d-block col-12">Sie haben noch keinen <br/>autorisierten Twitter-Account</h1><br/>
-                      unter den Einstellungen in der Navigationsleiste finden Sie den Punkt <br/>"Twitter autorisieren", mit dem Sie ihr Konto verknüpfen können
-                    </div>
-                  </div> 
+                  <No_Twitter_Dashboard renderCondition={this.state.twitter} firstLoading={this.state.firstLoading} showReddit={this.showReddit}/>
                 }
                 {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && this.RedditIsAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
                   

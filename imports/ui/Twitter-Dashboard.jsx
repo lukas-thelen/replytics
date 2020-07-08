@@ -25,7 +25,6 @@ export class Twitter_Dashboard extends Tracker.Component {
         this.toTop = this.toTop.bind(this)
         this.toPop = this.toPop.bind(this)
     }
-
     toTop(){
         this.setState({showPop:false})
         this.setState({showTop:true})

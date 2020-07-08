@@ -469,20 +469,22 @@ async function getDailyKarma(){
 			r = accounts[i].requester
 			reddit = new snoowrap(r)
 			let karma = await reddit.getKarma()
-			commentkarma = karma[0].comment_karma
-			postkarma = karma[0].link_karma
-			if (Reddit_Karma.find({username: name}).count()>0){
-				var daily = checkDaily(Reddit_Karma, name)
-				//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
-				if (!daily || (!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily) || (!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
-					//letzten Eintrag löschen, wenn zweiter Fall zutrifft
-					if((!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily)||(!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
-						removeLast(Reddit_Karma, name)
+			if(karma[0]){
+				commentkarma = karma[0].comment_karma
+				postkarma = karma[0].link_karma
+				if (Reddit_Karma.find({username: name}).count()>0){
+					var daily = checkDaily(Reddit_Karma, name)
+					//wenn an diesem Tag noch kein Eintrag besteht oder wohl einer besteht und der Wert sich geändert hat -> neuer Eintrag
+					if (!daily || (!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily) || (!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
+						//letzten Eintrag löschen, wenn zweiter Fall zutrifft
+						if((!checkCount("postkarma", postkarma, Reddit_Karma, name) && daily)||(!checkCount("commentkarma", commentkarma, Reddit_Karma, name) && daily)){
+							removeLast(Reddit_Karma, name)
+						}
+						Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
 					}
+				}else{
 					Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
 				}
-			}else{
-				Reddit_Karma.insert({commentkarma: commentkarma, postkarma: postkarma, date: new Date(), username: name});
 			}
 		}
 	}
