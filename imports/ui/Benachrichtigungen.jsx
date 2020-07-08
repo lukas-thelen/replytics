@@ -14,9 +14,8 @@ export class Benachrichtigungen extends Tracker.Component {
             dimensionen:[],
             showMore: false
         }
-		$(function () {
-		$('[data-toggle="tooltip"]').tooltip()
-})
+		
+
     }
     componentWillMount = () =>{
         this.wochenbericht();
