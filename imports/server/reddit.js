@@ -12,6 +12,7 @@ import { Reddit_UserSubscriberCount } from '../api/reddit_userSubscriberCount.js
 import { Reddit_Karma } from '../api/reddit_karma.js';
 import {Reddit_Popular} from '../api/reddit_popular.js';
 import { Posts } from '../api/twitter_posts.js';
+import { TwitterAPI } from '../api/twitter_credentials.js';
 
 let {PythonShell} = require('python-shell')
 const path = require('path');
@@ -255,7 +256,9 @@ async function getEngagement(){
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].sub /* reddit_auth */){
-            var subscriber = Reddit_SubscriberCount.find({username: name}, { $sort:{ date: -1 }}).fetch();
+			var name= accounts[i].name
+			var sub = accounts[i].sub
+            var subscriber = Reddit_UserSubscriberCount.find({username: name, subreddit: sub}, { $sort:{ date: -1 }}).fetch();
             if (subscriber[0]){
                 subscriber = subscriber[0].subscriber
             }else{
@@ -267,7 +270,7 @@ async function getEngagement(){
 			var name = accounts[i].username;
 			var act_replies = await getReplies(name);
             var act_ups = await getUps(name);
-            var act_downs = await getDowns(name);
+			var act_downs = await getDowns(name);
 			var act_gesamt = act_ups + act_replies + act_downs;
 			var rel_replies = act_gesamt/act_replies;
 			var rel_ups = act_gesamt/act_ups;
@@ -281,7 +284,7 @@ async function getEngagement(){
 				var ups = posts[j].ups;
 				var replies = posts[j].num_replies;
 				var downs = posts[j].downs;
-				var engagement = (ups*rel_ups) + (replies*rel_replies) + (downs*rel_downs) / subscriber
+				var engagement = ((ups*rel_ups) + (replies*rel_replies) + (downs*rel_downs)) / subscriber
 				Reddit_Posts.update({_id: posts[j]._id}, { $set:{ engagement : engagement } });
 
 			}
@@ -469,6 +472,8 @@ async function getDailyKarma(){
 			r = accounts[i].requester
 			reddit = new snoowrap(r)
 			let karma = await reddit.getKarma()
+			//console.log(name)
+			//console.log(karma[0])
 			if(karma[0]){
 				commentkarma = karma[0].comment_karma
 				postkarma = karma[0].link_karma
@@ -559,6 +564,7 @@ export async function initialR() {
     //console.log(Reddit_Hot.find({}).fetch())
 	//console.log(Reddit_NewSubreddit.find({}).fetch())
 	//getEverything();
+	getDailyKarma();
 }
   
 function checkDaily(collection, name){

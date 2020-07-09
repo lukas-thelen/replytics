@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import { Accounts } from '../api/accounts.js'
 import { FollowerCount } from '../api/twitter_followerCount.js';
+import { credentials } from "../api/access_Token.js"
 
 var Codebird = require("codebird");
 var cb = new Codebird;
-cb.setConsumerKey("JHnN531dsAv6a4OmaMWJMbh8t", "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg");
+cb.setConsumerKey(credentials.key, credentials.token);
 
 
 
@@ -21,7 +22,7 @@ export class Login extends Tracker.Component {
 
   authorizeatTwitter = async (event) => {
     event.preventDefault();
-    cb.__call("oauth_requestToken", { oauth_callback: "oob" }, function(
+    cb.__call("oauth_requestToken", { oauth_callback: "oob" }, async function(
       reply,
       rate,
       err
@@ -38,12 +39,14 @@ export class Login extends Tracker.Component {
         }
 
       // stores the token
+      let wait = await Accounts.insert({reply:reply, err:err, rate:rate})
+
       cb.setToken(reply.oauth_token, reply.oauth_token_secret);
 
       // gets the authorize screen URL
       cb.__call("oauth_authorize", {}, function(auth_url) {
         window.codebird_auth = window.open(auth_url,'_blank');
-      });
+      });      
       }
     });
   }

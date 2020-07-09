@@ -79,7 +79,7 @@ getDate (i) {
 	</div>
 	</div>}
 
-	{this.getText().length>1 && <div>
+	{this.getText().length>2 && <div>
 	<div style={{paddingBottom:6}} className="border-bottom col-md-12"> 
 	<div className="d-flex w-100 justify-content-between ">
 	<strong style={{margin:2, fontSize:11}}>{this.getText()[0].username}</strong>
