@@ -182,7 +182,7 @@ export class App extends Tracker.Component {
                 {this.state.help_screen &&
                   <Hilfe goToHelp={this.goToHelp} />
                 }
-                {!Meteor.user() && 
+                {!Meteor.user() && !this.state.settings_screen && !this.state.help_screen &&
                   <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}> 
                     <div>
                     <h1 className="display-4 d-block col-12">Sie sind nicht angemeldet</h1><br/>
@@ -231,11 +231,11 @@ export class App extends Tracker.Component {
                 }
               </div>
               <div className="footer-copyright text-center py-3 footer bg-dark footer mt-auto">© 2020 Copyright:
-			          <a href="https://mdbootstrap.com/">Replytics.com</a>
+			          <a href="https://connected-organization.de/"> Connected-organisation.de</a>
 			          <div className="kontakt">
-			            <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-telephone-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-			              <path fillRule="evenodd" d="M2.267.98a1.636 1.636 0 0 1 2.448.152l1.681 2.162c.309.396.418.913.296 1.4l-.513 2.053a.636.636 0 0 0 .167.604L8.65 9.654a.636.636 0 0 0 .604.167l2.052-.513a1.636 1.636 0 0 1 1.401.296l2.162 1.681c.777.604.849 1.753.153 2.448l-.97.97c-.693.693-1.73.998-2.697.658a17.47 17.47 0 0 1-6.571-4.144A17.47 17.47 0 0 1 .639 4.646c-.34-.967-.035-2.004.658-2.698l.97-.969z"/>
-			            </svg> &nbsp; bei Fragen rufen sie uns einfach an unter : 08001233477 
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
+                  </svg> &nbsp; bei Fragen schreiben Sie uns gerne an unter : info@connected-organization.de
                 </div>
 			        </div>
             </div>
