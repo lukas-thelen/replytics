@@ -18,7 +18,7 @@ export class RedditSubscriberChart extends Tracker.Component {
   getMin(){
     var list = this.getSubscriberList_r().datasets[0].data
     var min = Math.min(...list)
-    if (Math.max(...list)-min <21){
+    if (Math.max(...list)-min <6){
       return min-1
     }
     return undefined
@@ -26,7 +26,7 @@ export class RedditSubscriberChart extends Tracker.Component {
   getMax(){
     var list = this.getSubscriberList_r().datasets[0].data
     var max = Math.max(...list)
-    if (max-Math.min(...list) <21){
+    if (max-Math.min(...list) <6){
       return max+1
     }
     return undefined

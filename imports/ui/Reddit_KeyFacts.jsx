@@ -78,7 +78,7 @@ export class Reddit_KeyFacts extends Tracker.Component {
   getKarma() {
     var karma = Reddit_Karma.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     if (!karma[0]){
-      return [{postkarma:0, commentskarma:0}]
+      return [{postkarma:0, commentkarma:0}]
     }
     return karma;
   }
@@ -110,6 +110,9 @@ export class Reddit_KeyFacts extends Tracker.Component {
       return this.getKarma()[6].commentkarma;
     } else { 
       var unsorted = Reddit_Karma.find({username: Meteor.user().username}).fetch();
+      if(this.getKarma()[0].commentkarma === 0){
+        return 0  
+      }
       return unsorted[0].commentkarma;
     }
   }

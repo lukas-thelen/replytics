@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { TwitterAPI } from '../api/twitter_credentials.js';
+import { credentials } from '../api/access_Token.js';
 let {PythonShell} = require('python-shell')
 
 //Datenbanken
@@ -38,8 +39,8 @@ Meteor.methods({
 	//Methode, um etwas auf Twitter zu posten
 	async postTweet(text, dimension, user){
 		var UserAPI = new Twit({
-			consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
-			consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
+			consumer_key: credentials.key, // API key
+			consumer_secret: credentiels.token, // API secret
 			access_token: Accounts.find({username: user}).fetch()[0].token,
 			access_token_secret: Accounts.find({username: user}).fetch()[0].secret});
 
@@ -320,6 +321,7 @@ async function getEngagement(){
 				follower = 1
 			}
 			var name = accounts[i].username;
+			console.log(name)
 			var screen_name = accounts[i].screen_name;
 			var act_replies = await getReplies(name);
 			var act_favorites = await getFavorites(name);
@@ -327,6 +329,9 @@ async function getEngagement(){
 			if (act_retweets<1){
 				act_retweets = 1
 			}
+			console.log(act_replies)
+			console.log(act_retweets)
+			console.log(act_favorites)
 			var act_gesamt = act_favorites + act_replies + act_retweets;
 			var rel_replies = act_gesamt/act_replies;
 			var rel_favorites = act_gesamt/act_favorites;
@@ -335,6 +340,9 @@ async function getEngagement(){
 			rel_favorites = rel_favorites/rel_gesamt;
 			rel_replies = rel_replies/rel_gesamt;
 			rel_retweets = rel_retweets/rel_gesamt;
+			console.log(rel_replies)
+			console.log(rel_retweets)
+			console.log(rel_favorites)
 			var posts = Posts.find({username:name, retweet: false}).fetch();
 			for(var j=0;j<posts.length;j++){
 				var favorites = posts[j].fav;
@@ -384,8 +392,8 @@ async function postSentiment(){
 			var name = accounts[a].username;
 			var screen_name = accounts[a].screen_name;
 			var UserAPI = new Twit({
-				consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
-				consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
+				consumer_key: credentials.key, // API key
+				consumer_secret: credentials.token, // API secret
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
 			//API Anfrage nach alles Mentions(@)
@@ -472,8 +480,8 @@ async function getMentions(){
 			var name = accounts[a].username;
 			var screen_name = accounts[a].screen_name;
 			var UserAPI = new Twit({
-				consumer_key: "JHnN531dsAv6a4OmaMWJMbh8t", // API key
-				consumer_secret: "1adBT2worlT3fTW2IIBg31tmTmVAKMyWpYxZ8c8jGLnUUZplbg", // API secret
+				consumer_key: credentials.key, // API key
+				consumer_secret: credentials.token, // API secret
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
 			//API Anfrage nach alles Mentions(@)
@@ -563,8 +571,8 @@ async function getEverything(){
 
 export async function initial(){
 	//getEverything();
+	//getEngagement();
 	//var myVar = setInterval(getEverything, 1200000);
-	
 	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
 	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
