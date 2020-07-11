@@ -160,14 +160,15 @@ async function getPosts(){
                 replies = []
                 for(var z=0; z<x.length; z++){
                    replies.push(x[z].body)
-                }
+				}
 				//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
 				var idChecked = Reddit_Posts.find({id: postArray[i].id}).fetch();
+				var downs = Math.round(Math.max(postArray[i].ups,1)/postArray[i].upvote_ratio)-Math.max(postArray[i].ups,1)
 				if(idChecked[0]){
 					//Aktualisiert Favorites und Retweets, wenn Posts bereits in Datenbank existiert
 					let test01 = await Reddit_Posts.update({id: postArray[i].id}, {$set:{
                         ups: postArray[i].ups,
-                        downs: postArray[i].downs,
+                        downs: downs,
                         num_replies: postArray[i].num_comments,
                         replies: replies,
                     }})
@@ -179,7 +180,7 @@ async function getPosts(){
 						text: postArray[i].title,
 						dimension: "not defined",
 						ups: postArray[i].ups,
-                        downs: postArray[i].downs,
+                        downs: downs,
                         num_replies: postArray[i].num_comments,
 						replies: replies,
 						s_neg: 0,
@@ -564,7 +565,7 @@ export async function initialR() {
     //console.log(Reddit_Hot.find({}).fetch())
 	//console.log(Reddit_NewSubreddit.find({}).fetch())
 	//getEverything();
-	getDailyKarma();
+	//getDailyKarma();
 }
   
 function checkDaily(collection, name){

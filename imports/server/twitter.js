@@ -583,23 +583,6 @@ export async function initial(){
 	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
-	var act_replies = 34
-	var act_retweets = 25
-	var act_favorites = 130
-	console.log(act_replies)
-	console.log(act_retweets)
-	console.log(act_favorites)
-	var act_gesamt = act_favorites + act_replies + act_retweets;
-	var rel_replies = act_gesamt/act_replies;
-	var rel_favorites = act_gesamt/act_favorites;
-	var rel_retweets = act_gesamt/act_retweets;
-	var rel_gesamt = rel_favorites + rel_replies + rel_retweets;
-	rel_favorites = rel_favorites/rel_gesamt;
-	rel_replies = rel_replies/rel_gesamt;
-	rel_retweets = rel_retweets/rel_gesamt;
-	console.log(rel_replies)
-	console.log(rel_retweets)
-	console.log(rel_favorites)
 }
 
 
