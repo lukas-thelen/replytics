@@ -56,75 +56,76 @@ export class Benachrichtigungen extends Tracker.Component {
     zusatzinfos ={
         Produkt_und_Dienstleistung: 
             <div> 
-                <h6>Ideen für Posts</h6>
+                <h6>Ideen für Posts:</h6>
                 <ul>
-                <li >Content posten, der Produkte aus dem Unternehmen bewirbt</li>
-                <li >die Follower über neue Angebote informieren</li>
-                <li >Serviceangebot aufzeigen</li>
+                    <li>Posten Sie Content, der Produkte aus dem Unternehmen bewirbt.</li>
+                    <li>Informieren Sie die Follower über neue Angebote.</li>
+                    <li>Zeigen Sie Ihr Serviceangebot auf.</li>
                 </ul>
             </div>,
         Emotionen: 
             <div> 
-                <h6>Ideen für Posts</h6>
+                <h6>Ideen für Posts:</h6>
                 <ul>
-                <li >Das Produkt in einem positiven Kontext präsentieren</li>
-                <li style={{listStyleType: "none"}}>z.B. im Familienkontext zu Weihnachten oder bei schönem Wetter im Sommer</li>
-                <li >Persönliche Kundenbewertungen teilen</li>
+                    <li >Präsentieren Sie etwas in positivem Kontext.</li>
+                    <li style={{listStyleType: "none"}}>Teilen Sie zum Beispiel Ihre Gefühle zu aktuellen Feiertagen / Situationen. </li>
+                    <li style={{listStyleType: "none"}}>Zeigen Sie z.B. Ihr Produkt unter einem Weihnachtsbaum.</li>
+                    <li >Teilen Sie persönliche Kundenbewertungen.</li>
                 </ul>
             </div>,
         Arbeitsplatzumgebung: 
             <div> 
                 <h6>Ideen für Posts</h6>
                 <ul>
-                <li >Mitarbeiter in verschiedenen Positionen vorstellen</li>
-                <li >von Firmenevents berichten</li>
-                <li >Die Belegschaft als Familie präsentieren</li>
+                <li >Stellen Sie Mitarbeiter in verschiedenen Positionen vor.</li>
+                <li >Berichten Sie von Firmenevents.</li>
+                <li >Präsentoeren Sie die Belegschaft als Familie.</li>
                 </ul>
             </div>,
         Finanzleistung: 
             <div> 
                 <h6>Ideen für Posts</h6>
                 <ul>
-                <li >Pläne für die Zukunft vorstellen</li>
-                <li >Jahresbilanzen als Unternehmenserfolg präsentieren</li>
-                <li >von vergangener Expansion berichten</li>
+                    <li >Stellen Sie Pläne für die Zukunft vor.</li>
+                    <li >Präsentieren Sie Jahresbilanzen als Unternehmenserfolge.</li>
+                    <li >Berichten Sie von vergangenen Expansionen.</li>
                 </ul>
             </div>,
         Gesellschaftliche_Verantwortung: 
             <div> 
                 <h6>Ideen für Posts</h6>
                 <ul>
-                <li >eigene Umweltprojekte starten und präsentieren</li>
-                <li >Unterstützung für Hilfsorganisationen bekunden</li>
-                <li >Gedanken zu aktuell relevanten Themen teilen</li>
-                <li >nachhaltige Umweltziele aufstellen und darüber berichten</li>
+                    <li >Starten Sie eigene Umweltprojekte und präsentieren Sie diese.</li>
+                    <li >Bekunden Sie Ihre Unterstützung für Hilfsorganisationen.</li>
+                    <li >Teilen Sie Ihre Gedanken zu aktuell relevanten Themen.</li>
+                    <li >Berichten Sie über Ihre nachhaltigen Umweltziele.</li>
                 </ul>
             </div>,
         Vision_und_Führung: 
             <div> 
                 <h6>Ideen für Posts</h6>
                 <ul>
-                <li>Firmenleitlinien erläutern</li>
-                <li >Prototypen und neue Ideen vorstellen</li>
-                <li >Den Kunden die Firmengeschichte näher bringen</li>
+                    <li>Erläutern Sie Firmenleitlinien.</li>
+                    <li>Stellen Sie Prototypen und neue Ideen vor.</li>
+                    <li>Bringen Sie den Kunden die Firmengeschichte näher.</li>
                 </ul>
             </div>,
         negatives_Feedback:
             <div> 
                 <h6>Tipps für weiteres Vorgehen</h6>
                 <ul>
-                <li>Mit den Kommentaren zu dem Posts auseinandersetzen</li>
-                <li>Vielleicht wurde ein kritisches Thema angesprochen, das es in Zukunft zu vermeiden gilt</li>
-                <li>Sachlich auf die Kritik der Nutzer reagieren</li>
+                    <li>Setzen Sie sich mit dem Inhalt der Kommentare zu dem Posts auseinander.</li>
+                    <li>Vielleicht wurde ein kritisches Thema angesprochen, das es in Zukunft zu vermeiden gilt</li>
+                    <li>Sachlich auf die Kritik der Nutzer reagieren</li>
                 </ul>
             </div>,
         Shitstorm:
             <div> 
                 <h6>Tipps für weiteres Vorgehen</h6>
                 <ul>
-                <li>Mit den Kommentaren zu dem Posts auseinandersetzen</li>
-                <li>Vielleicht wurde ein kritisches Thema angesprochen, das es in Zukunft zu vermeiden gilt</li>
-                <li>Sachlich auf die Kritik der Nutzer reagieren</li>
+                    <li>Reagieren Sie sachlich und bewahren Sie Ruhe. Kommentieren Sie nicht voreilig.</li>
+                    <li>Kommen Sie den Nutzern entgegen, indem Sie Schritte in eine bessere Richtung einleiten.</li>
+                    <li>Posten Sie andere Aspekte Ihres Unternehmens (z.Bsp. Ihr Umweltbewusstsein).</li>
                 </ul>
             </div>
     }
@@ -172,7 +173,7 @@ export class Benachrichtigungen extends Tracker.Component {
         for (var i=0; i<postArray.length;i++){
             if(postArray[i].s_neg>postArray[i].s_pos && postArray[i].s_neg<2*postArray[i].s_pos){
                 var he = this.state.handlungsempfehlungen
-                he.push("Es gibt negatives Feedback auf deinen Post \""+postArray[i].text+"\".")
+                he.push("Es gibt negative Reaktionen auf Ihren Post \""+postArray[i].text+"\".")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push("negatives_Feedback")
@@ -275,7 +276,7 @@ export class Benachrichtigungen extends Tracker.Component {
         for(var i=0;i<2;i++){
             if(sortedSentiment[i]!=sortedCount[sortedCount.length-1] && importantDimensionen.includes(sortedSentiment[i])){
                 var he = this.state.handlungsempfehlungen
-                    he.push("Die Kategorie " + this.übersetzung03[sortedSentiment[i]] +" kommt sehr gut bei den Kunden an. Nutzen Sie dies und posten Sie mehr darüber.")
+                    he.push("Ihre Posts aus der Kategorie " + this.übersetzung03[sortedSentiment[i]] +" erhalten sehr positive Reaktionen. Nutzen Sie dies und posten Sie mehr darüber.")
                     this.setState({handlungsempfehlungen: he})
                     var dm = this.state.dimensionen
                     dm.push(sortedSentiment[i])
@@ -297,7 +298,7 @@ export class Benachrichtigungen extends Tracker.Component {
                 }
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
-                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[veryImportant[d]] +" gepostet")
+                he.push("Sie haben in letzter Zeit nichts mehr über die Kategorie " + this.übersetzung[veryImportant[d]] +" gepostet")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push(this.übersetzung02[veryImportant[d]])
@@ -320,7 +321,7 @@ export class Benachrichtigungen extends Tracker.Component {
             
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
-                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[important[d]] +" gepostet.")
+                he.push("Sie haben in letzter Zeit nichts mehr über die Kategorie " + this.übersetzung[important[d]] +" gepostet.")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push(this.übersetzung02[important[d]])

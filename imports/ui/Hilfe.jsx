@@ -14,9 +14,32 @@ export class Hilfe extends Tracker.Component {
             <p>Auf dieser Seite finden Sie Erklärungen zu einzelnen Elementen der Anwendung.</p>
             <iframe width="560" height="315" src="https://www.youtube.com/embed/uc1ZiKCUQTg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <br></br>
+            <h4>Autorisierungsprozess</h4>
+            <p>Hier finden Sie die Schritte zur Einrichtung Ihres Replytics-Accounts. Dazu gehört die Erstellung eines Nutzerkontos sowie 
+              die Erteilung von Zugriffsrechten auf Ihr Twitter und/oder reddit Konto.
+            </p>
+            <h5>1. Nutzerkonto anlegen</h5>
+            <p>Drücken Sie oben in der Menüzeile auf "sign in" und im sich nun öffnenden Fenster auf "Create account". Sie werden gebeten, 
+              einen Nutzernamen und ein Passwort anzugeben. 
+            </p>
+            <h5>2. Twitter autorisieren</h5>
+            <p>Öffnen Sie das Untermenü über das Zahnrad in der Menüzeile. Der Unterpunkt "Twitter autorisieren" führt Sie zu einem
+              neuen Menü, bei dem Sie auf den Knopf "Twitter Code generieren" klicken können. Dieser öffnet eine externe Seite, bei der Sie sich mit Ihrem
+              Twitter Account anmelden können. Nach der Zugriffsberechtigung erscheint ein Code, den Sie kopieren müssen.
+              Zurück in der replytics Anwendung geben Sie den Code in das Textfeld unter dem "Code Generieren" Button ein.
+              Ein Klick auf den Knopf "autorisieren" beendet den Vorgang.
+            </p>
+            <h5>3. reddit autorisieren</h5>
+            <p> Öffnen Sie die Einstellungen über das Zahnrad in der Menüzeile. Geben Sie den Subreddit Ihres Unternehmens und den 
+              Nutzeraccount in die Textfelder ein und drücken Sie auf "Reddit autorisieren". Dieser öffnet eine externe Seite, bei der Sie sich mit Ihrem
+              reddit Account anmelden können. Sobald Sie die Zugriffsberechtigung erteilt haben, werden Sie automatisch zurück 
+              zur Anwendung geleitet. Dort werden Sie aufgefordert, die Autorisierung zu bestätigen. Subreddit und Account können Sie jederzeit 
+              in den Einstellungen ändern. 
+            </p>
+            <br></br>
             <h4>Kategorien</h4>
             <p>Hier finden Sie genauere Informationen zu den verschiedenen Kategorien. Insgesamt gibt es 6 Kategorien, welche zusammen den Reputations Quotienten ausmachen.
-            Sie sind von großer Bedeutung bei der Analyse der Online Reputation.</p>
+            Sie sind von großer Bedeutung bei der Analyse Ihrer Online Reputation.</p>
             <h5>1. Emotionen</h5>
             <p>Sie umfasst Posts, die ihre Kunden emotional berühren. Es ist wichtig eine emotionale Bindung zwischen Ihrer Marke und Ihren Kunden aufzubauen.
             Dabei bietet es sich an, über Inhalte zu posten, mit denen sich die Leser identifizieren können.</p>
