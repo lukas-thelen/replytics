@@ -88,7 +88,7 @@ isAuthorized=()=>{
         var nutzer = Meteor.user().username;
         var nutzerdata = Accounts.find({username: nutzer}).fetch()
         if(nutzerdata[0]){
-            if(nutzerdata[0].twitter_auth){
+            if(nutzerdata[0].token){
                 return true
             }
         }     
@@ -189,7 +189,9 @@ RedditIsAuthorized=()=>{
                 {Meteor.user() && !this.accountsExists() && 
                 <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}>
                   <div>
-                  <div>Video</div>
+                    <div>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/DP4_CfcHrhU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen="allowFullScreen"></iframe>
+                    </div>
                   <button className="btn-secondary btn" onClick={this.skipVideo}> Weiter </button>
                   </div>
                 </div>

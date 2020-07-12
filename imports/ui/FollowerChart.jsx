@@ -93,9 +93,9 @@ export class FollowerChart extends Tracker.Component {
   }
 
   render() {
-    let minimum = this.getMin()
-    let maximum = this.getMax()
     if(this.getFollower()[0] != undefined) {
+      let minimum = this.getMin()
+      let maximum = this.getMax()
       return (
         <div className="followerchart">
           <h5 className="followerverlauf">Follower-Verlauf

@@ -17,8 +17,16 @@ export class RedditDimensionenRadar extends Tracker.Component {
 
     var d = Reddit_Dimensionen.find({username:nutzer}).fetch()
     if(d[0]){
+      var max = d[0][dimensionen02[1]].engagement
       for (var i=0; i< 6; i++){
-      daten.push(parseInt(d[0][dimensionen02[i]].engagement*100))
+        if (d[0][dimensionen02[i]].engagement>max){
+          max = d[0][dimensionen02[i]].engagement
+        }
+      }
+    }
+    if(d[0]){
+      for (var i=0; i< 6; i++){
+      daten.push(parseInt((d[0][dimensionen02[i]].engagement/max)*100))
       count.push(parseInt(((d[0][dimensionen02[i]].count)/gesamtPosts)*100))
       }
     }else{
@@ -73,8 +81,6 @@ export class RedditDimensionenRadar extends Tracker.Component {
               }} />
             </div>
           </div>
-        </div>
-      </div>
       );
     }else{return (null);}
   }

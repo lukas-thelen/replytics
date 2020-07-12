@@ -40,7 +40,7 @@ Meteor.methods({
 	async postTweet(text, dimension, user){
 		var UserAPI = new Twit({
 			consumer_key: credentials.key, // API key
-			consumer_secret: credentiels.token, // API secret
+			consumer_secret: credentials.token, // API secret
 			access_token: Accounts.find({username: user}).fetch()[0].token,
 			access_token_secret: Accounts.find({username: user}).fetch()[0].secret});
 
@@ -65,6 +65,7 @@ Meteor.methods({
 		Accounts.update({username: Meteor.user().username},{$set:{
 			token: reply.oauth_token,
 			secret: reply.oauth_token_secret,
+			twitter_auth: true,
 			id: reply.user_id,
 			screen_name: reply.screen_name
 		  }});
@@ -583,6 +584,8 @@ export async function initial(){
 	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
+	//console.log(Accounts.find({}).fetch())
+	//Accounts.remove({username:"testaccount02"})
 }
 
 

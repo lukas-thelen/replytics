@@ -93,9 +93,9 @@ export class RedditSubscriberChart extends Tracker.Component {
   }
 
   render() {
-    let minimum = this.getMin()
-    let maximum = this.getMax()
     if(this.getSubscriber_r()[0] != undefined && this.props.renderCondition) {
+      let minimum = this.getMin()
+      let maximum = this.getMax()
       return (
         <div className="followerchart">
           <h5 className="followerverlauf">Subscriber-Verlauf

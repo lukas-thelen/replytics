@@ -12,7 +12,7 @@ export class Hilfe extends Tracker.Component {
           <div className ="hilfeseite">
             <h1>Hilfe</h1>
             <p>Auf dieser Seite finden Sie Erklärungen zu einzelnen Elementen der Anwendung.</p>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/uc1ZiKCUQTg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/DP4_CfcHrhU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <br></br>
             <h4>Autorisierungsprozess</h4>
             <p>Hier finden Sie die Schritte zur Einrichtung Ihres Replytics-Accounts. Dazu gehört die Erstellung eines Nutzerkontos sowie 

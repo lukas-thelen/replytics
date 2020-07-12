@@ -103,6 +103,9 @@ export class KeyFacts extends Tracker.Component {
       return this.getMentions()[6].authors;
     } else { 
       var unsorted = MentionCount.find({username: Meteor.user().username}).fetch();
+      if (!unsorted[0]){
+        return 0
+      }
       return unsorted[0].authors;
     }
   }

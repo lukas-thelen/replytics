@@ -151,7 +151,7 @@ export class Benachrichtigungen extends Tracker.Component {
             tweetDate = postArray[i].date
             i++
         }
-        eng = Number(eng/i).toFixed(2)
+        eng = Math.round(Number(eng/i)*100)
         return (
         <div>
         <li className="list-group-item" >
@@ -159,7 +159,7 @@ export class Benachrichtigungen extends Tracker.Component {
             </div>
             <div className="row">
             <span className="col-6 col-xl-3"><span className="text-muted">Postanzahl: </span>{count} </span>
-            <span className="col-6 col-xl-3"><span className="text-muted">Engagement: </span>{eng}</span>
+            <span className="col-6 col-xl-3"><span className="text-muted">Engagement: </span>{eng} %</span>
             <span className="col-6 col-xl-3"><span className="text-muted">pos. Kommentare: </span>{pos}</span>
             <span className="col-6 col-xl-3"><span className="text-muted">neg. Kommentare: </span>{neg}</span>
             </div>
