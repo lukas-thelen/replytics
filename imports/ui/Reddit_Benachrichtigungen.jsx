@@ -172,7 +172,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         var postArray = Reddit_Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
         postArray = postArray.slice(0,11)
         for (var i=0; i<postArray.length;i++){
-            if(postArray[i].s_neg>postArray[i].s_pos && postArray[i].s_neg<2*postArray[i].s_pos){
+            if(postArray[i].s_neg>postArray[i].s_pos && (postArray[i].s_neg<2*postArray[i].s_pos || postArray[i].s_neg===0)){
                 var he = this.state.handlungsempfehlungen
                 he.push("Es gibt negatives Feedback auf deinen Post \""+postArray[i].text+"\".")
                 this.setState({handlungsempfehlungen: he})

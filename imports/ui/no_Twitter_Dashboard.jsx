@@ -1,18 +1,5 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
- 
-
-//Components
-import { KeyFacts } from './KeyFacts.jsx';
-
-import { FollowerChart } from './FollowerChart';
-import { Selbstposten } from './posten.jsx';
-import { TopPosts} from './TopPosts.jsx';
-import { DimensionenRadar } from './Dimensionen.jsx';
-import { SearchPosts } from './SearchPosts.jsx';
-import { Benachrichtigungen } from './Benachrichtigungen.jsx';
-import { BarChart } from './BarChart.jsx';
-import { BarChartGesamt } from './BarChartGesamt.jsx';
 import { Accounts } from '../api/accounts.js';
 
 
@@ -21,7 +8,6 @@ export class No_Twitter_Dashboard extends Tracker.Component {
         super(props);
     }
     componentDidMount=()=>{
-        console.log(this.props.firstLoading)
         if(this.RedditIsAuthorized() && this.props.firstLoading){ 
             this.props.showReddit()
         }

@@ -4,7 +4,6 @@ import Tracker from 'tracker-component';
 
 //Components
 import { KeyFacts } from './KeyFacts.jsx';
-
 import { FollowerChart } from './FollowerChart';
 import { Selbstposten } from './posten.jsx';
 import { TopPosts} from './TopPosts.jsx';

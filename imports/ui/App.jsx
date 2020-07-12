@@ -1,43 +1,17 @@
 import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Tracker  from 'tracker-component';
+
 //Datenbanken
-import { FollowerCount } from '../api/twitter_followerCount.js';
 import { Accounts } from '../api/accounts.js';
 
 //Components
-import { KeyFacts } from './KeyFacts.jsx';
-
-import { FollowerChart } from './FollowerChart';
-import { Selbstposten } from './posten.jsx';
 import { Login } from './Login.jsx';
-import { TopPosts} from './TopPosts.jsx';
-import { DimensionenRadar } from './Dimensionen.jsx';
 import { Settings } from './Settings.jsx';
-import { SearchPosts } from './SearchPosts.jsx';
-
-
-import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Navbar } from './navbar.jsx';
-import { Benachrichtigungen } from './Benachrichtigungen.jsx';
-import { BarChart } from './BarChart.jsx';
-import { BarChartGesamt } from './BarChartGesamt.jsx';
-
 import {Hilfe} from './Hilfe.jsx';
-import { Reddit_Login } from './reddit_Login.jsx';
-
-import {Reddit_TopPosts } from './Reddit_TopPosts.jsx';
-import {Subreddit_TopPosts } from './Subreddit_TopPosts.jsx';
-import {Reddit_Benachrichtigungen } from './Reddit_Benachrichtigungen.jsx';
 import { Twitter_Dashboard } from './Twitter-Dashboard.jsx';
 import { Reddit_Dashboard } from './Reddit_Dashboard.jsx';
-
-
-import { RedditSelbstposten } from './reddit_posten.jsx';
-import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
-import { RedditBarChart } from './RedditBarChart.jsx';
-import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
-import { RedditBarChartGesamt } from './RedditBarChartGesamt.jsx';
 import { No_Twitter_Dashboard } from './no_Twitter_Dashboard.jsx';
 
 

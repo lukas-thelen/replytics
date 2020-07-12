@@ -552,20 +552,8 @@ async function getEverything(){
 
 
 export async function initialR() {
-	//getDailySubscribers();
-	//getDailyKarma();
-    //let posts = await getPosts();
-    //let sent = await getPostSentiment();
-	//getSentiment();
-	//getPosts()
-	//getEngagement()
-    //console.log(Reddit_Posts.find({}).fetch())
-    //console.log(Reddit_SubscriberCount.find({}).fetch())
-    //console.log(Reddit_Dimensionen.find({}).fetch())
-    //console.log(Reddit_Hot.find({}).fetch())
-	//console.log(Reddit_NewSubreddit.find({}).fetch())
 	//getEverything();
-	//getDailyKarma();
+	//var myVar = setInterval(getEverything, 1200000);
 }
   
 function checkDaily(collection, name){
