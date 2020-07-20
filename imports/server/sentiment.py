@@ -7,11 +7,10 @@ db = client.meteor
 mentionscollection = db.mentions
 sentimentcollection = db.sentiment
 accountscollection = db.accounts
-#brauchen wir das?
-s = sentimentcollection.find()
+#Leert die Sentiment Datenbank damit es nicht zu Doppelzählungen kommt
 sentimentcollection.remove({})
 
-#Überprüfung der Daten für jeden Account
+#Überprüfung der Daten für jeden Replytics-Account
 for account in accountscollection.find():
     try:
         if account["twitter_auth"]:
@@ -30,7 +29,7 @@ for account in accountscollection.find():
             for entry in mentionscollection.find({"username":name}):
                 counter += 1
                 content = entry["content"]
-#Der Mentions wird auf seinen Sentiment hin ausgewertet
+#Die Mentions wird auf ihren Sentiment hin ausgewertet
                 blob = TextBlob(content)
                 textsentiment = blob.sentiment
 #Abspeicherung des Mentions Sentiment zugehörig zur Mention
@@ -59,7 +58,7 @@ for account in accountscollection.find():
             sentimentcollection.update_one({"username":name},{"$set": {"s_pos_p": sentimentpositivpercent}})
 
 #Berechnung des Sentimentdurchschnitts
-            averagesentiment = totalsentiment / counter # Durchschnitt
+            averagesentiment = totalsentiment / counter
             sentimentcollection.update_one({"username":name},{"$set": {"s_average": averagesentiment}})
     except:
         pass
