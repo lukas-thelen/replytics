@@ -42,7 +42,7 @@ export class Hilfe extends Tracker.Component {
             <h4>Kategorien</h4>
             <p>Hier finden Sie genauere Informationen zu den verschiedenen Kategorien. Insgesamt gibt es 6 Kategorien, welche zusammen den Reputations Quotienten ausmachen.
             Sie sind von großer Bedeutung bei der Analyse Ihrer Online Reputation.</p>
-            <h5>1. Emotionen</h5>
+            <h5>1. Emotionaler Reiz</h5>
             <p>Sie umfasst Posts, die ihre Kunden emotional berühren. Es ist wichtig eine emotionale Bindung zwischen Ihrer Marke und Ihren Kunden aufzubauen.
             Dabei bietet es sich an, über Inhalte zu posten, mit denen sich die Leser identifizieren können.</p>
             <h5>2. Produkt und Dienstleitung</h5>

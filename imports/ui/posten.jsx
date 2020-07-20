@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
- 
+
 
 export class Selbstposten extends Tracker.Component {
 	constructor(props) {
@@ -14,16 +14,16 @@ export class Selbstposten extends Tracker.Component {
 		Meteor.call('postTweet', this.state.content, this.state.dimension, Meteor.user().username)
 		Meteor.call('updateServer')
 	}
-	
+
 	changeContent = (event) => {
 		this.setState({content: event.target.value});
 	}
 	changeDimension = (event) => {
 		this.setState({dimension: event.target.value})
 	}
- //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
+ //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können
 	render() {
-		
+
 		  //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
 		return (
 			//alles, was zurück geschickt werden soll
@@ -35,14 +35,14 @@ export class Selbstposten extends Tracker.Component {
 		<path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
 		</svg></button></h5>
 			<div className=" row col-md-10">
-				<textarea 
+				<textarea
 					placeholder="Schreibe etwas..."
-					className="form-control .w-75" 
+					className="form-control .w-75"
 					name='content'
 					id='content'
-					
+
 					rows='3'
-					
+
 					onChange = {this.changeContent}
 				/></div>
 				<br></br>
@@ -50,7 +50,7 @@ export class Selbstposten extends Tracker.Component {
 				<select onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
 					<option selected disabled value="not defined">Kategorie wählen</option>
 					<option value="Produkt und Dienstleistung">Produkt und Dienstleistung</option>
-					<option value="Emotionen">Emotionen</option>
+					<option value="Emotionen">Emotionaler Reiz</option>
 					<option value="Arbeitsplatzumgebung">Arbeitsplatzumgebung</option>
 					<option value="Finanzleistung">Finanzleistung</option>
 					<option value="Vision und Führung">Vision und Führung</option>

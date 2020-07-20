@@ -10,7 +10,7 @@ import { Sentiment } from '../api/twitter_sentiment.js';
 //Twitter horizontaler Barchart mit Sentiment pro Dimension
 export class BarChart extends Tracker.Component {
 
-//Funktion, die das Sentiment der verschiedenen Dimensionen für Twitter berechnet
+//Funktion, die das Sentiment der verschiedenen Dimensionen für Twitter berechnet und die Daten für das Chart zurückgibt
   getSentiment(){
     var dimensionen= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
     var dimensionen_s_pos =[];
@@ -34,7 +34,7 @@ export class BarChart extends Tracker.Component {
     }
 
 return{
-  labels: ["Emotionen","Produkt/Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","ges. Verantwortung"],
+  labels: ["Emotionaler Reiz","Produkt/Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","ges. Verantwortung"],
   datasets:
     [{
       label: 'positiv',

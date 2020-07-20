@@ -31,7 +31,7 @@ export class FollowerChart extends Tracker.Component {
     }
     return undefined
   }
-  // Funktion gibt die Entwicklung der Followeranzahl innerhalb einer Woche an
+  // Funktion gibt die Entwicklung der Followeranzahl innerhalb einer Woche an und die Daten für das Chart zurück
   getFollowerList(){
     var followerList = [];
     var followerDate = [];
@@ -108,7 +108,7 @@ export class FollowerChart extends Tracker.Component {
             options = {{
               bezierCurve: false,
               linetension: 0,
-              //setzt die min und max Werte der Y-Achse auf die (höchsten + 1) und (niedrigsten - 1) Followerzahl
+              //setzt die min und max Werte der Y-Achse auf die (höchsten + 1) und (niedrigsten - 1) Followerzahl, wenn die Differenz dazwischen kleiner als 20 ist
               scales: {yAxes: [{ticks: {min: minimum, max:maximum, precision:0}}]},
               responsive: true,
               maintainAspectRatio: false

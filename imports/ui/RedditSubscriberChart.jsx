@@ -35,7 +35,7 @@ export class RedditSubscriberChart extends Tracker.Component {
     }
     return undefined
   }
-  // Funktion gibt die Entwicklung der Subscriberanzahl innerhalb einer Woche an
+  // Funktion gibt die Entwicklung der Subscriberanzahl innerhalb einer Woche an und die Daten für das Chart zurück
   getSubscriberList_r(){
     var subscriberList = [];
     var subscriberDate = [];
@@ -60,7 +60,7 @@ export class RedditSubscriberChart extends Tracker.Component {
 
 
 
-    for(var y=0; y<=l; y++){ //war vorher y=l; y>=0; y--
+    for(var y=0; y<=l; y++){
       datum.push(subscriberDate[y].getDay());
     }
     if (l>=6){
@@ -73,7 +73,7 @@ export class RedditSubscriberChart extends Tracker.Component {
         }else{
           var d = (datum[last]+1+k)%7;
         }
-        datum.push(d); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
+        datum.push(d);
       }
     }
 
@@ -112,7 +112,7 @@ export class RedditSubscriberChart extends Tracker.Component {
             options = {{
               bezierCurve: false,
               linetension: 0,
-                //setzt die min und max Werte der Y-Achse auf die (höchsten + 1) und (niedrigsten - 1) Subscriberzahl
+                //setzt die min und max Werte der Y-Achse auf die (höchsten + 1) und (niedrigsten - 1) Subscriberzahl, wenn die Differenz dazwischen kleiner als 20 ist
               scales: {yAxes: [{ticks: {min: minimum, max:maximum, precision:0}}]},
               responsive: true,
               maintainAspectRatio: false

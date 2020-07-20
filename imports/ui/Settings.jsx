@@ -5,7 +5,7 @@ import { Accounts } from '../api/accounts.js';
 var snoowrap = require('snoowrap');
 
 export class Settings extends Tracker.Component {
- //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können 
+ //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können
  constructor(props) {
     super(props);
     this.state = {
@@ -28,7 +28,7 @@ getDefault = ()=>{
     var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
     var accounts = Accounts.find({username: Meteor.user().username}).fetch();
     if(!settings[0]){
-        Settings_DB.insert({ 
+        Settings_DB.insert({
             p_d: "1",
             e: "1",
             a: "1",
@@ -37,7 +37,7 @@ getDefault = ()=>{
             g_v: "1",
             username: Meteor.user().username
         })
-        settings = [{ 
+        settings = [{
             p_d: "1",
             e: "1",
             a: "1",
@@ -149,7 +149,7 @@ getDefault = ()=>{
         f: this.state.f,
         v_f: this.state.v_f,
         g_v: this.state.g_v,
-        sub: this.state.sub, 
+        sub: this.state.sub,
         r_name: this.state.r_name
       });
     }else{
@@ -163,7 +163,7 @@ getDefault = ()=>{
             this.state.g_v
         )
         let test02 = await Meteor.callPromise('update_reddit', this.state.sub, this.state.r_name, Meteor.user().username)
-        
+
     }
     window.location = this.authenticationUrl;
  }
@@ -178,13 +178,13 @@ getDefault = ()=>{
     state: 'fe211bebc52eb3da9bef8db6e63104d3' // a random string, this could be validated when the user is redirected back
   });
 
- 
+
 
   render() {
       //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
-		<div className="col col-lg-7 offset-lg-3 text-left"> 
-            <h2>Einstellungen</h2> 
+		<div className="col col-lg-7 offset-lg-3 text-left">
+            <h2>Einstellungen</h2>
             <hr className="mt-4 mb-4 " />
             <h5>Priorität der Postkategorien</h5>
             <br/>
@@ -205,7 +205,7 @@ getDefault = ()=>{
             </form>
             <form onChange = {this.changeEmotionen}  className="row">
                 <br/>
-                <h6 className="col-xs-12 col-sm-5">Emotionen  </h6>
+                <h6 className="col-xs-12 col-sm-5">Emotionaler Reiz  </h6>
                 <div className="form-check form-check-inline Emotionen">
                     <input className="form-check-input" name="Emotionen" type="radio" ref={(input)=>{this.e0 = input}} value="0"/>
                     <label className="form-check-label" htmlFor="inlineRadio1">unwichtig</label>
@@ -282,7 +282,7 @@ getDefault = ()=>{
                 <input className="form-check-input" name="Gesellschaftliche_Verantwortung" type="radio" ref={(input)=>{this.g_v2 = input}} value="2" />
                 <label className="form-check-label" htmlFor="inlineRadio3">sehr wichtig</label>
                 </div>
-            </form>           
+            </form>
             <hr className="mt-4 mb-4 " />
             <h5>Reddit Monitoring Einstellungen</h5>
             <br/>

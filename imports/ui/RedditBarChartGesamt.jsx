@@ -9,7 +9,7 @@ import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
 //Reddit horizontaler Barchart mit gesamten Sentiment
 export class RedditBarChartGesamt extends Tracker.Component {
 
-// Funktion, die das gesamte Sentiment für Reddit berechnet
+// Funktion, die das gesamte Sentiment für Reddit berechnet und die Daten für das Chart zurückgibt
   getSentimentGesamt_r(){
     var dimensionen= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
 

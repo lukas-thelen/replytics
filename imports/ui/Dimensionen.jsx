@@ -10,15 +10,8 @@ import { Dimensionen } from '../api/twitter_dimensionen.js';
 
 //Titter Radarchart mit Engagement und Postanzahl je Dimension
 export class DimensionenRadar extends Tracker.Component {
-  //Funktion, die die Follower für Twitter zurückgibt
-  getFollower(){
-    var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
-    if(follower[i]){
-      return follower;
-    }
-    return 0
-  }
-  //Funktion, die die Anzahl der Posts und das Engagement in den jeweiligen Dimensionen für Twitter berechnet
+
+  //Funktion, die die Anzahl der Posts und das Engagement in den jeweiligen Dimensionen für Twitter berechnet und die Daten für das Chart zurückgibt
   getDimension(){
     var nutzer = Meteor.user().username;
     var gesamtPosts = Posts.find({username: nutzer}).fetch().length;
@@ -30,36 +23,7 @@ export class DimensionenRadar extends Tracker.Component {
     var favorites = 0;
     var engagement = 0;
     var followerSum = [];
-    //followerSum = this.getFollower()[0].count;
 
-    /*for (var i=0; i< 6; i++){
-      var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
-      engagement = 0;
-
-      if (!postInDimension[0]){
-        daten.push(0);
-      }else{
-        for (var k=0; k< postInDimension.length; k++){
-        engagement += postInDimension[k].engagement;
-      }
-      engagement = engagement/ (postInDimension.length);
-      daten.push(engagement);
-    }
-  }
-
-  for (var i=0; i< 6; i++){
-    var postInDimension = Posts.find({username: nutzer, dimension: dimensionen[i]}).fetch();
-    postCount = 0;
-
-    if (!postInDimension[0]){
-      count.push(0);
-    }else{
-      for (var k=0; k< postInDimension.length; k++){
-      postCount += 1;
-      }
-    count.push(postCount/gesamtPosts);
-    }
-  }*/
   var d = Dimensionen.find({username:nutzer}).fetch()
   if(d[0]){
     for (var i=0; i< 6; i++){
@@ -72,7 +36,7 @@ export class DimensionenRadar extends Tracker.Component {
   }
 
 return {
-  labels: ["Emotionen", "Produkt/Dienstleitung", "Arbeitsplatzumgebung", "Finanzleistung", "Vision&Führung", "ges. Verantwortung"],
+  labels: ["Emotionaler Reiz", "Produkt/Dienstleitung", "Arbeitsplatzumgebung", "Finanzleistung", "Vision&Führung", "ges. Verantwortung"],
   datasets: [
     {
       label: 'Engagement',

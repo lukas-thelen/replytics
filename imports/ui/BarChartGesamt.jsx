@@ -9,7 +9,7 @@ import { Sentiment } from '../api/twitter_sentiment.js';
 
 //Twitter horizontaler Barchart mit gesamten Sentiment
 export class BarChartGesamt extends Tracker.Component {
-// Funktion, die das gesamte Sentiment für Twitter berechnet
+// Funktion, die das gesamte Sentiment für Twitter berechnet und die Daten für das Chart zurückgibt
   getSentimentGesamt(){
     var s_twitter_pos = [];
     var s_twitter_neu = [];
