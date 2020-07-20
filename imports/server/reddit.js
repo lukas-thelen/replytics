@@ -554,6 +554,7 @@ async function getEverything(){
 export async function initialR() {
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
+	//Accounts.remove({username:"testaccount02"})
 }
   
 function checkDaily(collection, name){
