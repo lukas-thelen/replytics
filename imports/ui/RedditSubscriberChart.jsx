@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import Chart from 'chart.js';
+//Import des Charttyps aus react-chart-js-2
 import { Line } from 'react-chartjs-2';
+//Import Daten
 import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
 import {Accounts} from '../api/accounts.js'
 
+//Reddit Followerverlaufschart
 export class RedditSubscriberChart extends Tracker.Component {
-
+  //Funktion, die die Subscriber für Reddit zurückgibt
   getSubscriber_r(){
     var acc = Accounts.find({username: Meteor.user().username}).fetch()
     var sub = acc[0].sub
@@ -14,7 +17,7 @@ export class RedditSubscriberChart extends Tracker.Component {
 
     return subscriber;
   }
-
+  //Funktion, die die minimale Followeranzahl um 1 verringert zurückgibt
   getMin(){
     var list = this.getSubscriberList_r().datasets[0].data
     var min = Math.min(...list)
@@ -23,6 +26,7 @@ export class RedditSubscriberChart extends Tracker.Component {
     }
     return undefined
   }
+  //Funktion, die die maximale Followeranzahl um 1 erhöht zurückgibt
   getMax(){
     var list = this.getSubscriberList_r().datasets[0].data
     var max = Math.max(...list)
@@ -31,7 +35,7 @@ export class RedditSubscriberChart extends Tracker.Component {
     }
     return undefined
   }
-
+  // Funktion gibt die Entwicklung der Subscriberanzahl innerhalb einer Woche an
   getSubscriberList_r(){
     var subscriberList = [];
     var subscriberDate = [];
@@ -108,6 +112,7 @@ export class RedditSubscriberChart extends Tracker.Component {
             options = {{
               bezierCurve: false,
               linetension: 0,
+                //setzt die min und max Werte der Y-Achse auf die (höchsten + 1) und (niedrigsten - 1) Subscriberzahl
               scales: {yAxes: [{ticks: {min: minimum, max:maximum, precision:0}}]},
               responsive: true,
               maintainAspectRatio: false

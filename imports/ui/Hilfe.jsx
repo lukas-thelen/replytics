@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 
+//Hilfeseite
 export class Hilfe extends Tracker.Component {
 
+  //Funktion, um zur Startseite zurückzukehren, Funktion stammt aus App.jsx
   zurück = () =>{
      this.props.goToHelp();
   }
     render() {
-
+        //Textinhalt der Seite
         return (
           <div className ="hilfeseite">
             <h1>Hilfe</h1>
@@ -15,12 +17,12 @@ export class Hilfe extends Tracker.Component {
             <iframe width="560" height="315" src="https://www.youtube.com/embed/DP4_CfcHrhU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <br></br>
             <h4>Autorisierungsprozess</h4>
-            <p>Hier finden Sie die Schritte zur Einrichtung Ihres Replytics-Accounts. Dazu gehört die Erstellung eines Nutzerkontos sowie 
+            <p>Hier finden Sie die Schritte zur Einrichtung Ihres Replytics-Accounts. Dazu gehört die Erstellung eines Nutzerkontos sowie
               die Erteilung von Zugriffsrechten auf Ihr Twitter und/oder reddit Konto.
             </p>
             <h5>1. Nutzerkonto anlegen</h5>
-            <p>Drücken Sie oben in der Menüzeile auf "sign in" und im sich nun öffnenden Fenster auf "Create account". Sie werden gebeten, 
-              einen Nutzernamen und ein Passwort anzugeben. 
+            <p>Drücken Sie oben in der Menüzeile auf "sign in" und im sich nun öffnenden Fenster auf "Create account". Sie werden gebeten,
+              einen Nutzernamen und ein Passwort anzugeben.
             </p>
             <h5>2. Twitter autorisieren</h5>
             <p>Öffnen Sie das Untermenü über das Zahnrad in der Menüzeile. Der Unterpunkt "Twitter autorisieren" führt Sie zu einem
@@ -30,11 +32,11 @@ export class Hilfe extends Tracker.Component {
               Ein Klick auf den Knopf "autorisieren" beendet den Vorgang.
             </p>
             <h5>3. reddit autorisieren</h5>
-            <p> Öffnen Sie die Einstellungen über das Zahnrad in der Menüzeile. Geben Sie den Subreddit Ihres Unternehmens und den 
+            <p> Öffnen Sie die Einstellungen über das Zahnrad in der Menüzeile. Geben Sie den Subreddit Ihres Unternehmens und den
               Nutzeraccount in die Textfelder ein und drücken Sie auf "Reddit autorisieren". Dieser öffnet eine externe Seite, bei der Sie sich mit Ihrem
-              reddit Account anmelden können. Sobald Sie die Zugriffsberechtigung erteilt haben, werden Sie automatisch zurück 
-              zur Anwendung geleitet. Dort werden Sie aufgefordert, die Autorisierung zu bestätigen. Subreddit und Account können Sie jederzeit 
-              in den Einstellungen ändern. 
+              reddit Account anmelden können. Sobald Sie die Zugriffsberechtigung erteilt haben, werden Sie automatisch zurück
+              zur Anwendung geleitet. Dort werden Sie aufgefordert, die Autorisierung zu bestätigen. Subreddit und Account können Sie jederzeit
+              in den Einstellungen ändern.
             </p>
             <br></br>
             <h4>Kategorien</h4>

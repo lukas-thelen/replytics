@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import Chart from 'chart.js';
+//Import des Charttyps aus react-chart-js-2
 import { HorizontalBar } from 'react-chartjs-2';
+//Import der Datenbank
 import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 
+//Reddit horizontaler Barchart mit Sentiment pro Dimension
 export class RedditBarChart extends Tracker.Component {
 
+  //Funktion, die das Sentiment der verschiedenen Dimensionen für Reddit berechnet
   getSentiment_r(){
     var dimensionen= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
     var dimensionen_s_pos =[];

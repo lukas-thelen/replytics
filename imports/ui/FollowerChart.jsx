@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import Chart from 'chart.js';
+//Import des Charttyps aus react-chart-js-2
 import { Line } from 'react-chartjs-2';
+//Import Daten
 import { FollowerCount } from '/imports/api/twitter_followerCount';
 
-
+//Twitter Followerverlaufschart
 export class FollowerChart extends Tracker.Component {
-
+  //Funktion, die die Follower für Twitter zurückgibt
   getFollower(){
     var follower = FollowerCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
-    //console.log(follower);
     return follower;
   }
-
+  //Funktion, die die minimale Followeranzahl um 1 verringert zurückgibt
   getMin(){
     var list = this.getFollowerList().datasets[0].data
     var min = Math.min(...list)
@@ -21,6 +22,7 @@ export class FollowerChart extends Tracker.Component {
     }
     return undefined
   }
+  //Funktion, die die maximale Followeranzahl um 1 erhöht zurückgibt
   getMax(){
     var list = this.getFollowerList().datasets[0].data
     var max = Math.max(...list)
@@ -29,7 +31,7 @@ export class FollowerChart extends Tracker.Component {
     }
     return undefined
   }
-
+  // Funktion gibt die Entwicklung der Followeranzahl innerhalb einer Woche an
   getFollowerList(){
     var followerList = [];
     var followerDate = [];
@@ -47,15 +49,15 @@ export class FollowerChart extends Tracker.Component {
     for(var i=l;i>=0;i--){
       followerList.push(follower[i].count);
     }
- 
-    
+
+
     for(var j=l; j>=0; j--){
       followerDate.push(follower[j].date);
     }
 
 
 
-    for(var y=0; y<=l; y++){ //war vorher y=l; y>=0; y--
+    for(var y=0; y<=l; y++){
       datum.push(followerDate[y].getDay());
     }
     if (l>=6){
@@ -68,11 +70,9 @@ export class FollowerChart extends Tracker.Component {
         }else{
           var d = (datum[last]+1+k)%7;
         }
-        datum.push(d); //wird in umgekehrter Reihenfolge also 7,6,5,4,... ausgegeben, deshalb noch reversen
+        datum.push(d);
       }
     }
-    //alert(datum);
-    //datum.reverse();
 
     for(var i=0;i<datum.length;i++){
       datum[i] = datumStr[datum[i]];
@@ -108,6 +108,7 @@ export class FollowerChart extends Tracker.Component {
             options = {{
               bezierCurve: false,
               linetension: 0,
+              //setzt die min und max Werte der Y-Achse auf die (höchsten + 1) und (niedrigsten - 1) Followerzahl
               scales: {yAxes: [{ticks: {min: minimum, max:maximum, precision:0}}]},
               responsive: true,
               maintainAspectRatio: false

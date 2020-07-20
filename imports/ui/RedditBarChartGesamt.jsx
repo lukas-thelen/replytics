@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import Chart from 'chart.js';
+//Import des Charttyps aus react-chart-js-2
 import { HorizontalBar } from 'react-chartjs-2';
+//Import der Datenbank
 import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
 
+//Reddit horizontaler Barchart mit gesamten Sentiment
 export class RedditBarChartGesamt extends Tracker.Component {
 
+// Funktion, die das gesamte Sentiment für Reddit berechnet
   getSentimentGesamt_r(){
     var dimensionen= ["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"]
 

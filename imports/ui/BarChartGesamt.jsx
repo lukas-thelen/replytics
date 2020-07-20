@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import Chart from 'chart.js';
+//Import des Charttyps aus react-chart-js-2
 import { HorizontalBar } from 'react-chartjs-2';
+//Import der Datenbanken
 import { Dimensionen } from '../api/twitter_dimensionen.js';
 import { Sentiment } from '../api/twitter_sentiment.js';
 
-
+//Twitter horizontaler Barchart mit gesamten Sentiment
 export class BarChartGesamt extends Tracker.Component {
-
+// Funktion, die das gesamte Sentiment für Twitter berechnet
   getSentimentGesamt(){
     var s_twitter_pos = [];
     var s_twitter_neu = [];

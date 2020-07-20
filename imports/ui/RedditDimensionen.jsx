@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import Chart from 'chart.js';
+//Import des Charttyps aus react-chart-js-2
 import { Radar } from 'react-chartjs-2';
+//Import der Datenbanken
 import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
 import { Reddit_Posts } from '../api/reddit_posts.js';
 
+//Reddit Radarchart mit Engagement und Postanzahl je Dimension
 export class RedditDimensionenRadar extends Tracker.Component {
 
+  //Funktion, die die Anzahl der Posts und das Engagement in den jeweiligen Dimensionen für Reddit berechnet
   getDimension_r(){
     var nutzer = Meteor.user().username;
     var gesamtPosts = Reddit_Posts.find({username: nutzer}).fetch().length;
@@ -63,7 +67,7 @@ export class RedditDimensionenRadar extends Tracker.Component {
   }
 
   render() {
-    
+
     if(this.props.renderCondition){
       return (
         <div>
