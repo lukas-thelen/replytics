@@ -16,6 +16,14 @@ import { Settings_DB } from '../api/settings.js';
 import { Popular } from '../api/twitter_popular.js';
 import { data } from 'jquery';
 import { async } from 'rsvp';
+import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
+import { Reddit_Hot } from '../api/reddit_hot.js';
+import { Reddit_Karma } from '../api/reddit_karma.js';
+import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
+import { Reddit_Popular } from '../api/reddit_popular.js';
+import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
+import { Reddit_UserSubscriberCount } from '../api/reddit_userSubscriberCount.js';
+import { Reddit_Posts } from '../api/reddit_posts.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -564,6 +572,8 @@ export async function initial(){
 	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
 	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
 	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
+	
+
 }
 
 

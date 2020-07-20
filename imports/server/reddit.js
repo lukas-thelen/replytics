@@ -240,7 +240,7 @@ async function getSentiment(){
 			results
 		  ) {
 			if (err) {
-			  logger.error(err, '[ config - runManufacturingTest() ]');
+			  console.log(err);
 			  reject({ success: false, err });
 			}
 			console.log("mitte sentiment")
@@ -555,6 +555,19 @@ export async function initialR() {
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
 	//Accounts.remove({username:"testaccount02"})
+	console.log("dimensionen");
+	console.log(Reddit_Dimensionen.find({}).fetch());
+	console.log("hot");
+	console.log(Reddit_Hot.find({}).fetch());
+	console.log("karma");
+	console.log(Reddit_Karma.find({}).fetch());
+	console.log("popular");
+	console.log(Reddit_Popular.find({}).fetch());
+	console.log("posts");
+	console.log(Reddit_Posts.find({}).fetch());
+	console.log("usersubscribercount");
+	console.log(Reddit_UserSubscriberCount.find({}).fetch());
+
 }
   
 function checkDaily(collection, name){
