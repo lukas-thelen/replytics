@@ -12,6 +12,7 @@ import { SearchPosts } from './SearchPosts.jsx';
 import { Benachrichtigungen } from './Benachrichtigungen.jsx';
 import { BarChart } from './BarChart.jsx';
 import { BarChartGesamt } from './BarChartGesamt.jsx';
+import { Twitter_SearchUser } from './SearchUser.jsx';
 
 
 export class Twitter_Dashboard extends Tracker.Component {
@@ -19,22 +20,36 @@ export class Twitter_Dashboard extends Tracker.Component {
         super(props);
         this.state = {
           showTop: true,
-          showPop: false
+          showPop: false,
+          showUser: false
         }
         this.toTop = this.toTop.bind(this)
         this.toPop = this.toPop.bind(this)
+        this.toUser = this.toUser.bind(this)
     }
     toTop(){
         this.setState({showPop:false})
         this.setState({showTop:true})
+        this.setState({showUser:false})
         this.top.className="btn btn-secondary btn-sm active"
         this.pop.className="btn btn-secondary btn-sm"
+        this.user.className="btn btn-secondary btn-sm"
     }
     toPop(){
         this.setState({showPop:true})
         this.setState({showTop:false})
+        this.setState({showUser:false})
         this.top.className="btn btn-secondary btn-sm"
+        this.user.className="btn btn-secondary btn-sm"
         this.pop.className="btn btn-secondary btn-sm active"
+    }
+    toUser(){
+        this.setState({showUser:true})
+        this.setState({showPop:false})
+        this.setState({showTop:false})
+        this.top.className="btn btn-secondary btn-sm"
+        this.user.className="btn btn-secondary btn-sm active"
+        this.pop.className="btn btn-secondary btn-sm"
     }
   render() {
     if(this.props.renderCondition){  
@@ -55,10 +70,12 @@ export class Twitter_Dashboard extends Tracker.Component {
                         <span className="btn-group btn-group-sm" role="group" aria-label="Basic example">
                             <button type="button" className="btn btn-secondary active" ref={(input)=>{this.top = input}} onClick={this.toTop}>Top Posts</button>
                             <button type="button" className="btn btn-secondary" ref={(input)=>{this.pop = input}} onClick={this.toPop}>Posts suchen</button>
+                            <button type="button" className="btn btn-secondary" ref={(input)=>{this.user = input}} onClick={this.toUser}>Nutzer suchen</button>
                         </span>
                     </div>
                         <TopPosts renderCondition={this.state.showTop}/>
                         <SearchPosts renderCondition={this.state.showPop}/>
+                        <Twitter_SearchUser renderCondition={this.state.showUser}/>
                 </div>
 
                 <div className="col-xl-7 row">
