@@ -1,6 +1,6 @@
+//KOMMENTIERT
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
-
 import { PostKarmaCount } from '../api/twitter_mentionCount.js';
 import { RetweetCount } from '../api/twitter_retweetCount.js';
 import { Reddit_UserSubscriberCount } from '../api/reddit_userSubscriberCount';
@@ -11,6 +11,7 @@ import { Accounts } from '../api/accounts.js'
 
 export class Reddit_KeyFacts extends Tracker.Component {
 
+  //Folgende 3 Methoden berechnen den Unterschied der aktuellen Followeranzahl eines Users zu der vor 7 Tagen 
   getUserSub(){
     var subs = Reddit_UserSubscriberCount.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     if (!subs[0]){
@@ -18,7 +19,7 @@ export class Reddit_KeyFacts extends Tracker.Component {
     }
     return subs;
   }
-
+    //falls keine 7 Einträge vorhanden sind, wird der älteste genommen
   get7th() {
     if (this.getUserSub()[6] != undefined) {
       return this.getUserSub()[6].subscriber;
@@ -30,7 +31,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
       return subsUnsorted[0].subscriber;
     }
   }
-
   getDifference7(){
     var today = this.getUserSub()[0].subscriber;
     var old = this.get7th();
@@ -41,6 +41,7 @@ export class Reddit_KeyFacts extends Tracker.Component {
     return value;
   }
 
+  //Folgende 3 Methoden berechnen den Unterschied der aktuellen Followeranzahl eines Subreddits zu der vor 7 Tagen 
   getSubSubs(){
     var acc = Accounts.find({username: Meteor.user().username}).fetch()
     var sub = acc[0].sub
@@ -50,7 +51,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
     }
     return subSubs
   }
-
   get7thRetweetCount(){
     if (this.getSubSubs()[6] != undefined) {
       return this.getSubSubs()[6].subscriber;
@@ -64,7 +64,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
       return unsorted[0].subscriber;
     }
   }
-
   getDifference7SubSubs(){
     var today = this.getSubSubs()[0].subscriber;
     var old = this.get7thRetweetCount();
@@ -75,6 +74,7 @@ export class Reddit_KeyFacts extends Tracker.Component {
     return value;
   }
 
+  //Folgende 5 Methoden berechnen den Unterschied des aktuellen Karmawerts eines Users unterteilt in Commentkarma und Postkarma zu dem vor 7 Tagen 
   getKarma() {
     var karma = Reddit_Karma.find({username: Meteor.user().username}, {sort: {date: -1}}).fetch();
     if (!karma[0]){
@@ -82,7 +82,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
     }
     return karma;
   }
-
   get7thPostKarmaCount() {
     if (this.getKarma()[6] != undefined) {
       return this.getKarma()[6].postkarma;
@@ -94,7 +93,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
       return unsorted[0].postkarma;
     }
   }
-
   getDifference7PostKarma(){
     var today = this.getKarma()[0].postkarma;
     var old = this.get7thPostKarmaCount();
@@ -104,7 +102,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
     }
     return value;
   }
-
   get7thCommentKarma() {
     if (this.getKarma()[6] != undefined) {
       return this.getKarma()[6].commentkarma;
@@ -116,7 +113,6 @@ export class Reddit_KeyFacts extends Tracker.Component {
       return unsorted[0].commentkarma;
     }
   }
-
   getDifference7CommentKarma(){
     var today = this.getKarma()[0].commentkarma;
     var old = this.get7thCommentKarma();
@@ -127,10 +123,10 @@ export class Reddit_KeyFacts extends Tracker.Component {
     return value;
   }
 
-  render() {
-    
 
-    
+  //Darstellung auf dem Dashboard
+  render() {
+ 
     if (this.getUserSub()[0] != undefined && this.getKarma()[0] != undefined && this.props.renderCondition) {
      return (
 	 
