@@ -1,3 +1,4 @@
+//KOMMENTIERT
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import { Settings_DB } from '../api/settings.js';
@@ -17,6 +18,7 @@ export class Benachrichtigungen extends Tracker.Component {
 
 
     }
+    //sobald der Component geladen wird,  wird auf neue Daten geprüft und Sachen angezeigt
     componentWillMount = () =>{
         this.wochenbericht();
         this.checkShitstorm();
@@ -25,7 +27,7 @@ export class Benachrichtigungen extends Tracker.Component {
         this.checkImportant();
         this.checkEngagementCountRatio();
     }
-
+    //die verschiedenen Übersetzungen werden später für die Handlungsempfehlungen verwendet
     übersetzung ={
         p_d: "Produkt und Dienstleistung",
         e: "Emotionen",
@@ -52,7 +54,7 @@ export class Benachrichtigungen extends Tracker.Component {
         negatives_Feedback: "negatives Feedback",
         Shitstorm: "Shitstorm"
     }
-
+    //geben verschiedene Handlungsempfehlungen an, die später genutzt werden können
     zusatzinfos ={
         Produkt_und_Dienstleistung:
             <div>
@@ -130,6 +132,7 @@ export class Benachrichtigungen extends Tracker.Component {
             </div>
     }
 
+    //stellt eine Übersicht der Interaktionen der letzten Woche bereit
     wochenbericht =()=>{
         var postArray = Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
         var lastWeek = new Date();
@@ -153,20 +156,22 @@ export class Benachrichtigungen extends Tracker.Component {
         }
         eng = Math.round(Number(eng/i)*100)
         return (
-        <div>
-        <li className="list-group-item" >
-            <div className="d-flex w-100 justify-content-between">
+            <div>
+            <li className="list-group-item" >
+                <div className="d-flex w-100 justify-content-between">
+                </div>
+                <div className="row">
+                <span className="col-6 col-xl-3"><span className="text-muted">Postanzahl: </span>{count} </span>
+                <span className="col-6 col-xl-3"><span className="text-muted">Engagement: </span>{eng} %</span>
+                <span className="col-6 col-xl-3"><span className="text-muted">pos. Kommentare: </span>{pos}</span>
+                <span className="col-6 col-xl-3"><span className="text-muted">neg. Kommentare: </span>{neg}</span>
+                </div>
+            </li>
             </div>
-            <div className="row">
-            <span className="col-6 col-xl-3"><span className="text-muted">Postanzahl: </span>{count} </span>
-            <span className="col-6 col-xl-3"><span className="text-muted">Engagement: </span>{eng} %</span>
-            <span className="col-6 col-xl-3"><span className="text-muted">pos. Kommentare: </span>{pos}</span>
-            <span className="col-6 col-xl-3"><span className="text-muted">neg. Kommentare: </span>{neg}</span>
-            </div>
-        </li>
-        </div>)
+        )
     }
 
+    //bei negativem Sentiment der Kommentare wird eine Handlungsempfehlung im state hinzugefügt
     checkNegativePosts = ()=>{
         var postArray = Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
         postArray = postArray.slice(0,11)
@@ -181,6 +186,8 @@ export class Benachrichtigungen extends Tracker.Component {
             }
         }
     }
+
+    //sind doppelt so viele negative wie positive Kommentare da, wird eine Handlungsempfehlung im state hinzugefügt
     checkShitstorm = ()=>{
         var postArray = Posts.find({username: Meteor.user().username, retweet:false}, {sort:{date:-1}}).fetch();
         postArray = postArray.slice(0,11)
@@ -196,6 +203,8 @@ export class Benachrichtigungen extends Tracker.Component {
         }
     }
 
+    //prüft, wie das Engagement der einzelnen Dimensionen ausfällt, um entsprechende Handlungs-
+    //empfehlungen hinzuzufügen
     checkEngagementCountRatio = () =>{
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
         var importantDimensionen = this.getVeryImportantDimensions().concat(this.getImportantDimensions())
@@ -203,9 +212,6 @@ export class Benachrichtigungen extends Tracker.Component {
         var sortedEngagement = []
         var sortedCount = []
         var sortedSentiment = []
-        /*for (var i=0; i<unwichtig.length;i++){
-            delete datenbankWerte[0][this.übersetzung02[unwichtig[i]]]
-        }*/
         if(!datenbankWerte[0]){return true}
         for (var i=0; i<dimensionen.length;i++){
             sortedEngagement.push(this.übersetzung02[dimensionen[i]])
@@ -285,6 +291,8 @@ export class Benachrichtigungen extends Tracker.Component {
         }
     }
 
+    //bei als sehr wichtig bewerteten Dimensionen wird die Handlungsempfehlung ausgeprochen, etwas
+    // darin zu posten, falls in den letzten 6 Posts nichts darüber gepostet wurde
     checkVeryImportant = () => {
         var posts = Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         var notPosted = []
@@ -307,6 +315,8 @@ export class Benachrichtigungen extends Tracker.Component {
         }
     }
 
+    //bei als wichtig bewerteten Dimensionen wird die Handlungsempfehlung ausgeprochen, etwas
+    // darin zu posten, falls in den letzten 15 Posts nichts darüber gepostet wurde
     checkImportant = () => {
         var posts = Posts.find({username: Meteor.user().username}, {sort:{date:-1}}).fetch();
         var notPosted = []
@@ -330,6 +340,7 @@ export class Benachrichtigungen extends Tracker.Component {
         }
     }
 
+    //Hilfsmethoden, um auf die Bewertung des Nutzers zuzugreifen (unwichtig/wichtig/sehr wichtig)
     getVeryImportantDimensions = () => {
         var settings = this.checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
@@ -341,7 +352,6 @@ export class Benachrichtigungen extends Tracker.Component {
         }
         return important
     }
-
     getImportantDimensions = () => {
         var settings = this.checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
@@ -353,7 +363,6 @@ export class Benachrichtigungen extends Tracker.Component {
         }
         return important
     }
-
     getUnImportantDimensions = () => {
         var settings = this.checkSettings();
         var dimensionen = ["p_d", "e", "a", "f", "v_f", "g_v"]
@@ -366,6 +375,7 @@ export class Benachrichtigungen extends Tracker.Component {
         return important
     }
 
+    //Hilfsmethode der Hilfsmethoden, um auf die Einstellungen zuzugreifen
     checkSettings = () =>{
         var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
         if(!settings[0]){
@@ -382,16 +392,7 @@ export class Benachrichtigungen extends Tracker.Component {
         return settings
     }
 
-    showState = () => {
-        var empfehlungen = this.state
-        return empfehlungen
-    }
-    absenden = () =>{
-        var he = this.state.handlungsempfehlungen
-        he.push("TESTTESTTESTTEST")
-        this.setState({handlungsempfehlungen: he})
-        this.render();
-    }
+    //Methoden, die über die Buttons aufgerufen werden
     erledigt = (index)=>{
         var he = this.state.handlungsempfehlungen
         he.splice(index,1)
@@ -412,6 +413,8 @@ export class Benachrichtigungen extends Tracker.Component {
         }
     }
 
+
+    //Darstellung auf dem Dashboard
     render() {
 
         const Element = this.state.handlungsempfehlungen.map((text, index) =>
@@ -451,8 +454,7 @@ export class Benachrichtigungen extends Tracker.Component {
         </div>
         );
         return (
-        //alles, was zurück geschickt werden soll
-        <div className="boxshadow"> {/* this.showState().handlungsempfehlungen */}<h5>Handlungsempfehlungen
+    <div className="boxshadow"> {}<h5>Handlungsempfehlungen 
 		<button type="button" className="btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Zunächst sehen Sie Ihren Wochenbericht der letzten sieben Tage. Darunter erhalten Sie Empfehlungen, um Ihre Social-Media-Präsenz zu optimieren. Sie haben die Möglichkeit diese über die linke Checkbox auszublenden. "><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 		<path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
 		<path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
@@ -462,7 +464,6 @@ export class Benachrichtigungen extends Tracker.Component {
             {this.state.handlungsempfehlungen.length===0 && <span>keine Handlungsempfehlungen verfügbar</span>}
             {this.state.showMore && Element}{!this.state.showMore && ElementSmall}</ul>
         <form>
-                {/*<input className="btn btn-secondary mr-3" type="button" onClick={this.absenden} value="test"></input>*/}
                 {this.state.handlungsempfehlungen.length>2 && <span>
                 {!this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Mehr anzeigen"></input>}
                 {this.state.showMore && <input className="btn btn-sm btn-link" type="button" onClick={this.showMore} value="Weniger anzeigen"></input>}

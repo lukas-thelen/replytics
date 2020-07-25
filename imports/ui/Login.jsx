@@ -8,13 +8,9 @@ var Codebird = require("codebird");
 var cb = new Codebird;
 cb.setConsumerKey(credentials.key, credentials.token);
 
-
-
-
 export class Login extends Tracker.Component {
   constructor (props) {
     super(props);
-
     this.state = {
       token: "test"
     };
@@ -105,9 +101,9 @@ export class Login extends Tracker.Component {
     //this.props.twitter_authorization();
     //event.target.reset();
   }
+
   test = async()=>{
     cb.setToken(reply.oauth_token, reply.oauth_token_secret);
-
     var userExists = Accounts.find({username: Meteor.user().username}).fetch()
     if(!userExists[0]){
       await Accounts.insert({
@@ -129,32 +125,32 @@ export class Login extends Tracker.Component {
     event.target.reset();
   }
 
-
+  //Darstellung auf dem Dashboard
   render() {
-      //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
+      
     return (
-        //alles, was zurück geschickt werden soll
-    <div>
-    <div className="col col-md-2 offset-md-5 text-center">
-    <form className="mt-5 " onSubmit={ this.authorizeatTwitter }>
-      <input className="btn btn-secondary mb-2" type="submit" value="Code generieren"></input><br/>
-      <label className="text-left font-weight-light">* Genriere einen Code, um replytics Zugriff auf dein Twitter Konto zu gewähren.</label><br/>
-    </form>
-    <hr className="mt-4 mb-4 " />
-      <form id ="login" onSubmit={ this.verifyPin }>
-        <label className="text-left" htmlFor="twitterpin">Twitter Code bitte hier eingeben:</label><br/>
-        <input
-          type="number"
-          id="twitterpin"
-          name="twitterpin"
-          onChange={ this.changeToken }
-          className="form-control"
-        /><br/>
-        <input className="btn btn-secondary mr-1" type="submit" value="autorisieren"></input>
-        <input className="btn btn-light ml-1" type="button" value="abbrechen" onClick={this.props.twitter_authorization}></input>
-      </form>
-    </div>
-    </div>
+        
+      <div>
+        <div className="col col-md-2 offset-md-5 text-center">
+          <form className="mt-5 " onSubmit={ this.authorizeatTwitter }>
+            <input className="btn btn-secondary mb-2" type="submit" value="Code generieren"></input><br/>
+            <label className="text-left font-weight-light">* Genriere einen Code, um replytics Zugriff auf dein Twitter Konto zu gewähren.</label><br/>
+          </form>
+          <hr className="mt-4 mb-4 " />
+          <form id ="login" onSubmit={ this.verifyPin }>
+            <label className="text-left" htmlFor="twitterpin">Twitter Code bitte hier eingeben:</label><br/>
+            <input
+              type="number"
+              id="twitterpin"
+              name="twitterpin"
+              onChange={ this.changeToken }
+              className="form-control"
+            /><br/>
+            <input className="btn btn-secondary mr-1" type="submit" value="autorisieren"></input>
+            <input className="btn btn-light ml-1" type="button" value="abbrechen" onClick={this.props.twitter_authorization}></input>
+          </form>
+        </div>
+      </div>
     );
   }
 }

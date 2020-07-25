@@ -8,7 +8,9 @@ export class Selbstposten extends Tracker.Component {
       //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
         //alles, was zurück geschickt werden soll
-		<div> Test fürs posten </div>
+		<div> 
+      
+    </div>
     );
   }
 }
