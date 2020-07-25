@@ -14,10 +14,12 @@ import { BarChart } from './BarChart.jsx';
 import { BarChartGesamt } from './BarChartGesamt.jsx';
 import { Twitter_SearchUser } from './SearchUser.jsx';
 
-
+//Dashboard für Twitter - Zusammenfassung aller Components in diesem Kontext
+//wird nur gerendert, wenn Bedingungen in App.jsx erfüllt sind
 export class Twitter_Dashboard extends Tracker.Component {
     constructor(props){
         super(props);
+        //States geben an welcher Component unten links angeziegt werden soll
         this.state = {
           showTop: true,
           showPop: false,
@@ -27,6 +29,8 @@ export class Twitter_Dashboard extends Tracker.Component {
         this.toPop = this.toPop.bind(this)
         this.toUser = this.toUser.bind(this)
     }
+
+    //Funktionen, die jeweils einen anderen Component anzeigen und den Button als geklickt markieren
     toTop(){
         this.setState({showPop:false})
         this.setState({showTop:true})
@@ -51,7 +55,9 @@ export class Twitter_Dashboard extends Tracker.Component {
         this.user.className="btn btn-secondary btn-sm active"
         this.pop.className="btn btn-secondary btn-sm"
     }
+
   render() {
+    //wird nur gerendert, wenn die Variable "renderCondition" mit dem Wert true von App.jsx übergeben wird
     if(this.props.renderCondition){  
         return (        
             <div className="content row" >
@@ -60,6 +66,8 @@ export class Twitter_Dashboard extends Tracker.Component {
                     <Selbstposten/>
                     <Benachrichtigungen/>
                     <br/>
+
+                    {/* Menü, um den Component unten links auszuwählen */}
                     <div className="d-flex w-100 justify-content-between " >
                         <h5 style={{display:"inline"}} >Post-Analyse
                         <button type="button" className="hover btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Hier erhalten Sie einen Überblick über Ihre erfolgreichsten Posts des letzten Monats. Entsprechende Statistiken finden Sie in Kurzform darunter. Wenn Sie den Button rechts auf Posts suchen umstellen, bekommen Sie die Möglichkeit die besten Posts zu Ihrem entsprechenden Schlagwort zu sehen. "><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -73,6 +81,7 @@ export class Twitter_Dashboard extends Tracker.Component {
                             <button type="button" className="btn btn-secondary" ref={(input)=>{this.user = input}} onClick={this.toUser}>Nutzer suchen</button>
                         </span>
                     </div>
+                        {/* Components werden nur gerendert, wenn der State=true */}
                         <TopPosts renderCondition={this.state.showTop}/>
                         <SearchPosts renderCondition={this.state.showPop}/>
                         <Twitter_SearchUser renderCondition={this.state.showUser}/>
@@ -97,6 +106,8 @@ export class Twitter_Dashboard extends Tracker.Component {
             </div>
         );
         }else{
+            //auch wenn das Twitter-Dashboard nicht gerendert wird, wird der SearchPosts Component aufgerufen aber nicht gerendert 
+            //dadurch greift der Autorun von App.jsx und der Component bleibt reaktiv
             return <SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>
         }
   }
