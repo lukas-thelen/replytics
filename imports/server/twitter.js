@@ -3,7 +3,7 @@ import { TwitterAPI } from '../api/twitter_credentials.js';
 import { credentials } from '../api/access_Token.js';
 let {PythonShell} = require('python-shell')
 
-//Datenbanken
+//Datenbanken import
 import { FollowerCount } from '../api/twitter_followerCount.js';
 import { Mentions } from '../api/twitter_mentions.js';
 import { MentionCount } from '../api/twitter_mentionCount.js';
@@ -16,14 +16,7 @@ import { Settings_DB } from '../api/settings.js';
 import { Popular } from '../api/twitter_popular.js';
 import { data } from 'jquery';
 import { async } from 'rsvp';
-import { Reddit_Dimensionen } from '../api/reddit_dimensionen.js';
-import { Reddit_Hot } from '../api/reddit_hot.js';
-import { Reddit_Karma } from '../api/reddit_karma.js';
-import { Reddit_NewSubreddit } from '../api/reddit_newSubreddit.js';
-import { Reddit_Popular } from '../api/reddit_popular.js';
-import { Reddit_SubscriberCount } from '../api/reddit_subscriberCount.js';
-import { Reddit_UserSubscriberCount } from '../api/reddit_userSubscriberCount.js';
-import { Reddit_Posts } from '../api/reddit_posts.js';
+import { SearchUser } from '../api/twitter_searchUser.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
 var ml = require('ml-sentiment')({lang: 'de'});
@@ -35,17 +28,17 @@ const path = require('path');
 
 Meteor.methods({
 
+	//Tweet mit Paramtern posten und in der Datenbank speichern
 	async postTweet(text, dimension, user){
 		var UserAPI = new Twit({
-			consumer_key: credentials.key, // API key
-			consumer_secret: credentials.token, // API secret
+			consumer_key: credentials.key, 
+			consumer_secret: credentials.token, 
 			access_token: Accounts.find({username: user}).fetch()[0].token,
 			access_token_secret: Accounts.find({username: user}).fetch()[0].secret});
 
 		let result = await UserAPI.post('statuses/update', { status: text});
 		var id = result.data.id_str;
 		var date = result.data.created_at;
-		//speichert Post inklusive Dimension in Datenbank
 		Posts.insert({
 			id: id,
 			date: new Date(date),
@@ -59,6 +52,7 @@ Meteor.methods({
 			username: user
 		});
 	},
+	//setzt für den Nutzer neue Twitter OAuth Tokens
 	updateTwitterAuth(reply){
 		Accounts.update({username: Meteor.user().username},{$set:{
 			token: reply.oauth_token,
@@ -69,10 +63,12 @@ Meteor.methods({
 		  }});
 		  return true
 	},
+	//lädt alle Daten von Twitter nach
 	"updateServer": async() =>{
 		let test = await getEverything()
 		return test
 	},
+	//speichert die Prios der DImensionen ind der Datenbank
 	updateSettings(name,q,w,e,r,t,z){
 		Settings_DB.update({username: name},{$set:{
 			p_d: q,
@@ -84,6 +80,7 @@ Meteor.methods({
 		}})
 		return false
 	},
+	//sucht nach top Posts zu angegebenen Key Word und speichert diese in der Datenbank
 	async searchPosts(name,word){
 		let posts = await TwitterAPI.get('search/tweets', { q: word, result_type: 'popular', lang: 'de', count: 3 });
 		var array = [];
@@ -111,18 +108,38 @@ Meteor.methods({
 		console.log(array)
 		Popular.remove({username: name})
         Popular.insert({posts: array, username: name})
+	},
+	//sucht nach letzten Posts zu angegebenen Nutzer und speichert diese in der Datenbank
+	async searchUser(name,user){
+		let posts = await TwitterAPI.get('statuses/user_timeline', { screen_name: user, count:3 });
+		var array = [];
+		var post = {text:"", autor:"", favorites:0, date:new Date(), link:""}
+		console.log(posts)
+        for (var i= 0; i<posts.data.length; i++){
+			post = {
+				text: posts.data[i].text,
+				autor: user,
+				favorites: posts.data[i].favorite_count,
+				date: new Date(posts.data[i].created_at),
+			}
+            array.push(post);
+        }
+		console.log(array)
+		SearchUser.remove({username: name})
+		SearchUser.insert({posts: array, username: name})
+		
 	}
 });
 
 //
 //
 //
-//**Funktionen im Twitter Kontext**/
+//**Funktionen für neue Twitter Daten**
 //
 //
 //
 
-
+//speichert aktuelle Followerzahlen zu allen Nutzern (für jeden Tag ein Wert / mit Datum markiert)
 async function getDailyFollowers(){
 	console.log("start followers")
 	var accounts = Accounts.find({}).fetch();
@@ -156,6 +173,7 @@ async function getDailyFollowers(){
 	return true
 }
 
+//speichert zu jedem Nutzer alle neuen Posts und aktuelisiert die Werte zur Nutzer-Reaktion (Favorites, etc.)
 async function getPosts(){
 	console.log("start posts")
 	var accounts = Accounts.find({}).fetch();
@@ -208,6 +226,7 @@ async function getPosts(){
 	//console.log(Posts.find({retweet: false}).fetch());
 }
 
+//fasst die Zahlen zu den Posts unter den angegebenen Dimensionen zusammen und speichert durchschnittliche Werte pro Dimension in der Datenbank ab
 async function getDimensions(){
 	console.log("start Dimensionen")
 	var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
@@ -307,6 +326,7 @@ async function getDimensions(){
 	return true
 }
 
+//berechnet für jeden Post das Engagement und speichert es mit dem Posts zusammen ab
 async function getEngagement(){
 	console.log("start Engagement")
 	var accounts = Accounts.find({}).fetch();
@@ -355,31 +375,7 @@ async function getEngagement(){
 	return true
 }
 
-async function getReplies(nutzer){
-	var posts = Posts.find({username: nutzer, retweet: false}).fetch();
-	var replies = 0
-	for(var j=0;j<posts.length;j++){
-		replies += posts[j].replies.length;
-	}
-	if (replies<1){
-		return 1
-	}
-	return replies
-}
-
-async function getFavorites(nutzer){
-	var posts = Posts.find({username: nutzer}).fetch();
-	var favs = 0
-	for(var j=0;j<posts.length;j++){
-		favs += posts[j].fav;
-	}
-	if (favs<1){
-		return 1
-	}
-	return favs
-
-}
-
+//fragt alle Mentions an und guckt, ob diese eine Antwort auf einen Post sind. Wenn ja wird das Sentiment der Mention auf das Sentiment der Postkommentare übertragen
 async function postSentiment(){
 	console.log("start PostSentiment")
 	var accounts = Accounts.find({}).fetch();
@@ -389,18 +385,17 @@ async function postSentiment(){
 			var name = accounts[a].username;
 			var screen_name = accounts[a].screen_name;
 			var UserAPI = new Twit({
-				consumer_key: credentials.key, // API key
-				consumer_secret: credentials.token, // API secret
+				consumer_key: credentials.key, 
+				consumer_secret: credentials.token, 
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
-			//API Anfrage nach alles Mentions(@)
 			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});
 			var mentionArray = result.data;
 			for (i=0; i<mentionArray.length-1; i++){
 				var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
 				var replyList = [];
 				if (mentionInReply[0]){
-					//wenn noch keine Antworten für diesen Post eingetragen sind, dann Feld durch leere Liste initialisieren
+					//erstelle lokale Liste mit bisherigen Antworten auf den Post
 					replyList = mentionInReply[0].replies
 					//Wenn der aktuelle Text noch nicht in der Datenbank eingetragen ist, diesen an die lokale Liste anhängen
 					var replyExists = replyList.includes(mentionArray[i].text);
@@ -410,6 +405,7 @@ async function postSentiment(){
 					//Die lokale Liste wieder in der Datenbank speichern
 					Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
 					var mention = Mentions.find({id01: mentionArray[i].id}).fetch()
+					//den Zähler für positives, negatives, neutrales Sentiment entsprechend erhöhen
 					if(mention[0]){
 						if (!replyExists && mention[0].sentiment>0){
 							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_pos: 1}})
@@ -430,6 +426,27 @@ async function postSentiment(){
 	return true
 }
 
+//ruft sentiment.py auf -> speichert zu jeder Mention den Sentiment-Wert und speichert die Durchschnittlichen Werte
+async function python(){
+	console.log("start Sentiment")
+	const { success, err = '', results } = await new Promise((resolve, reject) => {
+    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function(
+		err,
+		results
+	  ) {
+		if (err) {
+		  logger.error(err, '[ config - runManufacturingTest() ]');
+		  reject({ success: false, err });
+		}
+		resolve({ success: true, results });
+	  });
+	})
+	console.log("ende Sentiment")
+	return true
+	
+}
+
+//speichert aktuelle Retweetzahlen basierend auf den Retweets in der Posts-Datenbank zu allen Nutzern (für jeden Tag ein Wert / mit Datum markiert)
 async function getRetweets(){
 	console.log("start Retweets")
 	var accounts = Accounts.find({}).fetch();
@@ -464,7 +481,7 @@ async function getRetweets(){
 	console.log("ende Retweets")
 	return true
 }
-
+//speichert neue Mentions in der Datenbank und speichert zusätzlich die aktuelle Anzahl der Mentions und Autoren (für jeden Tag ein Wert / mit Datum markiert)
 async function getMentions(){
 
 	console.log("start Mentions")
@@ -539,6 +556,7 @@ async function getMentions(){
 	return true
 }
 
+//ruft alle Funktionen, die neue Daten anfragen und speichern nacheinander in der richtigen Reihenfolge auf
 async function getEverything(){
 	let a1 = await getDailyFollowers();
 	let a2 = await getPosts();
@@ -554,26 +572,11 @@ async function getEverything(){
 //
 //
 //
-//**Exportierte Funktionen**
-//
-//
-//
 
+//wird bei Neustart des Servers ausgeführt und startet alle 20 Minuten die getEverything-Funktion
 export async function initial(){
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
-	/*Posts.update({text:"Testtweet"}, {$set:{dimension:"Produkt und Dienstleistung"}})
-	Posts.update({text:"heute ist meine Stimmung deutlich besser!"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
-	Posts.update({text:"Hier ist was los"}, {$set:{dimension:"Arbeitsplatzumgebung"}})
-	Posts.update({text:"ich bin sehr traurig."}, {$set:{dimension:"Vision und Führung"}})
-	Posts.update({text:"asdf"}, {$set:{dimension:"Finanzleistung"}})
-	Posts.update({text:"sehr umweltbewusst"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})
-	Posts.update({text:"qwertz"}, {$set:{dimension:"Vision und Führung"}})
-	Posts.update({text:"Ist das hier jetzt fertig?"}, {$set:{dimension:"Produkt und Dienstleistung"}})
-	Posts.update({text:"hahahaha"}, {$set:{dimension:"Vision und Führung"}})
-	Posts.update({text:"sdfgsdfgsdfg"}, {$set:{dimension:"Gesellschaftliche Verantwortung"}})*/
-	
-
 }
 
 
@@ -581,29 +584,36 @@ export async function initial(){
 //
 //
 //
-//**allgemeine Funktionen**
+//**Hilfsfunktionen**
 //
 //
 //
 
-//Python Datei ausführen dafür immer den absoluten Pfad der Python Datei angeben
-async function python(){
-	console.log("start Sentiment")
-	const { success, err = '', results } = await new Promise((resolve, reject) => {
-    PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function(
-		err,
-		results
-	  ) {
-		if (err) {
-		  logger.error(err, '[ config - runManufacturingTest() ]');
-		  reject({ success: false, err });
-		}
-		resolve({ success: true, results });
-	  });
-	})
-	console.log("ende Sentiment")
-	return true
-	
+//gibt die gesamte Anzahl aller Replies des Nutzers im Parameter zurück 
+async function getReplies(nutzer){
+	var posts = Posts.find({username: nutzer, retweet: false}).fetch();
+	var replies = 0
+	for(var j=0;j<posts.length;j++){
+		replies += posts[j].replies.length;
+	}
+	if (replies<1){
+		return 1
+	}
+	return replies
+}
+
+//gibt die gesamte Anzahl aller Favorites des Nutzers im Parameter zurück 
+async function getFavorites(nutzer){
+	var posts = Posts.find({username: nutzer}).fetch();
+	var favs = 0
+	for(var j=0;j<posts.length;j++){
+		favs += posts[j].fav;
+	}
+	if (favs<1){
+		return 1
+	}
+	return favs
+
 }
 
 //gibt true zurück wenn Collection bereits einen Eintrag mit heutigem Datum enthält
@@ -616,6 +626,7 @@ function checkDaily(collection, name){
 	return false
 }
 
+//gibt true zurück, wenn 2 JS-Date-Objekte den gleichen Tag angeben
 function checkDate(date1, date2){
 	if(date1.getDay() === date2.getDay() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear()){
 		return true

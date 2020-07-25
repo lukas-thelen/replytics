@@ -29,9 +29,9 @@ export class RedditSelbstposten extends Tracker.Component {
 	changeDimension = (event) => {
 		this.setState({dimension: event.target.value})
 	}
+  
  	//Darstellung auf dem Dashboard 
 	render() {
-		
 		return (
 			<div>
 				<form onSubmit={ this.submitSelfPost }>

@@ -49,7 +49,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
     }
     übersetzung03 ={
         Produkt_und_Dienstleistung: "Produkt und Dienstleistung",
-        Emotionen: "Emotionen",
+        Emotionen: "Emotionaler Reiz",
         Arbeitsplatzumgebung: "Arbeitsplatzumgebung",
         Finanzleistung: "Finanzleistung",
         Gesellschaftliche_Verantwortung: "Gesellschaftliche Verantwortung",
@@ -60,8 +60,8 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
     
     //geben verschiedene Handlungsempfehlungen an, die später genutzt werden können
     zusatzinfos ={
-        Produkt_und_Dienstleistung: 
-            <div> 
+        Produkt_und_Dienstleistung:
+            <div>
                 <h6>Ideen für Posts</h6>
                 <ul>
                 <li >Content posten, der Produkte aus dem Unternehmen bewirbt</li>
@@ -69,8 +69,8 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 <li >Serviceangebot aufzeigen</li>
                 </ul>
             </div>,
-        Emotionen: 
-            <div> 
+        Emotionen:
+            <div>
                 <h6>Ideen für Posts</h6>
                 <ul>
                 <li >Das Produkt in einem positiven Kontext präsentieren</li>
@@ -78,8 +78,8 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 <li >Persönliche Kundenbewertungen teilen</li>
                 </ul>
             </div>,
-        Arbeitsplatzumgebung: 
-            <div> 
+        Arbeitsplatzumgebung:
+            <div>
                 <h6>Ideen für Posts</h6>
                 <ul>
                 <li >Mitarbeiter in verschiedenen Positionen vorstellen</li>
@@ -87,8 +87,8 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 <li >Die Belegschaft als Familie präsentieren</li>
                 </ul>
             </div>,
-        Finanzleistung: 
-            <div> 
+        Finanzleistung:
+            <div>
                 <h6>Ideen für Posts</h6>
                 <ul>
                 <li >Pläne für die Zukunft vorstellen</li>
@@ -96,8 +96,8 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 <li >von vergangener Expansion berichten</li>
                 </ul>
             </div>,
-        Gesellschaftliche_Verantwortung: 
-            <div> 
+        Gesellschaftliche_Verantwortung:
+            <div>
                 <h6>Ideen für Posts</h6>
                 <ul>
                 <li >eigene Umweltprojekte starten und präsentieren</li>
@@ -106,8 +106,8 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 <li >nachhaltige Umweltziele aufstellen und darüber berichten</li>
                 </ul>
             </div>,
-        Vision_und_Führung: 
-            <div> 
+        Vision_und_Führung:
+            <div>
                 <h6>Ideen für Posts</h6>
                 <ul>
                 <li>Firmenleitlinien erläutern</li>
@@ -116,7 +116,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 </ul>
             </div>,
         negatives_Feedback:
-            <div> 
+            <div>
                 <h6>Tipps für weiteres Vorgehen</h6>
                 <ul>
                 <li>Mit den Kommentaren zu dem Posts auseinandersetzen</li>
@@ -125,7 +125,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 </ul>
             </div>,
         Shitstorm:
-            <div> 
+            <div>
                 <h6>Tipps für weiteres Vorgehen</h6>
                 <ul>
                 <li>Mit den Kommentaren zu dem Posts auseinandersetzen</li>
@@ -260,7 +260,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         for (var i = 0; i < sortedSentiment.length; i++) {
             var minC = i;
             for (var j = i + 1; j < sortedSentiment.length; j++) {
-                if ((datenbankWerte[0][sortedSentiment[minC]].s_pos+1)/(datenbankWerte[0][sortedSentiment[minC]].s_neg+1) 
+                if ((datenbankWerte[0][sortedSentiment[minC]].s_pos+1)/(datenbankWerte[0][sortedSentiment[minC]].s_neg+1)
                     > (datenbankWerte[0][sortedSentiment[j]].s_pos+1)/(datenbankWerte[0][sortedSentiment[j]].s_neg+1)) {
                     minC = j;
                 }
@@ -304,14 +304,14 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         var veryImportant = this.getVeryImportantDimensions();
         for(var d=0; d<veryImportant.length; d++){
             var dimensionVorhanden = false
-                for (var x=0;x<Math.min(7,posts.length);x++){              
+                for (var x=0;x<Math.min(7,posts.length);x++){
                     if(posts[x].dimension === this.übersetzung[veryImportant[d]]){
                         dimensionVorhanden = true
                     }
                 }
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
-                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[veryImportant[d]] +" gepostet")
+                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung03[this.übersetzung02[important[d]]] +" gepostet")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push(this.übersetzung02[veryImportant[d]])
@@ -328,12 +328,12 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         var important = this.getImportantDimensions();
         for(var d=0; d<important.length; d++){
             var dimensionVorhanden = false
-                for (var x=0;x<Math.min(16,posts.length);x++){              
+                for (var x=0;x<Math.min(16,posts.length);x++){
                     if(posts[x].dimension === this.übersetzung[important[d]]){
                         dimensionVorhanden = true
                     }
                 }
-            
+
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
                 he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[important[d]] +" gepostet.")
@@ -385,7 +385,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
         if(!settings[0]){
             Settings_DB.insert({
-                username: Meteor.user().username, 
+                username: Meteor.user().username,
                 p_d: 1,
                 e: 1,
                 a: 1,
@@ -464,7 +464,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
         </li>
         </div>
         );
-        if(this.props.renderCondition){ 
+        if(this.props.renderCondition){
             return (
             //alles, was zurück geschickt werden soll
             <div className="boxshadow"> <h5>Handlungsempfehlungen 

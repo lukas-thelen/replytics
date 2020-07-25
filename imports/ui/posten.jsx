@@ -1,7 +1,7 @@
 //KOMMENTIERT
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
- 
+
 
 export class Selbstposten extends Tracker.Component {
 	constructor(props) {
@@ -16,6 +16,7 @@ export class Selbstposten extends Tracker.Component {
 		Meteor.call('postTweet', this.state.content, this.state.dimension, Meteor.user().username)
 		Meteor.call('updateServer')
 	}
+
 	//speichert den eingegebenen Text des Nutzers im state
 	changeContent = (event) => {
 		this.setState({content: event.target.value});
@@ -24,7 +25,7 @@ export class Selbstposten extends Tracker.Component {
 	changeDimension = (event) => {
 		this.setState({dimension: event.target.value})
 	}
-	 
+
 	//Darstellung auf dem Dashboard 
 	render() {
 		return (

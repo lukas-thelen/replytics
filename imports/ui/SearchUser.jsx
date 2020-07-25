@@ -1,4 +1,3 @@
-//KOMMENTIERT
 import React, { Component } from 'react';
 import Tracker from 'tracker-component';
 import { TwitterAPI } from '../api/twitter_credentials.js';
@@ -20,12 +19,14 @@ export class Twitter_SearchUser extends Tracker.Component {
         this.setState({text: event.target.value});
     }
 
+
     //ruft die Meteor Methode aus der twitter.js Datei auf und leert das Eingabfeld
     suchen =(event)=>{
         event.preventDefault()
         Meteor.call('searchUser', Meteor.user().username, this.state.text)
         event.target.reset()
     }
+
     //greift auf durch die Meteor Methode gefüllte Datenbank zu, die die 3 Suchergebnisse beinhält
     getTweets=()=>{
         var posts = SearchUser.find({username:Meteor.user().username}).fetch()
@@ -34,6 +35,7 @@ export class Twitter_SearchUser extends Tracker.Component {
 		}
         return []
     }
+
     //Datum lesbar machen
     getDate (createdAt) {
         var day = createdAt.getDate();
@@ -47,6 +49,7 @@ export class Twitter_SearchUser extends Tracker.Component {
         var dateOutput = day + "." + month + "." + year + " " + hour + ":" + minute;
         return dateOutput;
     }
+
 
     //Darstellung auf dem Dashboard
     render() {
@@ -80,4 +83,5 @@ export class Twitter_SearchUser extends Tracker.Component {
             return null
         }
     }
+
 }
