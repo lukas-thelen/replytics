@@ -299,7 +299,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 }
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
-                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[veryImportant[d]] +" gepostet")
+                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung03[this.übersetzung02[important[d]]] +" gepostet")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push(this.übersetzung02[veryImportant[d]])
