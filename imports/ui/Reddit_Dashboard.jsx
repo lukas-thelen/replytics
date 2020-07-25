@@ -14,10 +14,12 @@ import { RedditSubscriberChart } from './RedditSubscriberChart.jsx';
 import { RedditDimensionenRadar } from './RedditDimensionen.jsx';
 import { Reddit_SearchPosts } from './Reddit_SearchPosts.jsx';
 
-
+//Dashboard für Reddit - Zusammenfassung aller Components in diesem Kontext
+//wird nur gerendert, wenn Bedingungen in App.jsx erfüllt sind
 export class Reddit_Dashboard extends Tracker.Component {
     constructor(props){
         super(props);
+        //States geben an welcher Component unten links angeziegt werden soll
         this.state = {
           showTop: true,
           showPop: false,
@@ -28,6 +30,7 @@ export class Reddit_Dashboard extends Tracker.Component {
         this.toSub = this.toSub.bind(this)
     }
 
+    //Funktionen, die jeweils einen anderen Component anzeigen und den Button als geklickt markieren
     toTop(){
         this.setState({showPop:false})
         this.setState({showTop:true})
@@ -53,6 +56,7 @@ export class Reddit_Dashboard extends Tracker.Component {
         this.pop.className="btn btn-secondary btn-sm"
     }
   render() {
+    //wird nur gerendert, wenn die Variable "renderCondition" mit dem Wert true von App.jsx übergeben wird
     if(this.props.renderCondition){
         return (
 
@@ -62,6 +66,8 @@ export class Reddit_Dashboard extends Tracker.Component {
                     <RedditSelbstposten renderCondition={this.props.renderCondition}/>
                     <Reddit_Benachrichtigungen renderCondition={this.props.renderCondition}/>
                     <br/>
+
+                    {/* Menü, um den Component unten links auszuwählen */}
                     <div className="d-flex w-100 justify-content-between " >
                         <h5 style={{display:"inline"}} >Post-Analyse
                         <button type="button" className="hover btn btn-link alert-light" data-toggle="tooltip" data-placement="right" title="Hier erhalten Sie einen Überblick über Ihre erfolgreichsten Posts des letzten Monats. Entsprechende Statistiken finden Sie in Kurzform darunter. Wenn Sie den Button rechts auf 'Top im Subreddit' umstellen, bekommen Sie die Möglichkeit die besten Posts des ausgewählten Subbreddit zu sehen. "><svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-question-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -75,6 +81,7 @@ export class Reddit_Dashboard extends Tracker.Component {
                             <button type="button" className="btn btn-secondary btn-sm" ref={(input)=>{this.sub = input}} onClick={this.toSub}>Top im Subreddit</button>
                         </span>
                     </div>
+                        {/* Components werden nur gerendert, wenn der State=true */}
                         <Reddit_TopPosts renderCondition={this.state.showTop}/>
                         <Reddit_SearchPosts renderCondition={this.state.showPop}/>
                         <Subreddit_TopPosts renderCondition={this.state.showSub}/>
@@ -99,6 +106,8 @@ export class Reddit_Dashboard extends Tracker.Component {
             </div>
         );
     }else{
+        //auch wenn das Twitter-Dashboard nicht gerendert wird, wird der SearchPosts Component aufgerufen aber nicht gerendert 
+        //dadurch greift der Autorun von App.jsx und der Component bleibt reaktiv
         return (
             <div>
                 <Reddit_SearchPosts renderCondition={this.state.showPop && this.props.renderCondition}/>

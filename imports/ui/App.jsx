@@ -20,16 +20,16 @@ import { No_Twitter_Dashboard } from './no_Twitter_Dashboard.jsx';
 export class App extends Tracker.Component {
   constructor(props){
     super(props);
+    //variablen im State geben an selche Sicht momentan dargestellt werden soll 
     this.state = {
       authorize_screen: false,
       settings_screen: false,
       help_screen: false,
-      showTop: true,
-      showPop: false,
       twitter: true,
       reddit: false,
       firstLoading: true
     }
+    //bindings, um Funktionen auch in Child-Components aufrufen zu können
     this.twitter_authorization = this.twitter_authorization.bind(this);
     this.goToSettings = this.goToSettings.bind(this)
     this.goToHelp = this.goToHelp.bind(this)
@@ -37,39 +37,46 @@ export class App extends Tracker.Component {
     this.showReddit = this.showReddit.bind(this)
   }
 
-  
+  //Code aus Suchparametern - wird von Reddit zur Autorisierung angefügt
   code = new URL(window.location.href).searchParams.get('code');
 
+  //ändert State, sodass nur die Seite zur Twitter Autorisierung angezeigt wird oder man zum Dashboard zurückkehrt
   twitter_authorization(){
     this.setState({authorize_screen: !this.state.authorize_screen})
     this.setState({settings_screen: false})
     this.setState({help_screen: false})
   }
 
+  //ändert State, sodass nur die Einstellungs-Seite angezeigt wird oder man zum Dashboard zurückkehrt
   goToSettings(){
     this.setState({settings_screen: !this.state.settings_screen})
     this.setState({authorize_screen: false})
     this.setState({help_screen: false})
   }
+
+  //ändert State, sodass nur die Hilfe-Seite angezeigt wird oder man zum Dashboard zurückkehrt
   goToHelp(){
     this.setState({help_screen: !this.state.help_screen})
     this.setState({settings_screen: false})
     this.setState({authorize_screen: false})
   }
 
-isAuthorized=()=>{
-    if(Meteor.user()){
-        var nutzer = Meteor.user().username;
-        var nutzerdata = Accounts.find({username: nutzer}).fetch()
-        if(nutzerdata[0]){
-            if(nutzerdata[0].token){
-                return true
-            }
-        }     
-    }
-    return false  
-}
-RedditIsAuthorized=()=>{
+  //returnt true, wenn für den Nutzer eine Twitter-Autorisierung vorliegt
+  isAuthorized=()=>{
+      if(Meteor.user()){
+          var nutzer = Meteor.user().username;
+          var nutzerdata = Accounts.find({username: nutzer}).fetch()
+          if(nutzerdata[0]){
+              if(nutzerdata[0].token){
+                  return true
+              }
+          }     
+      }
+      return false  
+  }
+
+  //returnt true, wenn für den Nutzer eine Reddit-Autorisierung vorliegt
+  RedditIsAuthorized=()=>{
     if(Meteor.user()){
         var nutzer = Meteor.user().username;
         var nutzerdata = Accounts.find({username: nutzer}).fetch()
@@ -82,6 +89,7 @@ RedditIsAuthorized=()=>{
     return false
   }
 
+  //ändert State, sodass das Twitter-Dashboard angezeigt wird
   showTwitter(){
     console.log(this.state.firstLoading)
     this.setState({firstLoading: false})
@@ -91,6 +99,8 @@ RedditIsAuthorized=()=>{
     this.setState({authorize_screen: false})
     this.setState({help_screen: false})
   }
+
+  //ändert State, sodass das Reddit-Dashboard angezeigt wird
   showReddit(){
     this.setState({reddit:true})
     this.setState({twitter:false})
@@ -99,6 +109,7 @@ RedditIsAuthorized=()=>{
     this.setState({help_screen: false})
   }
   
+  //speichert den Reddit Requester in den Accounts Datenbank (wenn man von Reddit zurückgeleitet wird) 
   saveReddit=async()=>{
     var name = Meteor.user().username;
     var userExists = Accounts.find({username: name}).fetch()
@@ -115,6 +126,7 @@ RedditIsAuthorized=()=>{
     window.location = "http://localhost:3000"
   }
 
+  //returnt true, wenn der Nutzer in der Accounts Datenbank existiert
   accountsExists =()=>{
     if(Meteor.user()){
       var acc = Accounts.find({username:Meteor.user().username}).fetch()
@@ -125,6 +137,7 @@ RedditIsAuthorized=()=>{
     }
   }
 
+  //erstellt einen Eintrag in der Accounts DB 
   skipVideo=()=>{
     Accounts.insert({
       owner: Meteor.userId(),
@@ -140,18 +153,27 @@ RedditIsAuthorized=()=>{
         if ( true ){ //Platzhalter für spätere Bedingungen
            return(
             <div>
+              {/* Navbar Component - bekommt verschiedene Funktionen und Werte übergeben */}
               <Navbar twitter_authorization={this.twitter_authorization} goToSettings={this.goToSettings} goToHelp={this.goToHelp} 
                 showReddit={this.showReddit} showTwitter={this.showTwitter} twitter={this.state.twitter} reddit={this.state.reddit}/>
+
               <div className="main">
-                {this.state.authorize_screen && Meteor.user() && this.accountsExists() &&
+
+                {/* Login Component - wird nur angezeigt wenn State = true - bekommt Funktion übergeben, um zum Dashboard zurückzukehren - gleiches gilt für die folgenden 2 Components*/}
+                {this.state.authorize_screen && Meteor.user() && this.accountsExists() && 
                   <Login twitter_authorization = {this.twitter_authorization} />
                 }
+
                 {this.state.settings_screen && Meteor.user() && this.accountsExists() &&
                   <Settings goToSettings={this.goToSettings} />
                 }
+
                 {this.state.help_screen &&
                   <Hilfe goToHelp={this.goToHelp} />
                 }
+
+
+                {/* Hinweistext - wird angezeigt, wenn man nicht angemeldet ist und sich nicht auf einer anderen Sicht befindet */}
                 {!Meteor.user() && !this.state.settings_screen && !this.state.help_screen &&
                   <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}> 
                     <div>
@@ -160,6 +182,9 @@ RedditIsAuthorized=()=>{
                     </div>
                   </div> 
                 }
+
+
+                {/* Video, das angezeigt wird, wenn man sich zum ersten Mal anmeldet(noch kein Eintrag in der Accounts DB besteht) - dieser wird bei Klick auf Button eerstellt-> Video wird nie mehr angezeigt*/}
                 {Meteor.user() && !this.accountsExists() && 
                 <div className="text-center" style={{height:"80vh",display:"flex", alignItems:"center", justifyContent: "center", marginTop:"20px"}}>
                   <div>
@@ -170,11 +195,15 @@ RedditIsAuthorized=()=>{
                   </div>
                 </div>
                 }
+
+                {/* Alert, wenn man von Reddit zurückgeleitet wird - muss bestätigt werden, um einrichtung abzuschließen - nur gerendert, wenn Code in den Suchparametern */}
                 {this.code &&
                 <div className="alert alert-success mt-2 pl-3" role="alert">
                   Reddit Einrichtung bestätigen:
                   <button className="btn btn-sm btn-light" onClick={this.saveReddit}> OK </button>
                 </div>}
+
+                {/* eigentliche Dashboards - werden nur gerendert, wenn keine andere Sicht angezeigt werden soll - alternative Anzeigen, wenn noch keine Autorisierung besteht*/}
                 {Meteor.user() && this.accountsExists() && !this.state.authorize_screen && this.isAuthorized() && !this.state.settings_screen && !this.state.help_screen &&  
                   
                   <Twitter_Dashboard renderCondition={this.state.twitter} showReddit={this.showReddit}/>
@@ -196,6 +225,8 @@ RedditIsAuthorized=()=>{
                     </div>
                   </div>
                 }
+
+              {/* Footer mit Kontaktinfo */}
               </div>
               <div className="footer-copyright text-center py-3 footer bg-dark footer mt-auto">© 2020 Copyright:
 			          <a href="https://connected-organization.de/"> Connected-organisation.de</a>
