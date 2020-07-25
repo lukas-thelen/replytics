@@ -22,6 +22,7 @@ const path = require('path');
 
 var snoowrap = require('snoowrap');
 
+//Reddit API Daten
 const red = new snoowrap({
     userAgent: 'replytics for web v0 (by u/replytics)',
     clientId: 'E6ul0OQ6hTnePQ',
@@ -30,6 +31,7 @@ const red = new snoowrap({
 });
 
 
+//Anfrage des Request Tokens von Reddit
 Meteor.methods({
     async reddit_requester(name, code){
         console.log(code)
@@ -63,6 +65,7 @@ Meteor.methods({
             title: title,
             text: text
         }).fetch()
+	//Abspeicherung der Accountdaten in der Meteordatenbank
         Reddit_Posts.insert({
 			id: result.id, 
 			date: new Date(result.created_utc*1000), 
@@ -79,6 +82,7 @@ Meteor.methods({
 		});
 		getEverything();
 	},
+	//Abfrage von Redditbeiträgen zu einem Suchbegriff
 	async searchReddit(suchbegriff, name){
 		console.log(suchbegriff)
 		console.log(name)
@@ -112,6 +116,7 @@ Meteor.methods({
 async function test(r, name){
     Accounts.update({username:name}, {$set:{requester:r, reddit_auth: true}})
 }
+//Funktion um den täglichen Subscribers Stand abzufragen und zu speichern
 async function getDailySubscribers(){
 	console.log("anfang subs")
 	var accounts = Accounts.find({}).fetch();
@@ -144,6 +149,7 @@ async function getDailySubscribers(){
     return true
 }
 
+//Abrufen der Beiträge vom Nutzer
 async function getPosts(){
 	console.log("anfang posts")
 	var accounts = Accounts.find({}).fetch();
@@ -198,6 +204,7 @@ async function getPosts(){
     
 }
 
+//Verknüpfung mit dem Python Script um den Sentiment der Beiträge zu berechnen
 async function getPostSentiment(){
 	console.log("anfang Postsentiment")
 	const { success, err = '', results } = await new Promise((resolve, reject) => {
@@ -217,6 +224,7 @@ async function getPostSentiment(){
     return true
 }
 
+//Aufrufen der Erwähnungen/Mentions des Nutzer und der entsprechenden Sentimentberechnung durch das Python Script
 async function getSentiment(){
 	console.log("anfang sentiment")
     var accounts = Accounts.find({}).fetch();
@@ -251,6 +259,8 @@ async function getSentiment(){
 		return true
 }
 
+
+//berechnet für jeden Beitrag das Engagement und speichert es mit dem Posts zusammen ab
 async function getEngagement(){
 	console.log("anfang engagement")
 	var accounts = Accounts.find({}).fetch();
@@ -295,6 +305,7 @@ async function getEngagement(){
 	return true
 }
 
+//Abfrage der Antwortanzahl auf eigene Beiträge
 async function getReplies(nutzer){
 	var posts = Reddit_Posts.find({username: nutzer}).fetch();
 	var replies = 0
@@ -307,6 +318,7 @@ async function getReplies(nutzer){
 	return replies
 }
 
+//Abfrage aller Upvotes
 async function getUps(nutzer){
 	var posts = Reddit_Posts.find({username: nutzer}).fetch();
 	var ups = 0
@@ -319,6 +331,7 @@ async function getUps(nutzer){
 	return ups
 }
 
+//Abfrage aller Downvotes
 async function getDowns(nutzer){
 	var posts = Reddit_Posts.find({username: nutzer}).fetch();
 	var downs = 0
@@ -331,6 +344,7 @@ async function getDowns(nutzer){
 	return downs
 }
 
+//fasst die Zahlen zu den Beiträgen unter den angegebenen Dimensionen zusammen und speichert durchschnittliche Werte pro Dimension in der Datenbank ab
 async function getDimensions(){
 	console.log("anfang dimensionen")
     var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
@@ -431,6 +445,7 @@ async function getDimensions(){
     return true
 }
 
+//Abfrage der aktuell beliebtesten Beiträge auf Reddit
 async function getHot(){
 	console.log("anfang hot")
     var accounts = Accounts.find({}).fetch();
@@ -463,6 +478,7 @@ async function getHot(){
 	return true
 }
 
+//Abfrage und Speicherung des täglichen Karmastands
 async function getDailyKarma(){
 	console.log("anfang karma")
 	var accounts = Accounts.find({}).fetch();
@@ -497,7 +513,8 @@ async function getDailyKarma(){
 	console.log("ende karma")
 	return true
 }
-	
+
+
 async function getDailySubscribersUser(){
 	console.log("anfang usersubs")
 	var accounts = Accounts.find({}).fetch();
@@ -537,6 +554,7 @@ let r = await Accounts.find({username:name}).fetch()[0].requester
 		console.log("contributors")
 }*/
 
+//Funktion die sicherstellt, dass alles abgefragt wird
 async function getEverything(){
 	let a1 = await getDailySubscribers();
 	let a6 = await getHot();
@@ -569,7 +587,8 @@ export async function initialR() {
 	console.log(Reddit_UserSubscriberCount.find({}).fetch());
 
 }
-  
+
+//Sorgtd dafür, dass alle Daten täglich aktualisiert werden
 function checkDaily(collection, name){
 	var today = new Date();
 	var latestObject = collection.findOne({username: name},{ sort:{ date:-1 } })
@@ -579,6 +598,7 @@ function checkDaily(collection, name){
 	return false
 }
 
+//Überprüfung des datums um Daten entsprechend ihrer Abfrage zuzuordnen
 function checkDate(date1, date2){
 	if(date1.getDay() === date2.getDay() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear()){
 		return true
