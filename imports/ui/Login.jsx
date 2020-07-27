@@ -8,6 +8,7 @@ var Codebird = require("codebird");
 var cb = new Codebird;
 cb.setConsumerKey(credentials.key, credentials.token);
 
+//Seite, um sich mit seinem Twitter Account zu autorisieren
 export class Login extends Tracker.Component {
   constructor (props) {
     super(props);
@@ -16,6 +17,7 @@ export class Login extends Tracker.Component {
     };
   }
 
+  //leitet den Nutzer zur Twitter-Autorisierungs-Seite weiter
   authorizeatTwitter = async (event) => {
     event.preventDefault();
     cb.__call("oauth_requestToken", { oauth_callback: "oob" }, async function(
@@ -47,11 +49,13 @@ export class Login extends Tracker.Component {
     });
   }
 
+  //Reaktion auf Eingabe
   changeToken = (event) => {
     event.preventDefault()
     this.setState({token: event.target.value});
   }
 
+  //fragt Access-Token an und speichert diesen in der DB + neue Daten abrufen
   verifyPin = async (event) => {
     event.preventDefault()
     var twitterpin = this.state.token;
@@ -64,6 +68,7 @@ export class Login extends Tracker.Component {
       async function (reply, rate, err){ test02(reply, rate, err)
       })
       async function test(reply, rate, err) {
+        console.log("oben")
   //Wenn Error:
         if (err) {
           console.log("error response or timeout exceeded" + err.error);
@@ -82,27 +87,20 @@ export class Login extends Tracker.Component {
               id: reply.user_id,
               screen_name: reply.screen_name
             });
-            let test = await Meteor.callPromise('updateServer')
+            let test = await Meteor.callPromise('updateServer', Meteor.user().username)
             this.props.twitter_authorization();
           }else{
             let test03 = await Meteor.callPromise('updateTwitterAuth', reply)
-            let test04 = await Meteor.callPromise('updateServer')
+            let test04 = await Meteor.callPromise('updateServer', Meteor.user().username)
             this.props.twitter_authorization();
           }
           
-          //console.log(Accounts.find({}).fetch());
         }
-        //this.props.twitter_authorization();
-      } 
-    ;
-    //console.log(xyz)
-    //let test = await Meteor.callPromise('updateServer');
-    //console.log(Accounts.find({}).fetch());
-    //this.props.twitter_authorization();
-    //event.target.reset();
+      } ;
   }
 
-  test = async()=>{
+/*  test = async()=>{
+    console.log("unten")
     cb.setToken(reply.oauth_token, reply.oauth_token_secret);
     var userExists = Accounts.find({username: Meteor.user().username}).fetch()
     if(!userExists[0]){
@@ -124,7 +122,7 @@ export class Login extends Tracker.Component {
     this.props.twitter_authorization();
     event.target.reset();
   }
-
+*/
   //Darstellung auf dem Dashboard
   render() {
       

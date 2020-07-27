@@ -64,8 +64,8 @@ Meteor.methods({
 		  return true
 	},
 	//lädt alle Daten von Twitter nach
-	"updateServer": async() =>{
-		let test = await getEverything()
+	"updateServer": async(name) =>{
+		let test = await getEverything(name)
 		return test
 	},
 	//speichert die Prios der DImensionen ind der Datenbank
@@ -140,9 +140,13 @@ Meteor.methods({
 //
 
 //speichert aktuelle Followerzahlen zu allen Nutzern (für jeden Tag ein Wert / mit Datum markiert)
-async function getDailyFollowers(){
+async function getDailyFollowers(user=null){
 	console.log("start followers")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].twitter_auth){
@@ -174,9 +178,13 @@ async function getDailyFollowers(){
 }
 
 //speichert zu jedem Nutzer alle neuen Posts und aktuelisiert die Werte zur Nutzer-Reaktion (Favorites, etc.)
-async function getPosts(){
+async function getPosts(user=null){
 	console.log("start posts")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
 		if(accounts[a].twitter_auth){
@@ -184,11 +192,10 @@ async function getPosts(){
 			var screen_name = accounts[a].screen_name;
 			let result = await TwitterAPI.get('statuses/user_timeline', { screen_name: screen_name, count:500 });
 			var postArray = result.data;
-
 			//Iteration durch alle Posts
 			for (i=0; i<postArray.length;i++){
 				//Array mit Collection-Einträgen mit identischer ID (entweder leer oder ein Element, wenn Posts bereits in Datenbank)
-				var idChecked = Posts.find({id: postArray[i].id_str}).fetch();
+				var idChecked = Posts.find({id: postArray[i].id_str, username:name}).fetch();
 				//True wenn Posts ein Retweet ist
 				var retweetChecked = postArray[i].retweeted;
 				var rt = postArray[i].text.slice(0,2);
@@ -227,11 +234,15 @@ async function getPosts(){
 }
 
 //fasst die Zahlen zu den Posts unter den angegebenen Dimensionen zusammen und speichert durchschnittliche Werte pro Dimension in der Datenbank ab
-async function getDimensions(){
+async function getDimensions(user=null){
 	console.log("start Dimensionen")
 	var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
 	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
-	var accounts = await Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var l = accounts.length;
 	for(var q=0;q<l;q++){
 		if(accounts[q].twitter_auth){
@@ -245,7 +256,7 @@ async function getDimensions(){
 				s_neg: 0,
 				s_neu: 0,
 				s_pos:0,
-				bestEngagement: "none"
+				bestEngagement: null
 			}
 			var dimensionen = await Dimensionen.find({username:name}).fetch();
 			if(!dimensionen[0]){
@@ -270,7 +281,7 @@ async function getDimensions(){
 				var s_neg= 0;
 				var s_neu= 0;
 				var s_pos= 0;
-				var bestEngagement = "none";
+				var bestEngagement = null;
 				var bestEngagementScore = 0;
 
 				if (postInDimension[0]){
@@ -327,9 +338,13 @@ async function getDimensions(){
 }
 
 //berechnet für jeden Post das Engagement und speichert es mit dem Posts zusammen ab
-async function getEngagement(){
+async function getEngagement(user=null){
 	console.log("start Engagement")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].twitter_auth){
@@ -338,7 +353,6 @@ async function getEngagement(){
 				follower = 1
 			}
 			var name = accounts[i].username;
-			console.log(name)
 			var screen_name = accounts[i].screen_name;
 			var act_replies = await getReplies(name);
 			var act_favorites = await getFavorites(name);
@@ -346,9 +360,6 @@ async function getEngagement(){
 			if (act_retweets<1){
 				act_retweets = 1
 			}
-			console.log(act_replies)
-			console.log(act_retweets)
-			console.log(act_favorites)
 			var act_gesamt = act_favorites + act_replies + act_retweets;
 			var rel_replies = act_gesamt/act_replies;
 			var rel_favorites = act_gesamt/act_favorites;
@@ -357,9 +368,6 @@ async function getEngagement(){
 			rel_favorites = rel_favorites/rel_gesamt;
 			rel_replies = rel_replies/rel_gesamt;
 			rel_retweets = rel_retweets/rel_gesamt;
-			console.log(rel_replies)
-			console.log(rel_retweets)
-			console.log(rel_favorites)
 			var posts = Posts.find({username:name, retweet: false}).fetch();
 			for(var j=0;j<posts.length;j++){
 				var favorites = posts[j].fav;
@@ -376,9 +384,13 @@ async function getEngagement(){
 }
 
 //fragt alle Mentions an und guckt, ob diese eine Antwort auf einen Post sind. Wenn ja wird das Sentiment der Mention auf das Sentiment der Postkommentare übertragen
-async function postSentiment(){
+async function postSentiment(user=null){
 	console.log("start PostSentiment")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
 		if(accounts[a].twitter_auth){
@@ -427,7 +439,7 @@ async function postSentiment(){
 }
 
 //ruft sentiment.py auf -> speichert zu jeder Mention den Sentiment-Wert und speichert die Durchschnittlichen Werte
-async function python(){
+async function python(user=null){
 	console.log("start Sentiment")
 	const { success, err = '', results } = await new Promise((resolve, reject) => {
     PythonShell.run("/"+path.relative('/', '../../../../../imports/server/sentiment.py'), null, function(
@@ -447,9 +459,13 @@ async function python(){
 }
 
 //speichert aktuelle Retweetzahlen basierend auf den Retweets in der Posts-Datenbank zu allen Nutzern (für jeden Tag ein Wert / mit Datum markiert)
-async function getRetweets(){
+async function getRetweets(user=null){
 	console.log("start Retweets")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var l = accounts.length;
 	for(var k=0;k<l;k++){
 		if(accounts[k].twitter_auth){
@@ -482,11 +498,14 @@ async function getRetweets(){
 	return true
 }
 //speichert neue Mentions in der Datenbank und speichert zusätzlich die aktuelle Anzahl der Mentions und Autoren (für jeden Tag ein Wert / mit Datum markiert)
-async function getMentions(){
+async function getMentions(user=null){
 
 	console.log("start Mentions")
-
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var l = accounts.length;
 	for(var a=0;a<l;a++){
 		if(accounts[a].twitter_auth){
@@ -557,15 +576,15 @@ async function getMentions(){
 }
 
 //ruft alle Funktionen, die neue Daten anfragen und speichern nacheinander in der richtigen Reihenfolge auf
-async function getEverything(){
-	let a1 = await getDailyFollowers();
-	let a2 = await getPosts();
-	let a3 = await getMentions();
-	let a4 = await getRetweets();
-	let a5 = await python();
-	let a6 = await postSentiment();
-	let a7 = await getEngagement();
-	let a8 = await getDimensions();	
+async function getEverything(user=null){
+	let a1 = await getDailyFollowers(user);
+	let a2 = await getPosts(user);
+	let a3 = await getMentions(user);
+	let a4 = await getRetweets(user);
+	let a5 = await python(user);
+	let a6 = await postSentiment(user);
+	let a7 = await getEngagement(user);
+	let a8 = await getDimensions(user);	
 	return true
 }
 
@@ -577,6 +596,7 @@ async function getEverything(){
 export async function initial(){
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
+	//console.log(Posts.find({username:"testaccount04"})).fetch()
 }
 
 

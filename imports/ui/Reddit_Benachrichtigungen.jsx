@@ -15,9 +15,6 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
             dimensionen:[],
             showMore: false
         }
-		$(function () {
-		$('[data-toggle="tooltip"]').tooltip()
-})
     }
 
     //sobald der Component geladen wird,  wird auf neue Daten geprüft und Sachen angezeigt
@@ -311,7 +308,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
                 }
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
-                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung03[this.übersetzung02[important[d]]] +" gepostet")
+                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung03[this.übersetzung02[veryImportant[d]]] +" gepostet")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push(this.übersetzung02[veryImportant[d]])
@@ -336,7 +333,7 @@ export class Reddit_Benachrichtigungen extends Tracker.Component {
 
             if(!dimensionVorhanden){
                 var he = this.state.handlungsempfehlungen
-                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung[important[d]] +" gepostet.")
+                he.push("Sie haben schon länger nichts mehr über die Kategorie " + this.übersetzung03[this.übersetzung02[important[d]]] +" gepostet.")
                 this.setState({handlungsempfehlungen: he})
                 var dm = this.state.dimensionen
                 dm.push(this.übersetzung02[important[d]])

@@ -5,7 +5,6 @@ import { Accounts } from '../api/accounts.js';
 var snoowrap = require('snoowrap');
 
 export class Settings extends Tracker.Component {
- //Platz für neue Funktionen, die innerhalb der Klasse verwendet werden können
  constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +23,7 @@ componentDidMount = () => {
     this.getDefault();
 }
 
+//lädt die gespeicherten Werte aus der DB und zeigt diese an
 getDefault = ()=>{
     var settings = Settings_DB.find({username: Meteor.user().username}).fetch();
     var accounts = Accounts.find({username: Meteor.user().username}).fetch();
@@ -71,7 +71,7 @@ getDefault = ()=>{
         })
 }
 
-
+//reagiert auf Änderungen der Form
  changeProdukt_und_Dienstleistung = (event) => {
     this.setState({p_d: event.target.value})
  }
@@ -98,6 +98,8 @@ getDefault = ()=>{
  sleep = (ms) =>{
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  //speichert die neuen Prioritäten in der Datenbank und kehrt zum Dashboard zurück
  absenden = async() => {
     this.loading.className=""
     let test = await Meteor.callPromise('updateSettings',
@@ -116,26 +118,22 @@ getDefault = ()=>{
     this.props.goToSettings();
  }
 
- test = () =>{
-    this.props.goToSettings()
- }
-
+ //kehrt zum Dashboard zurück
  abbrechen = () =>{
     this.props.goToSettings();
  }
 
  changeSub = (event) =>{
-    console.log("sdfgsdfg")
     this.setState({sub: event.target.value})
     this.setState({geändert: true})
  }
 
  changeName = (event) =>{
-    console.log("sdfgsdfg")
     this.setState({r_name: event.target.value})
     this.setState({geändert: true})
  }
 
+ //speichert die Änderungen und leitet den Nutzer auf die Reddit-Autorisierungs-Seite weiter
  reddit_code =async()=>{
     this.loading.className=""
     var userExists = Accounts.find({username: Meteor.user().username}).fetch()
@@ -184,6 +182,7 @@ getDefault = ()=>{
       //Platz für javascript (Variablen benennen und kurze Berechnungen etc, auch Logik mit if und so)
     return (
 		<div className="col col-lg-7 offset-lg-3 text-left">
+            {/* Auswahl, welche Dimension welche Priorität haben soll */}
             <h2>Einstellungen</h2>
             <hr className="mt-4 mb-4 " />
             <h5>Priorität der Postkategorien</h5>
@@ -287,6 +286,7 @@ getDefault = ()=>{
             <h5>Reddit Monitoring Einstellungen</h5>
             <br/>
             <form>
+                {/* Angaben zu Reddit Username und Subreddit */}
                 <label for="formGroupExampleInput">Subreddit der Firma</label>
                 <input type="text" className="form-control" onChange={this.changeSub} ref={(input)=>{this.sub = input}} id="formGroupExampleInput"></input>
                 <br/>
@@ -294,6 +294,8 @@ getDefault = ()=>{
                 <input type="text" className="form-control" onChange={this.changeName} ref={(input)=>{this.r_name = input}} id="formGroupExampleInput2"></input>
             </form>
             <br/>
+
+            {/* verschiedene Aktionsbuttons */}
             <form action={this.authenticationUrl}>
                 <input className="btn btn-info mr-3" type="button" onClick={this.reddit_code} value="Reddit autorisieren"></input>
             </form>

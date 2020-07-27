@@ -76,7 +76,7 @@ export class RedditSelbstposten extends Tracker.Component {
 							<option value="Dimension wählen">Kategorie wählen</option>
 							<option value="not defined">keine Angabe</option>
 							<option value="Produkt und Dienstleistung">Produkt und Dienstleistung</option>
-							<option value="Emotionen">Emotionen</option>
+							<option value="Emotionen">Emotionaler Reiz</option>
 							<option value="Arbeitsplatzumgebung">Arbeitsplatzumgebung</option>
 							<option value="Finanzleistung">Finanzleistung</option>
 							<option value="Vision und Führung">Vision und Führung</option>

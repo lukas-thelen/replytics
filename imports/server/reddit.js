@@ -47,15 +47,12 @@ Meteor.methods({
             return test02(r, name)
         })
     },
-    async reddit_code(name, code){
-        let test = await Accounts.update({username:name}, {$set:{reddit_auth: true, reddit_code:code}})
-        return true
-    },
     async update_reddit(sub, name, user){
         let wait01 = await Accounts.update({username:user}, {$set:{sub:sub, r_name: name}})
-        let wait = await getEverything();
+        let wait = await getEverything(user);
         return false
-    },
+	},
+	//Funktion, um eigene Posts abzusetzen und diese mit Dimension in der DB anzuspeichern
     async reddit_posten(name, title, text, dimension){
         let r = await Accounts.find({username:name}).fetch()[0].requester
         reddit = new snoowrap(r)
@@ -65,7 +62,6 @@ Meteor.methods({
             title: title,
             text: text
         }).fetch()
-	//Abspeicherung der Accountdaten in der Meteordatenbank
         Reddit_Posts.insert({
 			id: result.id, 
 			date: new Date(result.created_utc*1000), 
@@ -80,7 +76,6 @@ Meteor.methods({
             s_pos: 0,
             username: name			
 		});
-		getEverything();
 	},
 	//Abfrage von Redditbeiträgen zu einem Suchbegriff
 	async searchReddit(suchbegriff, name){
@@ -105,10 +100,6 @@ Meteor.methods({
 		console.log(array)
 		Reddit_Popular.remove({username: name})
         Reddit_Popular.insert({posts: array, username: name})
-	},
-	async update_reddit_server (){
-		let wait = await getEverything();
-		return true
 	}
 })
 
@@ -117,9 +108,13 @@ async function test(r, name){
     Accounts.update({username:name}, {$set:{requester:r, reddit_auth: true}})
 }
 //Funktion um den täglichen Subscribers Stand abzufragen und zu speichern
-async function getDailySubscribers(){
+async function getDailySubscribers(user=null){
 	console.log("anfang subs")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].sub && accounts[i].sub!=""){
@@ -150,9 +145,13 @@ async function getDailySubscribers(){
 }
 
 //Abrufen der Beiträge vom Nutzer
-async function getPosts(){
+async function getPosts(user=null){
 	console.log("anfang posts")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
 		if(accounts[a].r_name){
@@ -205,7 +204,7 @@ async function getPosts(){
 }
 
 //Verknüpfung mit dem Python Script um den Sentiment der Beiträge zu berechnen
-async function getPostSentiment(){
+async function getPostSentiment(user=null){
 	console.log("anfang Postsentiment")
 	const { success, err = '', results } = await new Promise((resolve, reject) => {
     	PythonShell.run("/"+path.relative('/', '../../../../../imports/server/reddit_postsentiment.py'), null, function(
@@ -225,9 +224,13 @@ async function getPostSentiment(){
 }
 
 //Aufrufen der Erwähnungen/Mentions des Nutzer und der entsprechenden Sentimentberechnung durch das Python Script
-async function getSentiment(){
+async function getSentiment(user=null){
 	console.log("anfang sentiment")
-    var accounts = Accounts.find({}).fetch();
+    if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
 		if(accounts[a].sub && accounts[a].sub!=""){
@@ -261,9 +264,13 @@ async function getSentiment(){
 
 
 //berechnet für jeden Beitrag das Engagement und speichert es mit dem Posts zusammen ab
-async function getEngagement(){
+async function getEngagement(user=null){
 	console.log("anfang engagement")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].sub /* reddit_auth */){
@@ -345,11 +352,15 @@ async function getDowns(nutzer){
 }
 
 //fasst die Zahlen zu den Beiträgen unter den angegebenen Dimensionen zusammen und speichert durchschnittliche Werte pro Dimension in der Datenbank ab
-async function getDimensions(){
+async function getDimensions(user=null){
 	console.log("anfang dimensionen")
     var dimensionsArray=["Emotionen","Produkt und Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision und Führung","Gesellschaftliche Verantwortung"];
 	var dimensionsArray02=["Emotionen","Produkt_und_Dienstleistung","Arbeitsplatzumgebung","Finanzleistung","Vision_und_Führung","Gesellschaftliche_Verantwortung"];
-	var accounts = await Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var l = accounts.length;
 	for(var q=0;q<l;q++){
         var name = accounts[q].username;
@@ -446,9 +457,13 @@ async function getDimensions(){
 }
 
 //Abfrage der aktuell beliebtesten Beiträge auf Reddit
-async function getHot(){
+async function getHot(user=null){
 	console.log("anfang hot")
-    var accounts = Accounts.find({}).fetch();
+    if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var a=0;a<len;a++){
 		if(accounts[a].sub && accounts[a].sub!=""){
@@ -479,9 +494,13 @@ async function getHot(){
 }
 
 //Abfrage und Speicherung des täglichen Karmastands
-async function getDailyKarma(){
+async function getDailyKarma(user=null){
 	console.log("anfang karma")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].reddit_auth){
@@ -515,9 +534,13 @@ async function getDailyKarma(){
 }
 
 
-async function getDailySubscribersUser(){
+async function getDailySubscribersUser(user=null){
 	console.log("anfang usersubs")
-	var accounts = Accounts.find({}).fetch();
+	if (user===null){
+		var accounts = Accounts.find({}).fetch();
+	}else{
+		var accounts = Accounts.find({username:user}).fetch();
+	}
 	var len = accounts.length;
 	for(var i=0;i<len;i++){
 		if(accounts[i].reddit_auth){
@@ -555,16 +578,16 @@ let r = await Accounts.find({username:name}).fetch()[0].requester
 }*/
 
 //Funktion die sicherstellt, dass alles abgefragt wird
-async function getEverything(){
-	let a1 = await getDailySubscribers();
-	let a6 = await getHot();
-	let a7 = await getDailyKarma();
-	let a8 = await getDailySubscribersUser();
-	let a9 = await getSentiment();
-	let a2 = await getPosts();
-	let a3 = await getPostSentiment();
-	let a4 = await getEngagement();
-	let a5 = await getDimensions();
+async function getEverything(user=null){
+	let a1 = await getDailySubscribers(user);
+	let a6 = await getHot(user);
+	let a7 = await getDailyKarma(user);
+	let a8 = await getDailySubscribersUser(user);
+	let a9 = await getSentiment(user);
+	let a2 = await getPosts(user);
+	let a3 = await getPostSentiment(user);
+	let a4 = await getEngagement(user);
+	let a5 = await getDimensions(user);
 	return true
 }
 
@@ -573,18 +596,6 @@ export async function initialR() {
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
 	//Accounts.remove({username:"testaccount02"})
-	console.log("dimensionen");
-	console.log(Reddit_Dimensionen.find({}).fetch());
-	console.log("hot");
-	console.log(Reddit_Hot.find({}).fetch());
-	console.log("karma");
-	console.log(Reddit_Karma.find({}).fetch());
-	console.log("popular");
-	console.log(Reddit_Popular.find({}).fetch());
-	console.log("posts");
-	console.log(Reddit_Posts.find({}).fetch());
-	console.log("usersubscribercount");
-	console.log(Reddit_UserSubscriberCount.find({}).fetch());
 
 }
 
