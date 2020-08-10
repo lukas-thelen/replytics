@@ -402,9 +402,9 @@ async function postSentiment(user=null){
 				access_token: Accounts.find({username: name}).fetch()[0].token,
 				access_token_secret: Accounts.find({username: name}).fetch()[0].secret});
 			let result = await UserAPI.get('statuses/mentions_timeline', { screen_name: screen_name});
-			var mentionArray = result.data;
-			for (i=0; i<mentionArray.length-1; i++){
-				var mentionInReply = Posts.find({id: mentionArray[i].in_reply_to_status_id_str}).fetch();
+			var mentionArray = Mentions.find({username:name}).fetch()
+			for (i=0; i<mentionArray.length; i++){
+				var mentionInReply = Posts.find({id: mentionArray[i].reply_to}).fetch();
 				var replyList = [];
 				if (mentionInReply[0]){
 					//erstelle lokale Liste mit bisherigen Antworten auf den Post
@@ -413,22 +413,18 @@ async function postSentiment(user=null){
 					var replyExists = replyList.includes(mentionArray[i].text);
 					if(!replyExists){
 						replyList.push(mentionArray[i].text)
+						if (mentionArray[i].sentiment>0){
+							Posts.update({id: mentionArray[i].reply_to}, {$inc:{s_pos: 1}})
+						}
+						if (mentionArray[i].sentiment===0){
+							Posts.update({id: mentionArray[i].reply_to}, {$inc:{s_neu: 1}})
+						}
+						if (mentionArray[i].sentiment<0){
+							Posts.update({id: mentionArray[i].reply_to}, {$inc:{s_neg: 1}})
+						}
 					}
 					//Die lokale Liste wieder in der Datenbank speichern
-					Posts.update({id: mentionArray[i].in_reply_to_status_id_str},{$set: {replies: replyList}})
-					var mention = Mentions.find({id01: mentionArray[i].id}).fetch()
-					//den Zähler für positives, negatives, neutrales Sentiment entsprechend erhöhen
-					if(mention[0]){
-						if (!replyExists && mention[0].sentiment>0){
-							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_pos: 1}})
-						}
-						if (!replyExists && mention[0].sentiment===0){
-							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_neu: 1}})
-						}
-						if (!replyExists && mention[0].sentiment<0){
-							Posts.update({id: mentionArray[i].in_reply_to_status_id_str}, {$inc:{s_neg: 1}})
-						}
-					}
+					Posts.update({id: mentionArray[i].reply_to},{$set: {replies: replyList}})
 				}
 
 			}
@@ -529,7 +525,7 @@ async function getMentions(user=null){
 			}
 
 			//Iteration durch alle Mentions
-			for (i=0; i<mentionArray.length-1; i++){
+			for (i=0; i<mentionArray.length; i++){
 				var mentionExists = Mentions.find({id02:mentionArray[i].id_str, username:name}).fetch()
 				if(!mentionExists[0]){
 					count ++
@@ -546,7 +542,8 @@ async function getMentions(user=null){
 						id02: mentionArray[i].id_str,
 						content: mentionArray[i].text,
 						author: mentionArray[i].user.name,
-						username: name
+						username: name,
+						reply_to: mentionArray[i].in_reply_to_status_id_str
 					})
 
 				}
@@ -596,7 +593,8 @@ async function getEverything(user=null){
 export async function initial(){
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
-	//console.log(Posts.find({username:"testaccount04"})).fetch()
+	//console.log(Mentions.find({username:"testaccount06"}).fetch())
+	//console.log(Posts.find({username:"lukas02"}).fetch())
 }
 
 
