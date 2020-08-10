@@ -63,18 +63,15 @@ export class RedditSubscriberChart extends Tracker.Component {
     for(var y=0; y<=l; y++){
       datum.push(subscriberDate[y].getDay());
     }
-    if (l>=6){
-      l = 6
-    }else{
-        var last = datum.length-1;
-      for(var k=l; k<6;k++){
-        if(last<0){
-          var d = 0
-        }else{
-          var d = (datum[last]+1+k)%7;
-        }
-        datum.push(d);
+    var last = datum.length-1;
+    for(var k=l; k<6;k++){
+      if(last<0){
+        var d = 0
+      }else{
+        var d = (datum[last]+1)%7;
       }
+      datum.push(d);
+      last += 1
     }
 
 
