@@ -287,10 +287,10 @@ getDefault = ()=>{
             <br/>
             <form>
                 {/* Angaben zu Reddit Username und Subreddit */}
-                <label for="formGroupExampleInput">Subreddit der Firma</label>
+                <label htmlFor="formGroupExampleInput">Subreddit der Firma</label>
                 <input type="text" className="form-control" onChange={this.changeSub} ref={(input)=>{this.sub = input}} id="formGroupExampleInput"></input>
                 <br/>
-                <label for="formGroupExampleInput2">Reddit Nutzername</label>
+                <label htmlFor="formGroupExampleInput2">Reddit Nutzername</label>
                 <input type="text" className="form-control" onChange={this.changeName} ref={(input)=>{this.r_name = input}} id="formGroupExampleInput2"></input>
             </form>
             <br/>

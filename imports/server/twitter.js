@@ -19,11 +19,6 @@ import { async } from 'rsvp';
 import { SearchUser } from '../api/twitter_searchUser.js';
 
 var Twit = require('twit');	//https://github.com/ttezel/twit
-var ml = require('ml-sentiment')({lang: 'de'});
-const sm = require('sentimental');
-const sw = require('stopword');
-var GermanStemmer = require('snowball-stemmer.jsx/dest/german-stemmer.common.js').GermanStemmer;
-const stem = new GermanStemmer();
 const path = require('path');
 
 Meteor.methods({
@@ -593,8 +588,6 @@ async function getEverything(user=null){
 export async function initial(){
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
-	//console.log(Mentions.find({username:"testaccount06"}).fetch())
-	//console.log(Posts.find({username:"lukas02"}).fetch())
 }
 
 

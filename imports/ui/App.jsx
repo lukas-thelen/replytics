@@ -91,7 +91,6 @@ export class App extends Tracker.Component {
 
   //ändert State, sodass das Twitter-Dashboard angezeigt wird
   showTwitter(){
-    console.log(this.state.firstLoading)
     this.setState({firstLoading: false})
     this.setState({reddit:false})
     this.setState({twitter:true})

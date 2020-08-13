@@ -595,11 +595,9 @@ async function getEverything(user=null){
 export async function initialR() {
 	//getEverything();
 	//var myVar = setInterval(getEverything, 1200000);
-	//Accounts.remove({username:"testaccount02"})
-
 }
 
-//Sorgtd dafür, dass alle Daten täglich aktualisiert werden
+//Sorgt dafür, dass alle Daten täglich aktualisiert werden
 function checkDaily(collection, name){
 	var today = new Date();
 	var latestObject = collection.findOne({username: name},{ sort:{ date:-1 } })
