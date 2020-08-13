@@ -30,6 +30,9 @@ export class RedditDimensionenRadar extends Tracker.Component {
     }
     if(d[0]){
       for (var i=0; i< 6; i++){
+      //Der Engegamentwer ist so festgelegt, dass die Dimension mit dem maximalen Engagement als 100% angezeigt wird. 
+      //Dies vereinfacht die Darstellung gerade bei unseren eher unrealisteischen Testwerten, bei denen wir deutlich mehr Interaktionen als Follower hatten.
+      //Im Idealfall müsste man hier durch die Anzahl der User teilen, die den Subreddit abonniert haben (s. Reddit_SubscriberCount Datenbank)
       daten.push(parseInt((d[0][dimensionen02[i]].engagement/max)*100))
       count.push(parseInt(((d[0][dimensionen02[i]].count)/gesamtPosts)*100))
       }
