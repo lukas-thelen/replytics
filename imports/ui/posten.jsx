@@ -51,14 +51,14 @@ export class Selbstposten extends Tracker.Component {
 					</div>
 					<br></br>
 					<div className= "row col-md-10">
-						<select onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
-							<option selected disabled hidden value="not defined">Kategorie wählen</option>
+						<select defaultValue="not defined" onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
+							<option disabled hidden value="not defined">Kategorie wählen</option>
 							<option value="Produkt und Dienstleistung">Produkt und Dienstleistung</option>
 							<option value="Emotionen">Emotionaler Reiz</option>
 							<option value="Arbeitsplatzumgebung">Arbeitsplatzumgebung</option>
 							<option value="Finanzleistung">Finanzleistung</option>
 							<option value="Vision und Führung">Vision und Führung</option>
-							<option value="Gesellschaftliche Verantwortung">Gesellschaftliche Verantwortung</option>
+							<option value="Gesellschaftliche Verantwortung">Gesellschaftliche Verantwortung</option>	
 						</select>
 						<input style={{height:"38px", marginBottom:"4%"}}className="col-md-3 btn btn-secondary" type='submit' value="Posten"/>
 					</div>

@@ -20,7 +20,7 @@ export class Benachrichtigungen extends Tracker.Component {
 
     }
     //sobald der Component geladen wird,  wird auf neue Daten geprüft und Sachen angezeigt
-    componentWillMount = () =>{
+    componentDidMount = () =>{
         this.wochenbericht();
         this.checkShitstorm();
         this.checkNegativePosts();
@@ -419,7 +419,7 @@ export class Benachrichtigungen extends Tracker.Component {
     render() {
 
         const Element = this.state.handlungsempfehlungen.map((text, index) =>
-        <div>
+        <div key={text}>
         <li className="list-group-item">
             <div className="d-flex w-100 justify-content-between">
             <span className="w-75">{text}</span>
@@ -437,7 +437,7 @@ export class Benachrichtigungen extends Tracker.Component {
         </div>
         );
         const ElementSmall = this.state.handlungsempfehlungen.slice(0,2).map((text, index) =>
-        <div>
+        <div key={text}>
         <li className="list-group-item">
             <div className="d-flex w-100 justify-content-between">
             <span className="w-75">{text}</span>

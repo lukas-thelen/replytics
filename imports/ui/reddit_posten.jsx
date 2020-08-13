@@ -69,9 +69,8 @@ export class RedditSelbstposten extends Tracker.Component {
 					</div>
 					<br></br>	
 					<div className= "row col-md-10">
-						<select onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
-							<option value="Dimension wählen">Kategorie wählen</option>
-							<option value="not defined">keine Angabe</option>
+						<select defaultValue="not defined" onChange = {this.changeDimension} style={{marginBottom:"4%"}} className="custom-select mr-sm-2 col-md-7">
+							<option disabled hidden value="not defined">Kategorie wählen</option>
 							<option value="Produkt und Dienstleistung">Produkt und Dienstleistung</option>
 							<option value="Emotionen">Emotionaler Reiz</option>
 							<option value="Arbeitsplatzumgebung">Arbeitsplatzumgebung</option>

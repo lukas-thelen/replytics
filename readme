@@ -1,0 +1,27 @@
+Die Anwendung wurde im Rahmen des Informatik Praxisprojektes des Lehrstuhls für 
+Professionelle Kommunikation in elektronischen Medien / Social Media 
+an der Universität Duisburg-Essen im Sommersemester 2020 entwickelt.
+
+Für den fehlerfreien Start der Datei wird die Installation von Meteor, node.js und Python ab Version 3.0 vorausgesetzt.
+In der Datei imports/server/Python.txt stehen weitere Pakete, die für den Start erforderlich sind.
+
+Wenn im Terminal beim Aufruf des Befehls "meteor" scheinbar alle Node-Packages fehlen, 
+genügt es meist, den Compilier "@babel" per Hand nachzuinstallieren.
+
+In den Dateien twitter.js bzw. reddit.js befindet sich eine Funktion namens initial bzw initialR. 
+Der Inhalt dieser Funktionen sorgt dafür, dass der Server in Abständen von 20 Minuten Daten von den APIs holt, und ist eventuell auskommentiert,
+da es sonst häufiger Probleme mit dem Abfragelimit gab. Im Normalzustand sollte diser Inhalt nicht auskommentiert sein. 
+Dies ist gegebenenfalls per Hand zu ändern.
+
+
+!!!Konten und Datenschutz!!!
+Die Developer Accounts laufen über private Konten der beteiligten Studenten. Wir können nicht garantieren, dass die Tokens auch nach 
+Ablauf des Semesters noch funktionieren. Sollte die Anwendung weiter genutzt werden, empfehlen wir einen neuen Account und 
+eine neue App bei Twitter und Reddit zu registrieren und die Zugriffsdaten auszutauschen. 
+Dies muss an folgenden Stellen geschehen:
+Reddit: imports/server/reddit.js 27-30
+Twitter: imports/api/access_Token und imports/api/twitter_credentials
+
+
+Auf einigen Computern kann es zu einer Fehlermeldung kommen, dass das pymongo-Modul nicht gefunden wurde, obwohl dieses bereits installiert ist.
+Der Grund sind scheinbar fehlende Admin-Berechtingungen, wenn das Python-Script über die Meteor-App aufgerufen wird. 
